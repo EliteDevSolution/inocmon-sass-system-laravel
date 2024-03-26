@@ -1,0 +1,7 @@
+.dashborad_status {
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding:20px;
+}

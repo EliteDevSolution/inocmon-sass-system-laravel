@@ -24,7 +24,7 @@
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
-                        <a href="{{ route('admin.users.index') }}">
+                        <a href="{{ route('users.index') }}">
                             {{ trans('cruds.user.title_singular') }}
                         </a>
                     </li>
@@ -38,7 +38,7 @@
 <!-- end page title -->
 <div class="card">
     <div class="card-body">
-        <form action="{{ route("admin.users.update", [$user->id]) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route("users.update", [$user->id]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">

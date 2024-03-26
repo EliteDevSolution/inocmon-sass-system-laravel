@@ -13,17 +13,11 @@
         <link href="{{ asset('admin_assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('admin_assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('admin_assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+        <!-- Customize css -->
+        <link href="{{ asset('admin_assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
         @yield('styles')
         <style>
-            .select2-container--default .select2-selection--multiple .select2-selection__choice {
-                background-color: #7e57c2;
-            }
-            .select2-selection__choice__remove {
-                color: #fffafd !important;
-            }
-            .navbar-custom {
-                background-color: #38414a !important;
-            }
+
         </style>
     </head>
     <body>

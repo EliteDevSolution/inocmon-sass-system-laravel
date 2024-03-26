@@ -31,6 +31,15 @@ class DashboardController extends Controller
     public function index()
     {
         $users = \App\User::all();
-        return view('admin.dashboard', compact('users'));
+        $isDashoardRouteFlag = false;
+
+        if(!request()->query('clienteid')) {
+            $isDashoardRouteFlag = true;
+        } else {
+            $isDashoardRouteFlag = false;
+        }
+
+        return view('admin.dashboard.index', compact('users', 'isDashoardRouteFlag'));
     }
+
 }

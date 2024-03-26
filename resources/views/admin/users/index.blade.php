@@ -3,10 +3,9 @@
     <!-- third party css -->
     <link href="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin_assets/libs/datatables/responsive.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('admin_assets/libs/datatables/buttons.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('admin_assets/libs/datatables/select.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
     <!-- third party css end -->
 @endsection
+
 @section('content')
 <!-- start page title -->
 <div class="row">
@@ -26,7 +25,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <a class="btn btn-success mb-3" href="{{ route('admin.users.create') }}">
+                <a class="btn btn-success mb-3" href="{{ route('users.create') }}">
                     {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
                 </a>
                 <table id="datatable" class="table nowrap">
@@ -80,11 +79,11 @@
                                 </td>
                                 <td>
                                     @if($user->id != 1)
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
+                                    <a class="btn btn-xs btn-info" href="{{ route('users.edit', $user->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
 
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -100,20 +99,13 @@
     </div>
 </div>
 @endsection
+
 @section('scripts')
 @parent
     <!-- third party js -->
     <script src="{{ asset('admin_assets/libs/datatables/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.js') }}"></script>
     <script src="{{ asset('admin_assets/libs/datatables/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/buttons.flash.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.checkboxes.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.select.min.js') }}"></script>
     <!-- third party js ends -->
     <!-- Datatables init -->
     <script>

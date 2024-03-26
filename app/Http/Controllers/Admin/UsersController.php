@@ -73,7 +73,7 @@ class UsersController extends Controller
             $user->trial_type = $request->trial_type;
             $user->save();
         }
-        return redirect()->route('admin.users.index');
+        return redirect()->route('users.index');
     }
 
 
@@ -122,7 +122,7 @@ class UsersController extends Controller
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->syncRoles($roles);
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('users.index');
     }
 
     public function show(User $user)
@@ -150,7 +150,7 @@ class UsersController extends Controller
 
         $user->delete();
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('users.index');
     }
 
     /**

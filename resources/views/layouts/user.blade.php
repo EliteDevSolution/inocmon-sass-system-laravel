@@ -12,6 +12,7 @@
         <link href="{{ asset('user_assets/libs/jquery-toast/jquery.toast.min.css') }}" rel="stylesheet" type="text/css" />
         @yield('styles')
         <!-- App css -->
+        <link href="{{ asset('dashboard_assets/css/app.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('user_assets/css/bootstrap.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('user_assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('user_assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />

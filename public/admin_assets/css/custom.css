@@ -1,0 +1,15 @@
+.left-side-menu
+{
+    background-color: #38414a;
+}
+.nav-second-level>li>a
+{
+    color: #9097a7;
+}
+#sidebar-menu>ul>li>a.active, .nav-second-level li.active>a {
+    color: #fff;
+}
+
+.navbar-custom , .nav-backcolor{
+    background-color: #4a81d4 !important;
+}

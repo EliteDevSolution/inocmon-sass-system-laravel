@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ env('APP_NAME', 'Permissions Manager') }}</title>
+    <title>{{ env('APP_NAME', 'INOCom') }}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://unpkg.com/@coreui/coreui@2.1.16/dist/css/coreui.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" />
@@ -22,12 +22,12 @@
 </head>
 
 <body class="header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden login-page">
-    <div class="app flex-row align-items-center">
-        <div class="container">
-            @yield("content")
-        </div>
+<div class="app flex-row align-items-center">
+    <div class="container">
+        @yield("content")
     </div>
-    @yield('scripts')
+</div>
+@yield('scripts')
 </body>
 
 </html>
