@@ -66,28 +66,39 @@
         <div class="col-lg-12">
             <div class="card-box ribbon-box">
                 <div class="card-box ribbon-box">
-                        <div class="ribbon ribbon-success float-left"><i class="mdi mdi-access-point mr-1"></i> Rede MPLS</div>
-                        <div class="ribbon-content" style="text-align: center">
-                            <h4 class="text-success  mt-0">{{$dashboardData['equipmentCount']}} PEs cadastrados</h4>
-                            <h5 class="mt-3 text-dark"> <span> Arquivo lsdb </span></h5>
-                            @if ($dashboardData['getOspData'])
-                                <h5 class="text-muted p-1"> <span> Ainda não existe um arquivo! </span></h5>
-                                <h5 class="text-muted p-1">  <span> To generate </span></h5>
-                            @endif
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HostName<i class="mdi mdi-chevron-down"></i></button>
-                                <div class="dropdown-menu">
+                    <div class="ribbon ribbon-success float-left"><i class="mdi mdi-access-point mr-1"></i> Rede MPLS</div>
+                    <div class="ribbon-content" style="text-align: center">
+                        <h4 class="text-success  mt-0">{{$dashboardData['equipmentCount']}} PEs cadastrados</h4>
+                        <h5 class="mt-3 text-dark"> <span> Arquivo lsdb </span></h5>
+                        @if ($dashboardData['getOspData'])
+                            <h5 class="text-muted p-1"> <span> Ainda não existe um arquivo! </span></h5>
+                            <h5 class="text-muted p-1">  <span> To generate </span></h5>
+                        @endif
+                        <div class="col-2 m-auto">
+                            <form action="" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                {{dd($dashboardData)}}
+                                <select name="status" value="" class="form-control" data-toggle="select2" >
                                     @foreach ($dashboardData['sondas'] as $index => $value)
-                                        <a class="dropdown-item" href="#">{{$value['hostname']}}</a>
+                                        <option value="activo">activo</option>{{$value['hostname']}}</option>
                                     @endforeach                              
-                                </div>
-                            </div><!-- /btn-group -->
-                            <button type="button" class="btn btn-info dropdown-toggle">Generate</button>
+                                </select>
+                                <select name="status" value="" class="form-control mt-1" data-toggle="select2" >
+                                    @foreach ($dashboardData['sondas'] as $index => $value)
+                                        <option value="activo">activo</option>{{$value['hostname']}}</option>
+                                    @endforeach                              
+                                </select>
+                                <button type="submit" class="btn mt-1 btn-info dropdown-toggle">Gerar Lsdb</button>
+                            </form>
                         </div>
+                    </div>
                 </div>
-            </div> <!-- end card-box-->
-        </div> <!-- end col -->
+            </div>
+        </div> 
     </div>
 
 </div>
 @endsection
+
+
+   

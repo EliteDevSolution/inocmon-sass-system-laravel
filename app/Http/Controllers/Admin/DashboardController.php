@@ -114,7 +114,6 @@ class DashboardController extends Controller
                 'getDspVendor' => $getOspfLsdbVendor,
                 'rr' => ''
             ];
-            dd($client);
             return view('admin.dashboard.index', compact('users', 'layout', 'dashboardData'));
         }
         else {
