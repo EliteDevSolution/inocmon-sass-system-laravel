@@ -26,6 +26,9 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
+                        <a class="btn btn-success mb-3" href="{{ route("client.create") }}">
+                        Novo Cliente
+                    </a>
                         <table id="datatable" class="table nowrap">
                             <thead>
                             <tr>
@@ -46,7 +49,28 @@
                                 </th>
                             </tr>
                             </thead>
-                        </table>
+                            <tbody>
+                                @foreach($clients as $key => $client)
+                                    <tr data-entry-id="{{ $key }}">
+                                        <td>
+                                            {{$key}}
+                                        </td>
+                                        <td>
+                                            {{ $client['nome'] }}
+                                        </td>
+                                        <td>
+                                            {{ $client['status'] }}
+                                        </td>
+                                        <td>
+                                            <a href="{{ route("dashboard", array( "client_id" => $key )) }}">more detail</a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route("client.edit", $key) }}">edit</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>    
                     </div>
                 </div>
             </div>

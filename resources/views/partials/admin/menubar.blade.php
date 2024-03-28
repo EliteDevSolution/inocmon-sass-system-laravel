@@ -1,5 +1,5 @@
 <div id="sidebar-menu" style="background-color: #38414a">
-    @if(request()->route()->getName() == "dashboard")
+    @if(request()->route()->getName() != "client.index" && $layout)
         <ul class="metismenu" id="side-menu">
             <li class="menu-title">Navigation</li>
 
@@ -11,10 +11,10 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li >
-                        <a href="{{ route('dashboard') }}">Summary</a>
+                        <a href="{{ route('dashboard', request()->query()) }}">Summary</a>
                     </li>
                     <li>
-                        <a href="{{ route("communities-bgp.index") }}">Communities BGP</a>
+                        <a href="{{ route("communities-bgp.index", request()->query()) }}">Communities BGP</a>
                     </li>
                 </ul>
             </li>
@@ -143,7 +143,18 @@
             </li>
 
             <li class="menu-title mt-2">more</li>
-
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-pocket"></i>
+                    <span> Adming Page </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('client.index') }}">Admin</a>
+                    </li>
+                </ul>
+            </li>
 
             {{--        <li>--}}
             {{--            <a href="javascript: void(0);">--}}
@@ -190,11 +201,13 @@
                     <span> Client </span>
                     <span class="menu-arrow"></span>
                 </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li >
-                        <a href="{{ route('dashboard') }}">Clients</a>
-                    </li>
-                </ul>
+                @foreach($clients as $key => $client) 
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li >
+                            <a href="{{ route('dashboard',array( "client_id" => $key )) }}">{{$client['nome']}}</a>
+                        </li>
+                    </ul>
+                @endforeach
             </li>
         </ul>
     @endif

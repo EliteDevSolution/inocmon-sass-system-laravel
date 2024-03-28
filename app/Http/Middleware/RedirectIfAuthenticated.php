@@ -19,7 +19,7 @@ class RedirectIfAuthenticated
     {
         if (Auth::guard($guard)->check()) {
             if (Auth::user()->hasRole("administrator"))
-                return redirect()->to("/dashboard");
+                return redirect()->to("/client");
             //return redirect()->to("/user/dashboard");
         }
         $response = $next($request);

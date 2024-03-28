@@ -25,7 +25,7 @@ Route::patch('change_password', 'Auth\ChangePasswordController@changePassword')-
 
 Route::group(['middleware' => ['auth']], function () {
 
-        Route::resource('client', 'Admin\ClientController');
+    Route::resource('client', 'Admin\ClientController');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
 //    Route::get('manage', 'Admin\DashboardController@viewManage')->name('manage');
