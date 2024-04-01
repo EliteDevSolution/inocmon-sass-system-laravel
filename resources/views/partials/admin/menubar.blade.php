@@ -2,7 +2,6 @@
     @if(request()->route()->getName() != "client.index" && $layout)
         <ul class="metismenu" id="side-menu">
             <li class="menu-title">Navigation</li>
-
             <li>
                 <a href="javascript: void(0);">
                     <i class="fe-airplay"></i>
@@ -22,17 +21,29 @@
             <li>
                 <a href="javascript: void(0);">
                     <i class="fe-pocket"></i>
-                    <span> Asset  management </span>
+                    <span> Gerencia de ativos </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li>
-                        <a href="javascript: void(0);" aria-expanded="false">Router Reflectors
+                        <a href="javascript: void(0);" aria-expanded="false">Route Reflectors
                             <span class="menu-arrow"></span>
                         </a>
                         <ul class="nav-third-level nav" aria-expanded="false">
+                            @foreach ($clients as $index => $buscaRrs)
+                                @if ($index == request()->query()['client_id'])
+                                    @foreach ($buscaRrs['rr'] as $buscaIndex => $buscaRr )
+                                        @if($buscaIndex != null)
+                                            <li>
+                                                <a href="{{ route("proxy-template.index",array('client_id' =>
+                                                request()->query()['client_id'], 'rr_id' =>$buscaIndex))}}"> {{$buscaRr['hostname']}} </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
                             <li>
-                                <a href="{{ route("asset_manage.pr_summary") }}">PR sumary</a>
+                                <a href="{{ route("asset_manage.pr_summary", array('client_id' =>request()->query()['client_id'])) }}">PR sumary</a>
                             </li>
                         </ul>
                     </li>
@@ -41,16 +52,23 @@
                             <span class="menu-arrow"></span>
                         </a>
                         <ul class="nav-third-level nav" aria-expanded="false">
+                            @foreach ($clients as $index => $proxys)
+                                @if ($index == request()->query()['client_id'])
+                                    @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
+                                        <li>
+                                            <a href="{{ route("proxy-localhost.index",array('client_id' =>
+                                            request()->query()['client_id'], 'proxy_id' =>$proxyIndex))}}"> {{$proxy['hostname']}} </a>
+                                        </li>
+                                    @endforeach
+                                @endif
+                            @endforeach
                             <li>
-                                <a href="{{ route("proxy-localhost.index") }}">Localhost</a>
+                                <a href="{{ route("proxy-summary.index", array('client_id' =>request()->query()['client_id'])) }}">Proxy Summary</a>
                             </li>
-                            <li>
-                                <a href="{{ route("proxy-summary.index") }}">Proxy Summary</a>
-                            </li>
-                        </ul>
+                        </ul
                     </li>
                     <li>
-                        <a href="{{ route("mpls_pe.index") }}">MPLS PE's and P's </a>
+                        <a href="{{ route("mpls_pe.index", request()->query())}}">MPLS PE's and P's </a>
                     </li>
                 </ul>
             </li>
@@ -201,7 +219,7 @@
                     <span> Client </span>
                     <span class="menu-arrow"></span>
                 </a>
-                @foreach($clients as $key => $client) 
+                @foreach($clients as $key => $client)
                     <ul class="nav-second-level" aria-expanded="false">
                         <li >
                             <a href="{{ route('dashboard',array( "client_id" => $key )) }}">{{$client['nome']}}</a>

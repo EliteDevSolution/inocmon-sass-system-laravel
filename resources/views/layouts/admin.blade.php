@@ -93,5 +93,6 @@
         <!-- App js-->
         <script src="{{ asset('admin_assets/js/app.min.js') }}"></script>
         @yield('scripts')
+        @stack('js')
     </body>
 </html>

@@ -7,15 +7,35 @@ use Illuminate\Http\Request;
 
 class CommunityBGPController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
         $users = \App\User::all();
-        return view('admin.dashboard.community', compact('users'));
+        $layout = true;
+        $clientId = $req->query()['client_id'];
+        $data = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $community = $data['bgp']['community0'];
+        $transito = $data['bgp']['interconexoes']['transito'];
+        $ix = $data['bgp']['interconexoes']['ix'];
+        $equipmento = $data['equipamentos'];
+        $toSendData = [
+            "community" => $community,
+            "transito" => $transito,
+            "ix" => $ix,
+            "client_id" => $clientId,
+            "equipment" => $equipmento
+        ];
+        $clients = $this->database->getReference('clientes')->getValue();
+        return view('admin.dashboard.community', compact('layout', 'toSendData' ,'clients'));
     }
 
     /**

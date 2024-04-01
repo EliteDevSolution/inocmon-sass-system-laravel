@@ -74,7 +74,7 @@
                                 <tbody>
                                     <tr>
                                         <th>EXPORT-GLOBAL</th>
-                                        <th>1234:999</th>
+                                        <th>{{$toSendData["community"]}}:999</th>
                                     </tr>
                                     <tr>
                                         <th>NO-EXPORT-GLOBAL</th>
@@ -98,27 +98,27 @@
                                 <tbody>
                                     <tr>
                                         <th>NO-EXPORT-ALL-TRANSIT</th>
-                                        <th>1234:911</th>
+                                        <th>{{$toSendData["community"]}}:911</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-PADRAO-TRANSIT</th>
-                                        <th>1234-911</th>
+                                        <th>{{$toSendData["community"]}}-911</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-2X-PADRAO-TRANSIT</th>
-                                        <th>1234-912</th>
+                                        <th>{{$toSendData["community"]}}-912</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-3X-PADRAO-TRANSIT</th>
-                                        <th>1234-913</th>
+                                        <th>{{$toSendData["community"]}}-913</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-4X-PADRAO-TRANSIT</th>
-                                        <th>1234-914</th>
+                                        <th>{{$toSendData["community"]}}-914</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-5X-PADRAO-TRANSIT</th>
-                                        <th>1234-915</th>
+                                        <th>{{$toSendData["community"]}}-915</th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -138,27 +138,27 @@
                                 <tbody>
                                 <tr>
                                     <th>NO-EXPORT-ALL-IX</th>
-                                    <th>1234:911</th>
+                                    <th>{{$toSendData["community"]}}:911</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-PADRAO-IX</th>
-                                    <th>1234-920</th>
+                                    <th>{{$toSendData["community"]}}-920</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-2X-PADRAO-IX</th>
-                                    <th>1234-921</th>
+                                    <th>{{$toSendData["community"]}}-921</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-3X-PADRAO-IX</th>
-                                    <th>1234-922</th>
+                                    <th>{{$toSendData["community"]}}-922</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-4X-PADRAO-IX</th>
-                                    <th>1234-923</th>
+                                    <th>{{$toSendData["community"]}}-923</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-5X-PADRAO-IX</th>
-                                    <th>1234-924</th>
+                                    <th>{{$toSendData["community"]}}-924</th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -178,27 +178,27 @@
                                 <tbody>
                                 <tr>
                                     <th>NO-EXPORT-ALL-PEERING</th>
-                                    <th>1234:930</th>
+                                    <th>{{$toSendData["community"]}}:930</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-PADRAO-PEERING</th>
-                                    <th>1234-931</th>
+                                    <th>{{$toSendData["community"]}}-931</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-2X-PADRAO-PEERING</th>
-                                    <th>1234-932</th>
+                                    <th>{{$toSendData["community"]}}-932</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-3X-PADRAO-PEERING</th>
-                                    <th>1234-933</th>
+                                    <th>{{$toSendData["community"]}}-933</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-4X-PADRAO-PEERING</th>
-                                    <th>1234-934</th>
+                                    <th>{{$toSendData["community"]}}-934</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-5X-PADRAO-PEERING</th>
-                                    <th>1234-935</th>
+                                    <th>{{$toSendData["community"]}}-935</th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -218,27 +218,27 @@
                                 <tbody>
                                 <tr>
                                     <th>NO-EXPORT-ALL-CDN</th>
-                                    <th>1234:940</th>
+                                    <th>{{$toSendData["community"]}}:940</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-PADRAO-CDN</th>
-                                    <th>1234-941</th>
+                                    <th>{{$toSendData["community"]}}-941</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-2X-PREPEND-ALL-CDN</th>
-                                    <th>1234-942</th>
+                                    <th>{{$toSendData["community"]}}-942</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-3X-PREPEND-ALL-CDN</th>
-                                    <th>1234-943</th>
+                                    <th>{{$toSendData["community"]}}-943</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-4X-PREPEND-ALL-CDN</th>
-                                    <th>1234-944</th>
+                                    <th>{{$toSendData["community"]}}-944</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-5X-PREPEND-ALL-CDN</th>
-                                    <th>1234-945</th>
+                                    <th>{{$toSendData["community"]}}-945</th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -256,30 +256,61 @@
 
                     <table id="datatable" class="table nowrap">
                         <thead>
-                        <tr>
-                            <th width=40>
-                                ID
-                            </th>
-                            <th>
-                                Hostname
-                            </th>
-                            <th>
-                                RouterID
-                            </th>
-                            <th>
-                                Vendor
-                            </th>
-                            <th>
-                                Family
-                            </th>
-                            <th>
-                                &nbsp;Protocolo
-                            </th>
-                            <th>
-                                &nbsp;Porta
-                            </th>
-                        </tr>
+                            <tr>
+                                <th width=40>
+                                    ID
+                                </th>
+                                <th>
+                                    Hostname
+                                </th>
+                                <th>
+                                    RouterID
+                                </th>
+                                <th>
+                                    Vendor
+                                </th>
+                                <th>
+                                    Family
+                                </th>
+                                <th>
+                                    &nbsp;Protocolo
+                                </th>
+                                <th>
+                                    &nbsp;Porta
+                                </th>
+                            </tr>
                         </thead>
+                        <tbody>
+                            @foreach ( $toSendData['transito'] as $index => $value)
+                                <tr>
+                                    <td>{{$value['provedor']}}</td>
+                                    <td>{{$value['remoteas']}}</td>
+                                    <td>{{$value['pop']}}</td>
+                                    <td>
+                                        <a href="gerenciar-config-pe.php?clienteid={{$toSendData['client_id']}}
+                                        &equipid={{$value['peid']}}">
+                                            {{$toSendData['equipment'][$value['peid']]['hostname']}}
+                                    </td>
+                                    <td>
+                                        {{$index}}
+                                    </td>
+                                    <td>
+                                        <P class="m-b-0 m-t-15">
+                                            <details>
+                                                <summary>
+                                                    Comminities
+                                                </summary>
+                                                @foreach ($value['communities'] as $y => $z )
+                                                    <i class="fas fa-caret-down m-r-10 f-18 text-c-red">
+                                                        {{substr($y, 0 , 10).':'.$z}}
+                                                    </i>
+                                                @endforeach
+                                            </details>
+                                        </P>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -317,6 +348,42 @@
                             </th>
                         </tr>
                         </thead>
+                        <tbody>
+                                @foreach ($toSendData['ix'] as $index => $value )
+                                <tr>
+
+                                    <td>
+                                        {{$value['sigla']}}
+                                    </td>
+                                    <td>
+                                        {{$value['remoteas']}}
+                                    </td>
+                                    <td>
+                                        {{$value['pop']}}
+                                    </td>
+                                    <td>
+                                        <a href="gerenciar-config-pe.php?clienteid={{$toSendData['client_id']}}&equipid={{$value['peid']}}">{{$toSendData['equipment'][$value['peid']]['hostname']}} </a>
+                                    </td>
+                                    <td>
+                                        {{$index}}
+                                    </td>
+                                    <td>
+                                        <P class="m-b-0 m-t-15">
+                                            <details>
+                                                <summary>
+                                                    Comminities
+                                                </summary>
+                                                @foreach ($value['communities'] as $y => $z )
+                                                    <i class="fas fa-caret-down m-r-10 f-18 text-c-red">
+                                                        {{substr($y, 0 , 10).':'.$z}}
+                                                    </i>
+                                                @endforeach
+                                            </details>
+                                        </P>
+                                    </td>
+                                </tr>
+                                @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>

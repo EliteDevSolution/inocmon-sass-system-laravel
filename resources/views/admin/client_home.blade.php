@@ -27,8 +27,8 @@
                 <div class="card">
                     <div class="card-body">
                         <a class="btn btn-success mb-3" href="{{ route("client.create") }}">
-                        Novo Cliente
-                    </a>
+                            Novo Cliente
+                        </a>
                         <table id="datatable" class="table nowrap">
                             <thead>
                             <tr>
@@ -70,7 +70,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>    
+                        </table>
                     </div>
                 </div>
             </div>

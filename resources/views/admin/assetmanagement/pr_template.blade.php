@@ -21,7 +21,7 @@
                 <div class="card">
                     <div class="card-body">
                         <p class="header-title mb-4 text-success  mt-0">Console</p>
-                        <p class="ml-2 text-danger font-12">{{$toSendData['console_data']}}</p>
+                        <p class="ml-2 text-danger font-12">{{$toSendData['consoleData']}}</p>
                     </div>
                 </div>
             </div>
@@ -29,14 +29,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="header-title mb-4 text-success  mt-0">Gerenciar</h4>
+                        <h4 class="header-title mb-4 text-success  mt-0">Gerenciar {{$toSendData['hostName']}}</h4>
                         <div class="col-6">
                             <h5 class="header-title mb-2 text-blue mt-0">Dados do equip</h5>
-                            <p class="mb-0">Equip Id: {{$toSendData['proxy_id']}}</p>
-                            <p class="mb-0">Hostname: {{$toSendData['hostname']}}</p>
-                            <p class="mb-0">RouterId: {{$toSendData['platform']}}</p>
-                            <p class="mb-0">Plataforma: {{$toSendData['system']}}</p>
-                            <p class="mb-0">Sistema Operacional : {{$toSendData['system']}}</p>
+                            <p class="mb-0">Equip Id: {{$toSendData['rrId']}}</p>
+                            <p class="mb-0">hostName: {{$toSendData['hostName']}}</p>
+                            <p class="mb-0">RouterId: {{$toSendData['routerId']}}</p>
+                            <p class="mb-0">Template Vendor: {{$toSendData['templateVendor']}}</p>
+                            <p class="mb-0">Template Family : {{$toSendData['templateFamily']}}</p>
                         </div>
                     </div>
                 </div>
@@ -47,12 +47,17 @@
 
                     <ul class="nav nav-tabs nav-bordered">
                         <li class="nav-item">
-                            <a href="#configuration" data-toggle="tab" aria-expanded="false" class="nav-link">
+                            <a href="#configuration" data-toggle="tab" aria-expanded="true " class="nav-link active">
                                 Gonfiguracao Base
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#relator" data-toggle="tab" aria-expanded="true" class="nav-link active">
+                            <a href="#bgp" data-toggle="tab" aria-expanded="false" class="nav-link">
+                                BGP com os routers PE
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#relator" data-toggle="tab" aria-expanded="false" class="nav-link">
                                 Relators
                             </a>
                         </li>
@@ -68,19 +73,18 @@
                                         <h4 class="header-title mb-2">
                                             A configuração candidata pode ser revisada no botão abaixo:
                                         </h4>
-
                                         <!-- sample modal content -->
                                         <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h4 class="modal-title">PR Hostname : {{$toSendData['hostname']}}</h4>
+                                                        <h4 class="modal-title">PR hostName : {{$toSendData['hostName']}}</h4>
                                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                     </div>
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Config global</p>
-                                                            <p>{!! $toSendData['configBase'] !!}</p>
+                                                            <p>{!! $toSendData['configBaseRr'] !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -99,14 +103,18 @@
                                         <table class="table nowrap mb-0">
                                             <thead>
                                             <tr>
-                                                <th>Configuração base</th>
+                                                <th>Sonda remota</th>
                                                 <th>
-                                                    <button onclick="applyBaseConfig()" class="btn btn-info waves-effect waves-light">aplicar config base</button>
+                                                    <select name="sondaRemote" class="form-control" data-toggle="select2" >
+                                                        @foreach ($toSendData['buscaSondas'] as $index => $value)
+                                                            <option value="{{$index}}">{{$value['hostname']}}</option>
+                                                        @endforeach
+                                                </select>
                                                 </th>
                                             </tr>
                                             <tr>
-                                                <th>Atualizar inoc-config</th>
-                                                <th><button onclick="updateIncoConfig()" class="btn btn-info waves-effect waves-light">autalizar inoc-config</button></th>
+                                                <th>Aplicar</th>
+                                                <th><button onclick="" class="btn btn-info waves-effect waves-light">aplicar config base</button></th>
                                             </tr>
                                             </thead>
                                         </table>
@@ -114,14 +122,45 @@
                                 </div> <!-- end card-box-->
                             </div>
                         </div>
-                        <div class="tab-pane show active" id="relator">
-                                <h4 class="header-title mb-2"> Registro das últimas configurações aplicadas em :{{$toSendData['hostname']}}
+                        <div class="tab-pane show active" id="bgp">
+                                <h4 class="header-title mb-2">
+                                    Selecione para quais PE's a configuração para nova sessão BGP deve ser aplicada
                                 </h4>
-                            <div class="card-box col-6">
-                                {{-- there is no data I could not work it anymore --}}
+                            <div class="card-box col-10">
+                                <table class="table nowrap mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="button" onclick='selectAll()' value="Select All"/>
+                                                <input type="button" onclick='deSelectAll()' value="Deselect All"/>
+                                                <label for="sonda">Proxy:</label>
+                                                <select name="sondaid" id="sondaid" required >
+                                                    @foreach ($toSendData['buscaSondas'] as $index => $y)
+                                                        <option value="{{$index}}">{{$y['hostname']}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="button" onclick="applyConfigPes()" name="aplicar config pes" value="Aplicar confg BGP com PEs" />
+                                            </td>
+                                        </tr>
+                                        @foreach ($toSendData['buscaEquipamentos'] as $equipIndex => $equipVal)
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" class="pe" id="pe" name="{{$equipIndex}}" value="{{$equipIndex}}">
+                                                    <label for="base"> {{$equipVal['hostname']}}</label><br>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
+                        <div class="tab-pane show active" id="relator">
+                                <h4 class="header-title mb-2"> Registro das últimas configurações aplicadas em :{{$toSendData['hostName']}}
+                                </h4>
+                            <div class="card-box col-6">
+                                RELATORS
+                            </div>
+                        </div>
                     </div>
                 </div> <!-- end card-box-->
             </div> <!-- end col -->
@@ -133,25 +172,42 @@
 @push("js")
 <script>
     let applyBaseConfig = () => {
+        var sondaId = $("#sonda").val();
         $.ajax({
             type: "POST",
-            url: 'proxy-localhost/applyconfig', // Not sure what to add as URL here
+            url: 'proxy-template/applyconfig', // Not sure what to add as URL here
             data: {
-                proxyId : "{{$toSendData['proxy_id']}}",
+                rrId : "{{$toSendData['rrId']}}",
                 clientId : "{{ $clientId }}",
+                sondaId : sondaId,
                 _token : '{{ csrf_token() }}'
             }
         }).done(function( msg ) {
             console.log( msg );
         });
     }
-    let updateIncoConfig = () => {
+    function selectAll(){
+        var ele=document.getElementsByClassName('pe');
+        for(var i=0; i<ele.length; i++){
+            if(ele[i].type=='checkbox')
+                ele[i].checked=true;
+        }
+    }
+    function deSelectAll(){
+        var ele=document.getElementsByClassName('pe');
+        for(var i=0; i<ele.length; i++){
+            if(ele[i].type=='checkbox')
+                ele[i].checked=false;
+        }
+    }
+    function applyConfigPes() {
         $.ajax({
             type: "POST",
-            url: 'proxy-localhost/update-inco-config', // Not sure what to add as URL here
+            url: 'proxy-template/applyconfigPes', // Not sure what to add as URL here
             data: {
-                proxyId : "{{$toSendData['proxy_id']}}",
+                rrId : "{{$toSendData['rrId']}}",
                 clientId : "{{ $clientId }}",
+                sondaId : sondaId,
                 _token : '{{ csrf_token() }}'
             }
         }).done(function( msg ) {

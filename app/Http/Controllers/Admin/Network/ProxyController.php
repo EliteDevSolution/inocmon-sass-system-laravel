@@ -15,9 +15,9 @@ class ProxyController extends Controller
     public function index()
     {
         $users = \App\User::all();
-        return view('admin.network.proxy', compact('users'));
+        $clients = $this->database->getReference('clientes')->getValue();
+        return view('admin.network.proxy', compact('clients'));
     }
-
     /**
      * Show the form for creating a new resource.
      *

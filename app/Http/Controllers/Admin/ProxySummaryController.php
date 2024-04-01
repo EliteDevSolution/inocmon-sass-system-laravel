@@ -12,10 +12,20 @@ class ProxySummaryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
+
+    public function index(Request $req)
     {
         $users = \App\User::all();
-        return view('admin.assetmanagement.proxy_summary', compact('users'));
+        $layout = true;
+        $clientId = $req->query()['client_id'];
+        $clients = $this->database->getReference('clientes')->getValue();
+        $buscarSondas = $clients[$clientId]['sondas'];
+        return view('admin.assetmanagement.proxy_summary', compact('layout', 'clients','buscarSondas', 'clientId'));
     }
 
     /**
@@ -68,9 +78,25 @@ class ProxySummaryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $toSaveData = [
+            'hostname' =>$request['hostVal'],
+            'ipv4' => $request['routerVal'],
+            'portahttp' => $request['portaSshVal'],
+            'portassh' => $request['portaVal'],
+            'pwd' => $request['pwdVal'],
+            'user' => $request['userVal']
+        ];
+
+        $proxyId = $request['proxyId'];
+        $clientId = $request['clientId'];
+
+        $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId)->set($toSaveData);
+
+        return response()->json([
+            'status' => 'ok'
+        ]);
     }
 
     /**

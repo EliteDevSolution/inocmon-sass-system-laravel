@@ -7,15 +7,31 @@ use Illuminate\Http\Request;
 
 class MplsController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $users = \App\User::all();
-        return view('admin.assetmanagement.mpls_pe', compact('users'));
+        $layout = true;
+        $clientId = $req->query()['client_id'];
+
+
+        $equipments = $this->database->getReference('clientes/' . $clientId . '/equipamentos')->getSnapshot()->getValue();
+        // $buscaBgpTransito = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/interconexoes/transito')->getSnapshot();
+        // $buscaBgpIx = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/interconexoes/ix')->getSnapshot();
+        // $buscaBgpClientes = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/interconexoes/clientesbgp')->getSnapshot();
+	    // $nomeCliente = $database->getReference('clientes/' . $_GET["clienteid"] . '/nome')->getSnapshot()->getValue();
+        // $SenhaInocmon = $database->getReference('clientes/' . $_GET["clienteid"] . '/seguranca/senhainocmon')->getSnapshot()->getValue();
+        // $asn = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/asn')->getSnapshot()->getValue();
+        // $community0  = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/community0')->getSnapshot()->getValue();
+        return view('admin.assetmanagement.mpls_pe', compact('layout', 'equipments'));
     }
 
     /**

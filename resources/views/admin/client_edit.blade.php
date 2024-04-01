@@ -28,7 +28,7 @@
         <div class="col-12">
             <div class="card-box p-1">
                 <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Client id : {{$key}}</label>
-                <div class="card-body">                    
+                <div class="card-body">
                     <form action="{{ route("client.update", $key) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')

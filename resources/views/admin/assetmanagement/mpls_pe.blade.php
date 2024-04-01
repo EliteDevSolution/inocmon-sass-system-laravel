@@ -70,6 +70,19 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($equipments as $index => $value)
+                                <tr>
+                                    <td>{{$index}}</td>
+                                    <td>{{$value['hostname']}}</td>
+                                    <td>{{$value['routerid']}}</td>
+                                    <td>{{$value['template-vendor']}}</td>
+                                    <td>{{$value['template-family']}}</td>
+                                    <td>{{$value['protocolo']}}</td>
+                                    <td>{{$value['user']}}</td>
+                                    <td>{{$value['senha']}}</td>
+
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

@@ -11,7 +11,7 @@ class ClientController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     * 
+     *
      */
 
     public function __construct()
@@ -19,11 +19,11 @@ class ClientController extends Controller
         $this->middleware('auth');
         $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
     }
- 
+
     public function index()
     {
         $user = \App\User::all();
-        $clients = $this->database->getReference('clientes')->getValue();   
+        $clients = $this->database->getReference('clientes')->getValue();
         return view('admin.client_home', compact('clients'));
     }
 
@@ -47,13 +47,13 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {
         $status = "";
 
 	    try {
             $key = $this->database->getReference('clientes')->push()->getKey();
             $message = 'a proxima chave será: '.$key;
-          
+
             $data = [
                 'bgp' => [
                     'asn' => $request->all()['asn'],
@@ -79,9 +79,9 @@ class ClientController extends Controller
             $this->database->getReference('clientes/' . $key)->set($data);
 
             $status = "success";
-        
+
         } catch(Exception  $err) {
-            $status = $err;    
+            $status = $err;
         }
         return view('admin.client_add' ,compact('status'));
     }
@@ -101,10 +101,10 @@ class ClientController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response    
+     * @return \Illuminate\Http\Response
      */
     public function edit($key)
-    {   
+    {
         $user = \App\User::all();
 	    $path = 'clientes/'.$key;
         $client = $this->database->getReference($path)->getValue();
@@ -122,10 +122,10 @@ class ClientController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $key)
-    {   
+    {
         try {
             $message = 'a proxima chave será: '.$key;
-            
+
             $data = [
                 'bgp' => [
                     'asn' => $request->all()['asn'],
@@ -151,12 +151,12 @@ class ClientController extends Controller
             $this->database->getReference('clientes/' . $key)->set($data);
 
             $status = "success";
-        
+
         } catch(Exception  $err) {
-            $status = $err;    
+            $status = $err;
         }
 
-        $clients = $this->database->getReference('clientes')->getValue();   
+        $clients = $this->database->getReference('clientes')->getValue();
         $layout = false;
         return view('admin.client_home' ,compact('status', 'clients', 'layout'));
     }

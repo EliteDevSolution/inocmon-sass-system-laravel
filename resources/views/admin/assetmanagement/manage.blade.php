@@ -22,6 +22,7 @@
                         </ol>
                     </div>
                     <h4 class="page-title">PR sumary</h4>
+        			<span class="">Lets say you want to sort the fourth column (3) descending and the first column (0) ascending: your order: would look like this: order: [[ 3, 'desc' ], [ 0, 'asc' ]]</span>
                 </div>
             </div>
         </div>
@@ -29,34 +30,50 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card mt-1">
                 <div class="card-body">
                     <table id="datatable" class="table nowrap">
                         <thead>
                             <tr>
-                                <th width=50>
-                                    PROVERDOR
-                                </th>
-                                <th>
-                                    ASN
-                                </th>
-                                <th>
-                                    POP
-                                </th>
-                                <th>
-                                    POP
-                                </th>
-                                <th>
-                                    PE
-                                </th>
-                                <th>
-                                    &nbsp;ID
-                                </th>
-                                <th>
-                                    &nbsp;COMMUNITIES
-                                </th>
+                                <th>Id</th>
+                                <th>HostName</th>
+                                <th>RouterId</th>
+                                <th>Vendor</th>
+                                <th>Family</th>
+                                <th>Protocolo</th>
+                                <th>User</th>
+                                <th>Senha</th>
+                                <th>Gerencia</th>
+                                <th>Editar</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            @foreach ($buscarRr as $index => $value)
+                                @if ($value != null)
+                                    <tr>
+                                        <td>{{$index}}</td>
+                                        <td>{{$value['hostname']}}</td>
+                                        <td>{{$value['routerid']}}</td>
+                                        <td>{{$value['template-vendor']}}</td>
+                                        <td>{{$value['template-family']}}</td>
+                                        <td>{{$value['protocolo']}}</td>
+                                        <td>{{$value['porta']}}</td>
+                                        <td>{{$value['user']}}</td>
+                                        <td>
+                                            <a href={{ route("proxy-localhost.index",array('client_id' =>
+                                        request()->query()['client_id'], 'proxy_id' => $index ) ) }}>gerenciar config</a>
+                                        </td>
+                                        <td>
+                                            <a href="gerenciar-config-rr.php?clienteid={{$clientId}}.'&rrid='{{$index}}.'">editar</a>
+                                        </td>
+                                        <td>
+                                            <a href="gerenciar-config-rr.php?clienteid={{$clientId}}.'&rrid='{{$index}}.'">delete</a>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>

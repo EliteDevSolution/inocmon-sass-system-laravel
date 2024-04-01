@@ -28,18 +28,34 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('client', 'Admin\ClientController');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
+    Route::put('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');
+
 //    Route::get('manage', 'Admin\DashboardController@viewManage')->name('manage');
 
     Route::resource('communities-bgp', 'Admin\CommunityBGPController')->names([
         'index' => 'communities-bgp.index',
     ]);
 
+    Route::post('proxy-localhost/applyconfig', 'Admin\LocalhostController@applyBaseConfig');
+    Route::post('proxy-localhost/update-inco-config', 'Admin\LocalhostController@updataIncoConfig');
+
+
+
+
     Route::resource('proxy-localhost', 'Admin\LocalhostController')->names([
         'index' => 'proxy-localhost.index',
     ]);
     Route::resource('proxy-summary', 'Admin\ProxySummaryController')->names([
         'index' => 'proxy-summary.index',
+        'update' => 'proxy-summary.update'
     ]);
+
+    Route::resource('proxy-template', 'Admin\PRTemplateController');
+    Route::post('proxy-template/applyconfig', 'Admin\PRTemplateController@applyBaseConfig');
+    Route::post('proxy-template/applyconfigPes', 'Admin\PRTemplateController@applyConfigPes');
+
+
+
 
     Route::resource('mpls_pe', 'Admin\MplsController')->names([
         'index' => 'mpls_pe.index',
