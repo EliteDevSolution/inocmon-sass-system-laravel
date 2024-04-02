@@ -41,8 +41,8 @@ class LocalhostController extends Controller
 
             $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
             $proxyIp4 = $detailClientData['sondas'][$req['proxyId']]['ipv4'];
-            // $platform = $detailClientData['sondas'][$req['proxyId']]['plataforma'];
-            // $so = $detailClientData['sondas'][$req['proxyId']]['so'];
+            $platform = $detailClientData['sondas'][$req['proxyId']]['plataforma'];
+            $so = $detailClientData['sondas'][$req['proxyId']]['so'];
             $community0 = $detailClientData['bgp']['community0'];
             $asn = $detailClientData['bgp']['asn'];
             // $buscarRelators = $detailClientData['sondas'][$req['proxyId']]['relatorios'];
@@ -128,9 +128,11 @@ class LocalhostController extends Controller
             // $this->database->getReference($debugDir)->set('Configuração concluída!');
             // sleep(5);
             // $this->database->getReference($debugDir)->set('idle');
+            $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
 
             return response()->json([
-                'status' => 'ok'
+                'status' => 'ok',
+                'console_data' => $consoleData
             ]);
         }
     }
@@ -171,8 +173,10 @@ class LocalhostController extends Controller
         // } else {
             /*gerenciar-config*/
         // }
+        $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
         return response()->json([
-            'status' => 'ok'
+            'status' => 'ok',
+            'console_data' => $consoleData
         ]);
     }
 
@@ -197,8 +201,8 @@ class LocalhostController extends Controller
         $hostName = $detailClientData['sondas'][$proxyId]['hostname'];
         $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
         $proxyIp4 = $detailClientData['sondas'][$proxyId]['ipv4'];
-        // $platform = $detailClientData['sondas'][$proxyId]['plataforma'];
-        // $so = $detailClientData['sondas'][$proxyId]['so'];
+        $platform = $detailClientData['sondas'][$proxyId]['plataforma'];
+        $so = $detailClientData['sondas'][$proxyId]['so'];
         $community0 = $detailClientData['bgp']['community0'];
         $asn = $detailClientData['bgp']['asn'];
         // $buscarRelators = $detailClientData['sondas'][$proxyId]['relatorios'];
@@ -226,7 +230,7 @@ class LocalhostController extends Controller
             'proxy_id' => $proxyId,
             'hostname' => $hostName,
             'proxyip4' => $proxyIp4,
-            'platform' => '',
+            'platform' => $platform,
             'system' => '',
             'configBase' => $configBaseSalva
         ];

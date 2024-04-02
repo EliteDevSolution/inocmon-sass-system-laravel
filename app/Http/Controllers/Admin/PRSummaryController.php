@@ -31,4 +31,9 @@ class PRSummaryController extends Controller
         if($buscarRr == null ) $buscarRr = [];
         return view('admin.assetmanagement.manage', compact('users', 'layout','clientId', 'buscarRr', 'clients'));
     }
+
+    public function update(Request $request) {
+        dd($request);exit;
+        return;
+    }
 }

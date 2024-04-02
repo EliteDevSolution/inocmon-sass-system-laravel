@@ -65,7 +65,7 @@
                             <li>
                                 <a href="{{ route("proxy-summary.index", array('client_id' =>request()->query()['client_id'])) }}">Proxy Summary</a>
                             </li>
-                        </ul
+                        </ul>
                     </li>
                     <li>
                         <a href="{{ route("mpls_pe.index", request()->query())}}">MPLS PE's and P's </a>

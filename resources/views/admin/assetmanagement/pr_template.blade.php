@@ -145,7 +145,7 @@
                                         @foreach ($toSendData['buscaEquipamentos'] as $equipIndex => $equipVal)
                                             <tr>
                                                 <td>
-                                                    <input type="checkbox" class="pe" id="pe" name="{{$equipIndex}}" value="{{$equipIndex}}">
+                                                    <input type="checkbox" class="pe" id="pe" name="equip" value="{{$equipIndex}}">
                                                     <label for="base"> {{$equipVal['hostname']}}</label><br>
                                                 </td>
                                             </tr>
@@ -157,8 +157,41 @@
                         <div class="tab-pane show active" id="relator">
                                 <h4 class="header-title mb-2"> Registro das últimas configurações aplicadas em :{{$toSendData['hostName']}}
                                 </h4>
-                            <div class="card-box col-6">
-                                RELATORS
+                            <div class="card-box col-9">
+                                @if (true)
+                                    <div class="button-list">
+                                        <ul>
+                                            @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
+                                                <li>
+                                                    <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#modal{{$relatorIndex}}">{{$relatorIndex}}</button>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                     @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
+                                        <div id="modal{{$relatorIndex}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Host : {{$toSendData['hostName']}}</h4>
+                                                        <h4 class="modal-title">Token : {{$toSendData['configToken']}}</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                    </div>
+                                                    <div class="modal-body p-3">
+                                                        <div class="col">
+                                                            <p class="header-title mb-2">Relatório de configuração:</p>
+                                                            <p>{{$relatorVal}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-info waves-effect waves-light">Fetchar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.modal -->
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -201,18 +234,30 @@
         }
     }
     function applyConfigPes() {
-        $.ajax({
+        var sondaId = $("#sondaid").val();
+        var checkedEquipArray =[];
+        $('input:checkbox[name=equip]').each(function()
+        {
+        if($(this).is(':checked'))
+            checkedEquipArray.push($(this).val());
+        });
+
+        if(checkedEquipArray!=null) {
+            $.ajax({
             type: "POST",
             url: 'proxy-template/applyconfigPes', // Not sure what to add as URL here
             data: {
                 rrId : "{{$toSendData['rrId']}}",
                 clientId : "{{ $clientId }}",
                 sondaId : sondaId,
+                checkedEquipArray : checkedEquipArray,
                 _token : '{{ csrf_token() }}'
             }
-        }).done(function( msg ) {
-            console.log( msg );
-        });
+            }).done(function( msg ) {
+                console.log( msg );
+            });
+        }
+
     }
 </script>
 @endpush

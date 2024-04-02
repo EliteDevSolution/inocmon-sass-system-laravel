@@ -21,7 +21,7 @@
                 <div class="card">
                     <div class="card-body">
                         <p class="header-title mb-4 text-success  mt-0">Console</p>
-                        <p class="ml-2 text-danger font-12">{{$toSendData['console_data']}}</p>
+                        <p class="ml-2 text-danger font-12" id="console_data">{{$toSendData['console_data']}}</p>
                     </div>
                 </div>
             </div>
@@ -34,8 +34,8 @@
                             <h5 class="header-title mb-2 text-blue mt-0">Dados do equip</h5>
                             <p class="mb-0">Equip Id: {{$toSendData['proxy_id']}}</p>
                             <p class="mb-0">Hostname: {{$toSendData['hostname']}}</p>
-                            <p class="mb-0">RouterId: {{$toSendData['platform']}}</p>
-                            <p class="mb-0">Plataforma: {{$toSendData['system']}}</p>
+                            <p class="mb-0">RouterId: {{$toSendData['proxyip4']}}</p>
+                            <p class="mb-0">Plataforma: {{$toSendData['platform']}}</p>
                             <p class="mb-0">Sistema Operacional : {{$toSendData['system']}}</p>
                         </div>
                     </div>
@@ -142,7 +142,10 @@
                 _token : '{{ csrf_token() }}'
             }
         }).done(function( msg ) {
-            console.log( msg );
+            if(msg['status'] == 'ok') {
+                console.log( msg );
+                document.getElementById('console_data').innerHTML = msg['console_data'];
+            }
         });
     }
     let updateIncoConfig = () => {
@@ -155,7 +158,10 @@
                 _token : '{{ csrf_token() }}'
             }
         }).done(function( msg ) {
-            console.log( msg );
+            if(msg['status'] == 'ok') {
+                console.log( msg );
+                document.getElementById('console_data').innerHTML = msg['console_data'];
+            }
         });
     }
 </script>

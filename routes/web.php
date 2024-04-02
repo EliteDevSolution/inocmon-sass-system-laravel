@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('proxy-template/applyconfig', 'Admin\PRTemplateController@applyBaseConfig');
     Route::post('proxy-template/applyconfigPes', 'Admin\PRTemplateController@applyConfigPes');
 
+    Route::post('pr-summary/update', 'Admin\PRSummaryController@update')->name('pr-summary.update');
 
 
 

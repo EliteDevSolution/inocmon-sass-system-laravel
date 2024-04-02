@@ -23,8 +23,9 @@ class ClientController extends Controller
     public function index()
     {
         $user = \App\User::all();
+        $layout = false;
         $clients = $this->database->getReference('clientes')->getValue();
-        return view('admin.client_home', compact('clients'));
+        return view('admin.client_home', compact('clients', 'layout'));
     }
 
     /**
@@ -37,7 +38,7 @@ class ClientController extends Controller
         $user = \App\User::all();
         $clients = $this->database->getReference('clientes')->getValue();
         $layout = false;
-        return view('admin.client_add', compact('layout'));
+        return view('admin.client_add', compact('clients', 'layout'));
     }
 
     /**
@@ -83,7 +84,9 @@ class ClientController extends Controller
         } catch(Exception  $err) {
             $status = $err;
         }
-        return view('admin.client_add' ,compact('status'));
+        $layout = false;
+        $clients = $this->database->getReference('clientes')->getValue();
+        return redirect()->route("client.create");
     }
 
     /**
@@ -108,8 +111,9 @@ class ClientController extends Controller
         $user = \App\User::all();
 	    $path = 'clientes/'.$key;
         $client = $this->database->getReference($path)->getValue();
+        $clients = $this->database->getReference('clientes')->getValue();
         $layout = false;
-        return view('admin.client_edit' ,compact('client', 'key', 'layout'));
+        return view('admin.client_edit' ,compact('client', 'clients', 'key', 'layout'));
 
         // return redirect()->route('dashboard', ['key' => 'key']);
     }
