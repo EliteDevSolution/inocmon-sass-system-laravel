@@ -35,8 +35,8 @@
                                 <th> Id</th>
                                 <th> Nomes</th>
                                 <th> Status</th>
-                                <th>gerenciar</th>
-                                <th>edit</th>
+                                <th> Gerenciar</th>
+                                <th> Edit</th>
                             </tr>
                             </thead>
                             <tbody>

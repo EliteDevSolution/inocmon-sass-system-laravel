@@ -13,36 +13,47 @@
                 <h4 class="page-title">MPLS Detail</h4>
             </div>
         </div>
+
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <p class="header-title mb-2 text-success  mt-0">Console</p>
-                    <p class="ml-2 text-danger font-12" id="console_data">{{$toSendData['debug']}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="header-title mb-4 text-success  mt-0">Gerenciar</h4>
-                    <div class="col-6">
-                        <h5 class="header-title mb-2 text-blue mt-0">Dados do equip</h5>
-                        <p class="mb-0">Equip Id: {{$toSendData['equipId']}}</p>
-                        <p class="mb-0">Hostname: {{$toSendData['hostName']}}</p>
-                        <p class="mb-0">RouterId: {{$toSendData['routerId']}}</p>
+                <div class="card-header bg-blue py-3 text-white">
+                    <div class="card-widgets">
+                        <a data-toggle="collapse" href="#console" role="button" aria-expanded="false" aria-controls="cardCollpase2"><i class="mdi mdi-minus"></i></a>
                     </div>
+                    <h5 class="card-title mb-0 text-white">Console</h5>
+                </div>
+                <div id="console" class="card-body collapse show">
+                    <p class="text-danger mb-0 font-12">{{$toSendData['debug']}}</p>
                 </div>
             </div>
         </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-blue py-3 text-white">
+                    <div class="card-widgets">
+                        <a data-toggle="collapse" href="#gerenciar" role="button" aria-expanded="false" aria-controls="cardCollpase2"><i class="mdi mdi-minus"></i></a>
+                    </div>
+                    <h5 class="card-title mb-0 text-white">Gerenciar {{$toSendData['hostName']}}</h5>
+                </div>
+                <div id="gerenciar" class="card-body collapse show">
+                    <h5 class="header-title mb-2 text-blue mt-0">Dados do PE</h5>
+                    <p class="mb-0">Equip Id: {{$toSendData['equipId']}}</p>
+                    <p class="mb-0">Hostname: {{$toSendData['hostName']}}</p>
+                    <p class="mb-0">RouterId: {{$toSendData['routerId']}}</p>
+                </div>
+            </div>
+        </div>
+    
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <table class = "table nowrap">
                         <thead>
                             <tr>
-                                <td style="width:80%;text-algin:center" class="text-success">
-                                    <div>
-                                        <h3 class="text-success">Proxy : </h3>
+                                <td style="width:80%; text-algin:center" class="text-success">
+                                    <div class="d-flex">
+                                        <h4 class="text-success">Proxy: &nbsp</h4>
                                         <select class="form-control" id="sondaId" name="sondaId"  data-toggle="select2">
                                             @foreach ($toSendData['buscaSondas'] as $sondaIndex => $sondaVal)
                                                 <option value="{{$sondaIndex}}">{{$sondaVal['hostname']}}</option>
@@ -56,24 +67,20 @@
                             @foreach ($toSendData['buscaConfigs'] as $indexConfig => $configVal)
                                 <tr>
                                     <td>
-                                        <div class="row">
-                                            <div class="col-xl-12">
-                                                <div id="accordion">
-                                                    <div class="card mb-1">
-                                                        <div class="card-header" id="headingOne{{$indexConfig}}">
-                                                            <h5 class="m-0">
-                                                                <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexConfig}}" aria-expanded="true">
-                                                                    <i class="mdi mdi-help-circle mr-1 text-primary"></i>
-                                                                    Mostrar/ocultar config {{$indexConfig}}
-                                                                </a>
-                                                            </h5>
-                                                        </div>
+                                        <div id="accordion">
+                                            <div class="card mb-1">
+                                                <div class="card-header" id="headingOne{{$indexConfig}}">
+                                                    <h5 class="m-0">
+                                                        <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexConfig}}" aria-expanded="true">
+                                                            <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                            Mostrar/ocultar config {{$indexConfig}}
+                                                        </a>
+                                                    </h5>
+                                                </div>
 
-                                                        <div id="collapseOne{{$indexConfig}}" class="collapse hide" aria-labelledby="headingOne{{$indexConfig}}" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                {!! nl2br($configVal) !!}
-                                                            </div>
-                                                        </div>
+                                                <div id="collapseOne{{$indexConfig}}" class="collapse hide" aria-labelledby="headingOne{{$indexConfig}}" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        {!! nl2br($configVal) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -86,7 +93,9 @@
                                 </tr>
                             @endforeach
                             <tr>
-                                <td><h3 class="text-success">Route reflectors</h3></td>
+                                <td>
+                                    <h4 class="text-success">Route reflectors</h4>
+                                </td>
                             </tr>
                             @foreach ($toSendData['buscaRr'] as $indexRr => $rrVal)
                                 <tr>
@@ -150,7 +159,7 @@
                                 <div class="modal-body p-3">
                                     <div class="col">
                                         <p class="header-title mb-2">Config global</p>
-                                        <p>{!! $toSendData['configGlobal'] !!}</p>
+                                        <p>{!! nl2br($toSendData['configGlobal']) !!}</p>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

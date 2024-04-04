@@ -20,8 +20,7 @@
 
         </style>
     </head>
-    <body>
-
+    <body>        
         <!-- Begin page -->
         <div id="wrapper">
 

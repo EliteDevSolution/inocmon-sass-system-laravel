@@ -29,17 +29,6 @@ class DashboardController extends Controller
         /*Beafore go in dashboard check id*/
     }
 
-    public function formatBytes($bytes, $precision = 2){
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $bytes = max($bytes, 0);
-        $pow = intdiv(log($bytes, 1024), 1);
-        $pow = min($pow, count($units) - 1);
-        $bytes /= 1024 ** $pow;
-        return round($bytes, $precision) . ' ' . $units[$pow];
-    }
-
-
-
     /**
      * Show the application dashboard.
      *
@@ -94,19 +83,16 @@ class DashboardController extends Controller
 
         $layout = true;
 
-        return redirect('dashboard?client_id='.$clientId);
+        return redirect()->route("dashboard", array( "client_id" => $clientId ));
     }
 
     public function index(Request $request)
     {
-        $layout = true;
-        $users = \App\User::all();
-        $clients = $this->database->getReference('clientes')->getValue();
-        if(count($request->query()) > 0) {
-            $key = $request->query();
-            $path = 'clientes/'.$key['client_id'];/*clientId*/
-            $client = $this->database->getReference($path)->getValue();
+        if(isset($request->query()['client_id'])) {
+            $clientId = $request->query()['client_id'];
+            $path = 'clientes/'.$clientId;
 
+            $client = $this->database->getReference($path)->getValue();
 
             $bgpInterConectors = $this->database->getReference($path)->getSnapshot()->GetValue()['bgp']['interconexoes'];
             $buscaBgpTransito = $bgpInterConectors['transito'];
@@ -155,13 +141,14 @@ class DashboardController extends Controller
             $clienteDatabase  = $client;
 
             $UsoBancoDeDados = mb_strlen(json_encode($clienteDatabase, JSON_NUMERIC_CHECK), '8bit');
-            $databaseInuse = $this->formatBytes($UsoBancoDeDados);
+            $databaseInuse = formatBytes($UsoBancoDeDados);
             // if( $client['license'] ) {
             //     $license = $client['license'];
             // }
             // else {
             //     $license = 'starter';
             // }
+
             $license = 'starter';
             $fraquiaBanco = $this->database->getReference('lib/license/'.$license.'/databasesize')->getSnapshot()->getValue();
             if($fraquiaBanco != 0) {
@@ -190,7 +177,7 @@ class DashboardController extends Controller
                 Storage::disk('local')->put('\configuracoes\example.txt', 'Contents');
                 // Storage::download('configuracoes\example.txt');
                 // $filePath = '\storage\configuracoes\aaa';
-                // $fileName = $getOspfLsdbVendor.'-'.$key['client_id'];
+                // $fileName = $getOspfLsdbVendor.'-'.$clientId;
                 // Storage::put($filePath, $getOspfLsdbData);
                 // response()->download((public_path().$filePath), 'aaa', array('Content-Type' => ''));
             }
@@ -207,9 +194,8 @@ class DashboardController extends Controller
                 'rr' => $buscaRr
             ];
 
-            return view('admin.dashboard.index', compact('users', 'layout', 'dashboardData', 'key', 'clients'));
-        }
-        else {
+            return view('admin.dashboard.index', compact('dashboardData', 'clientId'));
+        } else {
             return redirect()->to('client');
         }
     }

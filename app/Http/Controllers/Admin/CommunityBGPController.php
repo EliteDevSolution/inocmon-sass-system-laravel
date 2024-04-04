@@ -19,8 +19,6 @@ class CommunityBGPController extends Controller
      */
     public function index(Request $req)
     {
-        $users = \App\User::all();
-        $layout = true;
         $clientId = $req->query()['client_id'];
         $data = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $community = $data['bgp']['community0'];
@@ -34,8 +32,8 @@ class CommunityBGPController extends Controller
             "client_id" => $clientId,
             "equipment" => $equipmento
         ];
-        $clients = $this->database->getReference('clientes')->getValue();
-        return view('admin.dashboard.community', compact('layout', 'toSendData' ,'clients'));
+
+        return view('admin.dashboard.community', compact('toSendData'));
     }
 
     /**

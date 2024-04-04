@@ -59,6 +59,20 @@
             <i class="fe-menu"></i>
         </button>
     </li>
+
+    @if(isset(request()->query()['client_id']))
+        @php
+        $clientId = request()->query()['client_id'];
+            $clientIdQueryParam = array("client_id" => $clientId);
+            $client = getClient($clientId);
+        @endphp
+
+        <li class="dropdown d-none d-lg-block" style="font-size: 14px">
+            <a class="nav-link dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                {{ $client['nome'] }} | ASN: {{ $client['bgp']['asn'] }}
+            </a>
+        </li>
+    @endif
 </ul>
 
 <script>

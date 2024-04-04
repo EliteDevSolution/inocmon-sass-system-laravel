@@ -25,7 +25,7 @@ class MplsDetailController extends Controller
         $buscaConfigIds = $req['buscaConfigIds'];
         $buscaRrIds = $req['buscaRrIds'];
         $sondaId = $req['sondaId'];
-        $clients = $this->database->getReference('clientes')->getValue();
+
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         $debugDir = 'clientes/'.$clientId.'/equipamentos/'.$equipId.'/debug';
         $debugFile = 'DEBUG-'.$clientId;
@@ -175,11 +175,9 @@ class MplsDetailController extends Controller
      */
     public function index(Request $req)
     {
-        $layout = true;
         $clientId = $req->query()['client_id'];
         $equipId = $req->query()['equip_id'];
 
-        $clients = $this->database->getReference('clientes')->getValue();
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         $debug = $detailClientData['equipamentos'][$equipId]['debug'];
         $hostName = $detailClientData['equipamentos'][$equipId]['hostname'];
@@ -223,6 +221,7 @@ class MplsDetailController extends Controller
             $buscaConfigs[$indexConfig] = $config;
             $configGlobal .= $config;
         }
+
         $rrTemplateData = $this->database->getReference('lib/templates/rr')->getSnapshot()->getValue();
         foreach ($buscaRr as $buscaRrIds => $rrVal) {
             if($buscaRrIds != 0) {
@@ -238,6 +237,7 @@ class MplsDetailController extends Controller
             }
             $buscaRr[$buscaRrIds] = $config;
         }
+
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
         $toSendData = [
@@ -252,7 +252,7 @@ class MplsDetailController extends Controller
             'configToken' => $configToken,
             'configGlobal' => $configGlobal,
         ];
-        return view('admin.assetmanagement.mpls_detail', compact('layout','clientId', 'clients', 'toSendData'));
+        return view('admin.assetmanagement.mpls_detail', compact('clientId', 'toSendData'));
     }
 
     /**

@@ -135,9 +135,11 @@ class PRTemplateController extends Controller
 	    $getTemplate = $this->database->getReference($dir)->getSnapshot()->getValue();
         $equipIds = $req['checkedEquipArray'];
         $asn = $detailClientData['bgp']['asn'];
+    
         if($equipIds != null){
             $this->database->getReference($debugDir)->set('preparando config BGP com'.$equipIds[count($equipIds)-1]);
         }
+    
         $configRrFinal = "";
         for ($i = 0; $i < count($equipIds); $i++) {
             $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'];
@@ -230,8 +232,6 @@ class PRTemplateController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $rrId = $req->query()['rr_id'];
-        $layout = true;
-        $clients = $this->database->getReference('clientes')->getValue();
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
 
         $debug = $detailClientData['rr'][$rrId]['debug'];
@@ -264,7 +264,7 @@ class PRTemplateController extends Controller
             'configToken' => $configToken
         ];
 
-        return view('admin.assetmanagement.pr_template', compact('layout','clientId', 'clients', 'toSendData'));
+        return view('admin.assetmanagement.pr_template', compact('clientId', 'toSendData'));
     }
 
     /**

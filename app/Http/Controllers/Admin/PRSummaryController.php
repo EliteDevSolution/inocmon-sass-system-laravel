@@ -22,14 +22,11 @@ class PRSummaryController extends Controller
 
     public function index(Request $request)
     {
-        $users = \App\User::all();
-        $layout = true;
         $clientId =  $request->query()['client_id'];
-        $clients = $this->database->getReference('clientes')->getValue();
 
         $buscarRr = $this->database->getReference('clientes/' . $clientId . '/rr')->getSnapshot()->getValue();
         if($buscarRr == null ) $buscarRr = [];
-        return view('admin.assetmanagement.manage', compact('users', 'layout','clientId', 'buscarRr', 'clients'));
+        return view('admin.assetmanagement.manage', compact('clientId', 'buscarRr'));
     }
 
     public function update(Request $request) {

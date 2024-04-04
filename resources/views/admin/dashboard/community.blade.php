@@ -26,19 +26,23 @@
             </div>
         </div>
 
-        <div>
-            <div class="col-xl-12">
-                <div class="card-box">
-                    <h4 class="header-title mb-4 text-success  mt-0">COMMUNITIES DE EFEITO GLOBAL</h4>
-
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-blue py-3 text-white">
+                    <div class="card-widgets">
+                        <a data-toggle="collapse" href="#communities" role="button" aria-expanded="false" aria-controls="cardCollpase2"><i class="mdi mdi-minus"></i></a>
+                    </div>
+                    <h5 class="card-title mb-0 text-white">COMMUNITIES DE EFEITO GLOBAL</h5>
+                </div>
+                <div id="communities" class="collapse show">
                     <ul class="nav nav-tabs nav-bordered">
                         <li class="nav-item">
-                            <a href="#global" data-toggle="tab" aria-expanded="false" class="nav-link">
+                            <a href="#global" data-toggle="tab" aria-expanded="false" class="nav-link active">
                               GLOBAL
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#transtors" data-toggle="tab" aria-expanded="true" class="nav-link active">
+                            <a href="#transtors" data-toggle="tab" aria-expanded="true" class="nav-link">
                                 TRANSITOS
                             </a>
                         </li>
@@ -59,7 +63,7 @@
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane" id="global">
+                        <div class="tab-pane show active" id="global">
                             <table id="datatable" class="table nowrap">
                                 <thead>
                                     <tr>
@@ -78,12 +82,12 @@
                                     </tr>
                                     <tr>
                                         <th>NO-EXPORT-GLOBAL</th>
-                                        <th>(no-export))</th>
+                                        <th>(no-export)</th>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane show active" id="transtors">
+                        <div class="tab-pane" id="transtors">
                             <table id="datatable" class="table nowrap">
                                 <thead>
                                     <tr>
@@ -244,39 +248,39 @@
                             </table>
                         </div>
                     </div>
-                </div> <!-- end card-box-->
-            </div> <!-- end col -->
+                </div>
+            </div>
         </div>
 
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-
-                    <h4 class="header-title mb-4 text-success  mt-0">TRANSITOS</h4>
-
+                <div class="card-header bg-blue py-3 text-white">
+                    <div class="card-widgets">
+                        <a data-toggle="collapse" href="#transitos" role="button" aria-expanded="false" aria-controls="cardCollpase2"><i class="mdi mdi-minus"></i></a>
+                    </div>
+                    <h5 class="card-title mb-0 text-white">TRANSITOS</h5>
+                </div>
+                <div id="transitos" class="collapse show">
                     <table id="datatable" class="table nowrap">
                         <thead>
                             <tr>
-                                <th width=40>
+                                <th width="10%">
+                                    IX
+                                </th>
+                                <th width="10%">
+                                    ASN
+                                </th>
+                                <th width="20%">
+                                    POP
+                                </th>
+                                <th width="20%">
+                                    PE
+                                </th>
+                                <th width="20%">
                                     ID
                                 </th>
-                                <th>
-                                    Hostname
-                                </th>
-                                <th>
-                                    RouterID
-                                </th>
-                                <th>
-                                    Vendor
-                                </th>
-                                <th>
-                                    Family
-                                </th>
-                                <th>
-                                    &nbsp;Protocolo
-                                </th>
-                                <th>
-                                    &nbsp;Porta
+                                <th width="20%">
+                                    COMMUNITIES
                                 </th>
                             </tr>
                         </thead>
@@ -287,26 +291,24 @@
                                     <td>{{$value['remoteas']}}</td>
                                     <td>{{$value['pop']}}</td>
                                     <td>
-                                        <a href="gerenciar-config-pe.php?clienteid={{$toSendData['client_id']}}
-                                        &equipid={{$value['peid']}}">
+                                        <a href="{{ route('mpls-detail.index', array('client_id' => $toSendData['client_id'], 'equip_id' => $value['peid'] ) ) }}">
                                             {{$toSendData['equipment'][$value['peid']]['hostname']}}
+                                        </a>
                                     </td>
                                     <td>
                                         {{$index}}
                                     </td>
                                     <td>
-                                        <P class="m-b-0 m-t-15">
-                                            <details>
-                                                <summary>
-                                                    Comminities
-                                                </summary>
-                                                @foreach ($value['communities'] as $y => $z )
-                                                    <i class="fas fa-caret-down m-r-10 f-18 text-c-red">
-                                                        {{substr($y, 0 , 10).':'.$z}}
-                                                    </i>
-                                                @endforeach
-                                            </details>
-                                        </P>
+                                        <details>
+                                            <summary>
+                                                Comminities
+                                            </summary>
+                                            @foreach ($value['communities'] as $y => $z )
+                                                <i class="fas fa-caret-down m-r-10 f-18 text-c-red"></i>
+                                                {{substr($y, 0 , 10).':'.$z}}
+                                                <p></p>
+                                            @endforeach
+                                        </details>
                                     </td>
                                 </tr>
                             @endforeach
@@ -318,40 +320,39 @@
 
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-
-                    <h4 class="header-title mb-4 text-success  mt-0">IX</h4>
-
+                <div class="card-header bg-blue py-3 text-white">
+                    <div class="card-widgets">
+                        <a data-toggle="collapse" href="#ixtab" role="button" aria-expanded="false" aria-controls="cardCollpase2"><i class="mdi mdi-minus"></i></a>
+                    </div>
+                    <h5 class="card-title mb-0 text-white">IX</h5>
+                </div>
+                <div id="ixtab" class="collapse show">
                     <table id="datatable" class="table nowrap">
                         <thead>
-                        <tr>
-                            <th width=40>
-                                IX
-                            </th>
-                            <th>
-                                ASN
-                            </th>
-                            <th>
-                                POP
-                            </th>
-                            <th>
-                                PE
-                            </th>
-                            <th>
-                                Family
-                            </th>
-                            <th>
-                                &nbsp;ID
-                            </th>
-                            <th>
-                                &nbsp;COMMUNITIES
-                            </th>
-                        </tr>
+                            <tr>
+                                <th width="10%">
+                                    IX
+                                </th>
+                                <th width="10%">
+                                    ASN
+                                </th>
+                                <th width="20%">
+                                    POP
+                                </th>
+                                <th width="20%">
+                                    PE
+                                </th>
+                                <th width="20%">
+                                    ID
+                                </th>
+                                <th width="20%">
+                                    COMMUNITIES
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
                                 @foreach ($toSendData['ix'] as $index => $value )
                                 <tr>
-
                                     <td>
                                         {{$value['sigla']}}
                                     </td>
@@ -362,24 +363,24 @@
                                         {{$value['pop']}}
                                     </td>
                                     <td>
-                                        <a href="gerenciar-config-pe.php?clienteid={{$toSendData['client_id']}}&equipid={{$value['peid']}}">{{$toSendData['equipment'][$value['peid']]['hostname']}} </a>
+                                        <a href="{{ route('mpls-detail.index', array('client_id' => $toSendData['client_id'], 'equip_id' => $value['peid'] ) ) }}">
+                                            {{$toSendData['equipment'][$value['peid']]['hostname']}}
+                                        </a>
                                     </td>
                                     <td>
                                         {{$index}}
                                     </td>
                                     <td>
-                                        <P class="m-b-0 m-t-15">
-                                            <details>
-                                                <summary>
-                                                    Comminities
-                                                </summary>
-                                                @foreach ($value['communities'] as $y => $z )
-                                                    <i class="fas fa-caret-down m-r-10 f-18 text-c-red">
-                                                        {{substr($y, 0 , 10).':'.$z}}
-                                                    </i>
-                                                @endforeach
-                                            </details>
-                                        </P>
+                                        <details>
+                                            <summary>
+                                                Comminities
+                                            </summary>
+                                            @foreach ($value['communities'] as $y => $z )
+                                                <i class="fas fa-caret-down m-r-10 f-18 text-c-red"></i>
+                                                {{substr($y, 0 , 10).':'.$z}}
+                                                <p></p>
+                                            @endforeach
+                                        </details>
                                     </td>
                                 </tr>
                                 @endforeach

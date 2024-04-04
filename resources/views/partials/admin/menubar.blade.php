@@ -1,8 +1,16 @@
 <div id="sidebar-menu" style="background-color: #38414a">
-    @if(request()->route()->getName() != "client.index" && $layout)
+    @php
+        if(!isset($clients)) {
+            $clients = getClient();
+        }
+    @endphp
+
+    @if(isset(request()->query()['client_id']))
         @php
-            $clientIdQueryParam = array("client_id" => request()->query()['client_id']);
+            $clientId = request()->query()['client_id'];
+            $clientIdQueryParam = array("client_id" => $clientId);
         @endphp
+        
         <ul class="metismenu" id="side-menu">
             <li class="menu-title">Navigation</li>
             <li>
@@ -223,7 +231,7 @@
                 @foreach($clients as $key => $client)
                     <ul class="nav-second-level" aria-expanded="false">
                         <li >
-                            <a href="{{ route('dashboard', array("client_id" => $key)) }}">{{$client['nome']}}</a>
+                            <a href="{{ route('dashboard', array('client_id' => $key)) }}">{{$client['nome']}}</a>
                         </li>
                     </ul>
                 @endforeach

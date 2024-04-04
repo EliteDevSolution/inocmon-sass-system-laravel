@@ -19,10 +19,8 @@ class MplsController extends Controller
      */
     public function index(Request $req)
     {
-        $layout = true;
         $clientId = $req->query()['client_id'];
 
-        $clients = $this->database->getReference('clientes')->getValue();
         $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         $buscaEquipment = $clientDetailData['equipamentos'];
         $buscaBgpTransito = $clientDetailData['bgp']['interconexoes']['transito'];
@@ -37,7 +35,7 @@ class MplsController extends Controller
             'equipments' => $buscaEquipment
         ];
 
-        return view('admin.assetmanagement.mpls_pe', compact('layout', 'toSendData', 'clients','clientId'));
+        return view('admin.assetmanagement.mpls_pe', compact('toSendData', 'clientId'));
     }
 
     /**
@@ -47,10 +45,9 @@ class MplsController extends Controller
      */
     public function create(Request $request)
     {
-        $clients = $this->database->getReference('clientes')->getValue();
-        $layout = true;
         $clientId = $request->query()['client_id'];
-        return view('admin.assetmanagement.mpls_create', compact('clients', 'layout', 'clientId'));
+
+        return view('admin.assetmanagement.mpls_create', compact('clientId'));
     }
 
     /**
@@ -84,9 +81,11 @@ class MplsController extends Controller
             $status = "success";
 
         } catch(Exception  $err) {
-            dd("sfdd");exit;
-            $status = $err;
+            return response()->json([
+                'status' => $err,
+            ]);
         }
+
         return response()->json([
             'status' => 'ok',
         ]);

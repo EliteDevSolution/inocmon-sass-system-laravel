@@ -190,12 +190,9 @@ class LocalhostController extends Controller
      */
     public function index(Request $req)
     {
-        $users = \App\User::all();
-        $layout = true;
         $clientId = $req->query()['client_id'];
         $proxyId = $req->query()['proxy_id'];
 
-        $clients = $this->database->getReference('clientes')->getValue();
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
 
         $hostName = $detailClientData['sondas'][$proxyId]['hostname'];
@@ -235,7 +232,7 @@ class LocalhostController extends Controller
             'configBase' => $configBaseSalva
         ];
 
-        return view('admin.assetmanagement.localhost', compact('layout','clientId', 'clients', 'toSendData'));
+        return view('admin.assetmanagement.localhost', compact('clientId', 'toSendData'));
     }
 
     /**
