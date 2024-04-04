@@ -4,18 +4,41 @@ namespace App\Http\Controllers\Admin\Upstreams;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use phpseclib\Net\SSH2;
+use phpseclib\Crypt\RSA;
+use phpseclib\Net\SCP;
 
 class TrafficController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index(Request $req)
     {
-        $users = \App\User::all();
-        return view('admin.upstreams.traffic.index', compact('users'));
+        $layout = true;
+        $clientId = $req->query()['client_id'];
+        $clients = $this->database->getReference('clientes')->getValue();
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+
+        $buscaEquipamentos = $detailClientData['equipamentos'];
+
+        $mensagem = '';
+        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['transito'];
+        $toSendData = [
+            'buscaBgp' => $buscaBgpConexoes,
+            'buscaEquip' => $buscaEquipamentos
+        ];
+
+        return view('admin.upstreams.traffic.index', compact('layout','clientId', 'clients', 'toSendData'));
     }
 
     /**
@@ -23,9 +46,15 @@ class TrafficController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $req)
     {
-        return view('admin.upstreams.traffic.create');
+        $layout = true;
+        $clientId = $req->query()['client_id'];
+        $clients = $this->database->getReference('clientes')->getValue();
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $buscaEquipamentos= $detailClientData['equipamentos'];
+        $cdns = $detailClientData['bgp']['interconexoes']['transito'];
+        return view('admin.upstreams.traffic.create', compact('layout','clientId','clients', 'buscaEquipamentos','cdns'));
 
     }
 
@@ -37,7 +66,47 @@ class TrafficController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $clientId = $request['clientId'];
+        $tipoConexao = "cdn";
+        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
+        $lastId = 0;
+        foreach ($buscaBgpConexoes as $index => $value) {
+            $lastId = $index;
+        }
+        $nextId = $lastId + 1;
+        if($nextId < 10) {
+            $nextId = '0'.$nextId;
+        }
+        $nomeDoGrupo = strtoupper($tipoConexao).'-'.$nextId.'-'.$request['nomeVal'].'-'.$request['popVal'];
+        $communityGroup = 1;
+        $community0 = $this->database->getReference('clientes/'.$clientId.'/bgp/community0')->getSnapshot()->GetValue();
+
+        $novoBgp = [
+            'provedor'  => strtoupper($request['nomeVal']),
+            'pop'    => strtoupper($request['popVal']),
+            'remoteas'    => $request['asnVal'],
+            'ipv4-01'    => $request['bgp1Val'],
+            'ipv4-02'   => $request['bgp2Val'],
+            'ipv6-01'    => $request['bgp01Val'],
+            'ipv6-02'   => $request['bgp02Val'],
+            'peid'   => $request['equipVal'],
+            'denycustomerin'   => $request['checkVal'],
+            'nomedogrupo' => $nomeDoGrupo,
+            'communities' => [
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$nextId.'6'
+			]
+        ];
+	    $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao.'/'.$nextId)->set($novoBgp);
+
+        return response()->json([
+                    'status' => 'ok',
+                ]);
     }
 
     /**
@@ -71,7 +140,32 @@ class TrafficController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $toSaveData = [
+            'remoteas' => $request['asnVal'],
+            'pop' => $request['popVal']
+        ];
+
+        $transitoId = $request['trafficId'];
+        $clientId = $request['clientId'];
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $buscaEquipamentos = $detailClientData['equipamentos'];
+        $buscaEquipamentos = $detailClientData['equipamentos'];
+        $equipPeidPath = $detailClientData['bgp']['interconexoes']['transito'][$transitoId]['peid'];
+        $toSaveAnotherData = [
+            'hostname' => $request['peVal']
+        ];
+
+        try {
+            $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/transito/'.$transitoId.'/')->update($toSaveData);
+            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
+            return response()->json([
+                'status' => 'ok'
+            ]);
+        } catch (Throwable $th) {
+            return response()->json([
+                'status' => 'failed'
+            ]);
+        }
     }
 
     /**

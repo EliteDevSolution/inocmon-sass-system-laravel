@@ -84,7 +84,7 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li>
-                        <a href="{{ route('upstreams.index') }}">Traffic</a>
+                        <a href="{{ route('upstreams.index', $clientIdQueryParam) }}">Traffic</a>
                     </li>
                     <li>
                         <a href="{{ route('upstreams-ix.index') }}">IX</a>

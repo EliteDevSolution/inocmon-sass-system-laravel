@@ -1,0 +1,208 @@
+@extends('layouts.admin')
+@section('content')
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="/">iNOCmon</a></li>
+                        <li class="breadcrumb-item active">Gerencia de activos</li>
+                        <li class="breadcrumb-item active">MPLS Detail</li>
+                    </ol>
+                </div>
+                <h4 class="page-title">MPLS Detail</h4>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <p class="header-title mb-2 text-success  mt-0">Console</p>
+                    <p class="ml-2 text-danger font-12" id="console_data">{{$toSendData['debug']}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-4 text-success  mt-0">Gerenciar</h4>
+                    <div class="col-6">
+                        <h5 class="header-title mb-2 text-blue mt-0">Dados do equip</h5>
+                        <p class="mb-0">Equip Id: {{$toSendData['equipId']}}</p>
+                        <p class="mb-0">Hostname: {{$toSendData['hostName']}}</p>
+                        <p class="mb-0">RouterId: {{$toSendData['routerId']}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class = "table nowrap">
+                        <thead>
+                            <tr>
+                                <td style="width:80%;text-algin:center" class="text-success">
+                                    <div>
+                                        <h3 class="text-success">Proxy : </h3>
+                                        <select class="form-control" id="sondaId" name="sondaId"  data-toggle="select2">
+                                            @foreach ($toSendData['buscaSondas'] as $sondaIndex => $sondaVal)
+                                                <option value="{{$sondaIndex}}">{{$sondaVal['hostname']}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($toSendData['buscaConfigs'] as $indexConfig => $configVal)
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-xl-12">
+                                                <div id="accordion">
+                                                    <div class="card mb-1">
+                                                        <div class="card-header" id="headingOne{{$indexConfig}}">
+                                                            <h5 class="m-0">
+                                                                <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexConfig}}" aria-expanded="true">
+                                                                    <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                                    Mostrar/ocultar config {{$indexConfig}}
+                                                                </a>
+                                                            </h5>
+                                                        </div>
+
+                                                        <div id="collapseOne{{$indexConfig}}" class="collapse hide" aria-labelledby="headingOne{{$indexConfig}}" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                {!! nl2br($configVal) !!}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align : center">
+                                        <input class="mt-1" type="checkbox" id="" name="buscaConfig" value="{{$indexConfig}}">
+                                        <label for="base"> selecionar config</label>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td><h3 class="text-success">Route reflectors</h3></td>
+                            </tr>
+                            @foreach ($toSendData['buscaRr'] as $indexRr => $rrVal)
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-xl-12">
+                                                <div id="accordion">
+                                                    <div class="card mb-1">
+                                                        <div class="card-header" id="headingOne{{$indexRr}}">
+                                                            <h5 class="m-0">
+                                                                <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexRr}}" aria-expanded="true">
+                                                                    <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                                    Mostrar/ocultar config RR {{$indexRr}}
+                                                                </a>
+                                                            </h5>
+                                                        </div>
+
+                                                        <div id="collapseOne{{$indexRr}}" class="collapse hide" aria-labelledby="headingOne{{$indexRr}}" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                {!! nl2br($rrVal) !!}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align : center">
+                                        <input class="mt-1" type="checkbox" id="" name="buscaRr" value="{{$indexRr}}">
+                                        <label for="base"> selecionar RR </label>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td> <label for="id">Token: {{$toSendData['configToken']}}</label></td>
+                                <td><input class="form-control" type="text" name="configtoken" id="configtoken" /></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="button" onclick="applyConfig()" class="btn btn-primary" value="aplicar config">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-2">
+                        A configuração candidata pode ser revisada no botão abaixo:
+                    </h4>
+                    <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Hostname : {{$toSendData['hostName']}}</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                </div>
+                                <div class="modal-body p-3">
+                                    <div class="col">
+                                        <p class="header-title mb-2">Config global</p>
+                                        <p>{!! $toSendData['configGlobal'] !!}</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-info waves-effect waves-light">Fetchar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-list">
+                        <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Visual Config Base</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push("js")
+<script>
+
+    let applyConfig = () => {
+        var buscaConfigIds = [];
+        var buscaRrIds = [];
+        var sondaId = $("#sondaId").val();
+        $('input:checkbox[name=buscaRr]').each(function()
+        {
+            if($(this).is(':checked'))
+                buscaRrIds.push($(this).val());
+        });
+        $('input:checkbox[name=buscaConfig]').each(function()
+        {
+            if($(this).is(':checked'))
+                buscaConfigIds.push($(this).val());
+        });
+
+        console.log(buscaConfigIds, buscaRrIds);
+
+        $.ajax({
+            type: "POST",
+            url: "{{route('mpls-detail.applyConfig')}}", // Not sure what to add as URL here
+            data: {
+                equipId : "{{ $toSendData['equipId']}}",
+                buscaConfigIds : buscaConfigIds,
+                buscaRrIds : buscaRrIds,
+                sondaId : sondaId,
+                clientId : "{{ $clientId }}",
+                _token : '{{ csrf_token() }}'
+            }
+        }).done(function( msg ) {
+            console.log( msg['message'] );
+        });
+    }
+</script>
+@endpush

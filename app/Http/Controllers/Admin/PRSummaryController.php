@@ -33,7 +33,25 @@ class PRSummaryController extends Controller
     }
 
     public function update(Request $request) {
-        dd($request);exit;
-        return;
+
+        $toSaveData = [
+            'hostname' => $request['hostName'],
+            'routerid' => $request['routerId'],
+            'template-family' => $request['family'],
+            'template-vendor' => $request['vendor'],
+            'protocolo' => $request['protocol'],
+            'user' => $request['user'],
+            'pwd' => $request['pwd']
+        ];
+
+        $rrId = $request['rrId'];
+        $clientId = $request['clientId'];
+
+        $this->database->getReference('clientes/'.$clientId.'/rr/'.$rrId)->update($toSaveData);
+
+        return response()->json([
+            'status' => 'ok',
+            'toSaveData' => $toSaveData
+        ]);
     }
 }

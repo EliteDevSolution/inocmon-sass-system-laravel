@@ -205,7 +205,7 @@
 @push("js")
 <script>
     let applyBaseConfig = () => {
-        var sondaId = $("#sonda").val();
+        var sondaId = $("#sondaid").val();
         $.ajax({
             type: "POST",
             url: 'proxy-template/applyconfig', // Not sure what to add as URL here
@@ -236,10 +236,11 @@
     function applyConfigPes() {
         var sondaId = $("#sondaid").val();
         var checkedEquipArray =[];
+
         $('input:checkbox[name=equip]').each(function()
         {
-        if($(this).is(':checked'))
-            checkedEquipArray.push($(this).val());
+            if($(this).is(':checked'))
+                checkedEquipArray.push($(this).val());
         });
 
         if(checkedEquipArray!=null) {

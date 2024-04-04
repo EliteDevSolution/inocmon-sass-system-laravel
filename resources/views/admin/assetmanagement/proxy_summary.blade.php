@@ -7,6 +7,7 @@
             display:none;
         }
     </style>
+
     <link href="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
 
     <link href="{{ asset('admin_assets/libs/datatables/responsive.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
@@ -81,7 +82,7 @@
                         </thead>
                         <tbody>
                             @foreach ($buscarSondas as $index => $buscarSonda )
-                                <tr>
+                                <tr id="buscarSondaId{{$index}}">
                                     <td id='index'> {{$index}} </td>
                                     <td id='hostname'> {{$buscarSonda['hostname']}} </td>
                                     <td id='router'> {{$buscarSonda['ipv4']}} </td>
@@ -93,7 +94,7 @@
                                     <td id='pwd'> {{$buscarSonda['pwd']}} </td>
                                     <td> <a href="{{ route("proxy-localhost.index",array('client_id' =>
                                         request()->query()['client_id'], 'proxy_id' => $index ) ) }}">GERENCIAR CONFIG</a></td>
-                                    <td> <a onclick="showEdit()">Edit</a></td>
+                                    <td> <a onclick="showEdit('buscarSondaId{{$index}}')" class="getRow">Edit</a></td>
                                     <td> Delete </td>
                                 </tr>
                             @endforeach
@@ -183,34 +184,32 @@
         });
     </script>
     <script>
-        function showEdit() {
+
+        var row;
+
+        function showEdit(buscarSondaId) {
             var editPage = document.getElementById("edit");
             editPage.style.display ="block";
+            row = document.getElementById(buscarSondaId);
 
-            var hostname = $('#hostname').text();
-            var router = $('#router').text();
-            var pltaforma  = $('#pltaforma').text();
-            var so  = $('#so').text();
-            var portassh  = $('#portassh').text();
-            var portahttp  = $('#portahttp').text();
-            var user  = $('#user').text();
-            var pwd  = $('#pwd').text();
+            var hostName = row.querySelector('td:nth-child(2)').textContent;
+            var routerId = row.querySelector('td:nth-child(3)').textContent;
+            var plataforma = row.querySelector('td:nth-child(4)').textContent;
+            var so = row.querySelector('td:nth-child(5)').textContent;
+            var portassh = row.querySelector('td:nth-child(6)').textContent;
+            var portahttp = row.querySelector('td:nth-child(7)').textContent;
+            var user = row.querySelector('td:nth-child(8)').textContent;
+            var pwd = row.querySelector('td:nth-child(9)').textContent;
 
-            $('#hostVal').val(hostname);
-            $('#routerVal').val(router);
-            $('#plataFormaVal').val(pltaforma);
+            $('#hostVal').val(hostName);
+            $('#routerVal').val(routerId);
+            $('#plataFormaVal').val(plataforma);
             $('#soVal').val(so);
             $('#portaSshVal').val(portassh);
             $('#portaVal').val(portahttp);
             $('#useVal').val(user);
             $('#senhaVal').val(pwd);
-            // $('#hostname').html(hostVal);
-            // $('#pltaforma').html(routerVal);
-            // $('#so').html(plataFormaVal);
-            // $('#portassh').html(soVal);
-            // $('#portahttp').html(portaSshVal);
-            // $('#user').html(portaVal);
-            // $('#pwd').html(userVal);
+
         }
         let saveData = () => {
 
@@ -222,7 +221,8 @@
             var portaVal  = $('#portaVal').val();
             var userVal  = $('#useVal').val();
             var pwdVal  = $('#senhaVal').val();
-            var proxyId = $('#index').text();
+            var proxyId = row.querySelector('td:nth-child(1)').textContent;
+
             $.ajax({
                 type: "PUT",
                 url: '{{ route("proxy-summary.update", 1) }}',
@@ -241,14 +241,14 @@
                 }
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
-                   $('#hostname').html(hostVal);
-                   $('#router').html(routerVal);
-                   $('#pltaforma').html(plataFormaVal);
-                   $('#so').html(soVal);
-                   $('#portassh').html(portaSshVal);
-                   $('#portahttp').html(portaVal);
-                   $('#user').html(userVal);
-                   $('#pwd').html(pwdVal);
+                    row.querySelector('td:nth-child(2)').textContent = hostVal;
+                    row.querySelector('td:nth-child(3)').textContent = routerVal;
+                    row.querySelector('td:nth-child(4)').textContent = plataFormaVal;
+                    row.querySelector('td:nth-child(5)').textContent = soVal;
+                    row.querySelector('td:nth-child(6)').textContent = portaSshVal;
+                    row.querySelector('td:nth-child(7)').textContent = portaVal;
+                    row.querySelector('td:nth-child(8)').textContent = userVal;
+                    row.querySelector('td:nth-child(9)').textContent = pwdVal;
                 }
             });
         }

@@ -32,21 +32,11 @@
                         <table id="datatable" class="table nowrap">
                             <thead>
                             <tr>
-                                <th>
-                                    Id
-                                </th>
-                                <th>
-                                    Nomes
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    gerenciar
-                                </th>
-                                <th>
-                                    edit
-                                </th>
+                                <th> Id</th>
+                                <th> Nomes</th>
+                                <th> Status</th>
+                                <th>gerenciar</th>
+                                <th>edit</th>
                             </tr>
                             </thead>
                             <tbody>

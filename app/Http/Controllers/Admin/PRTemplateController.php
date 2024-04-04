@@ -135,8 +135,9 @@ class PRTemplateController extends Controller
 	    $getTemplate = $this->database->getReference($dir)->getSnapshot()->getValue();
         $equipIds = $req['checkedEquipArray'];
         $asn = $detailClientData['bgp']['asn'];
-
-        $this->database->getReference($debugDir)->set('preparando config BGP com'.$equipIds[count($equipIds)-1]);
+        if($equipIds != null){
+            $this->database->getReference($debugDir)->set('preparando config BGP com'.$equipIds[count($equipIds)-1]);
+        }
         $configRrFinal = "";
         for ($i = 0; $i < count($equipIds); $i++) {
             $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'];

@@ -5,6 +5,11 @@
     <link href="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('admin_assets/libs/datatables/responsive.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
     <!-- third party css end -->
+    <style>
+        #edit {
+            display:none;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -30,57 +35,41 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title text-success mt-0 mb-2">P's e PEs  <span class="badge badge-success ml-2">Adicionar Novo</span></h4>
+                    <h4 class="header-title text-success mt-0 mb-2">P's e PEs  <a href="{{ route('mpls_pe.create', array('client_id' =>$clientId)) }}" class="success ml-2" >Adicionar Novo</a></h4>
                     <table id="datatable" class="table nowrap">
                         <thead>
                             <tr>
-                                <th>
-                                    Id
-                                </th>
-                                <th>
-                                    Hostname
-                                </th>
-                                <th>
-                                    RouterId
-                                </th>
-                                <th>
-                                    Vendor
-                                </th>
-                                <th>
-                                    Family
-                                </th>
-                                <th>
-                                    &nbsp;Protocolo
-                                </th>
-                                <th>
-                                    &nbsp;User
-                                </th>
-                                <th>
-                                    Senha
-                                </th>
-                                <th>
-                                    &nbsp;Gerenciar
-                                </th>
-                                <th>
-                                    &nbsp;Editar
-                                </th>
-                                <th>
-                                    &nbsp;Delete
-                                </th>
+                                <th>Id</th>
+                                <th>Hostname</th>
+                                <th>RouterId</th>
+                                <th>Vendor</th>
+                                <th>Family</th>
+                                <th>Protocolo</th>
+                                <th>Porta</th>
+                                <th>User</th>
+                                <th>Senha</th>
+                                <th>Gerenciar</th>
+                                <th>Editar</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($equipments as $index => $value)
-                                <tr>
+                            @foreach ($toSendData['equipments'] as $index => $value)
+                                <tr id="equipId{{$index}}">
+
                                     <td>{{$index}}</td>
                                     <td>{{$value['hostname']}}</td>
                                     <td>{{$value['routerid']}}</td>
                                     <td>{{$value['template-vendor']}}</td>
                                     <td>{{$value['template-family']}}</td>
                                     <td>{{$value['protocolo']}}</td>
+                                    <td>{{$value['porta']}}</td>
                                     <td>{{$value['user']}}</td>
-                                    <td>{{$value['senha']}}</td>
-
+                                    <td>{{$value['pwd']}}</td>
+                                    <td> <a href="{{ route("mpls-detail.index", array('client_id' =>
+                                        request()->query()['client_id'], 'equip_id' => $index ) ) }}">GERENCIAR CONFIG</a></td>
+                                    <td> <a  onclick="showEdit('equipId{{$index}}')" class="getRow">Edit</a></td>
+                                    <td> Delete </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -89,8 +78,41 @@
             </div>
         </div>
     </div>
-
-
+    <div class="col-12" id="edit">
+            <div class="card-box p-1">
+                <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Edit</label>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="mb-1 font-weight-bold text-muted">HostName</label>
+                            <input type="text" id ="hostVal" name=""  required class="form-control mb-1" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">RouterId</label>
+                            <input type="text" id="routerVal"   class="form-control mb-1" required placeholder="Asn" style=" z-index: 2; background: transparent;"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="mb-1 font-weight-bold text-muted">Vendor</label>
+                            <input type="text"  id="vendorVal"  required class="form-control mb-1"  placeholder="Community" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Family</label>
+                            <input type="text"  id="familyVal" required  class="form-control mb-1"  placeholder="Ipv4 remoto bgp 01" required style=" z-index: 2; background: transparent;"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="mb-1 font-weight-bold text-muted">Protocolo</label>
+                            <input type="text" id="protocoloVal" required class="form-control mb-1"  placeholder="Userinocmon" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Porta</label>
+                            <input type="text" id="portaVal" required  class="form-control mb-1"  placeholder="inocmon" style=" z-index: 2; background: transparent;"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="mb-1 font-weight-bold text-muted">User</label>
+                            <input type="text" id="useVal" required class="form-control mb-1"  placeholder="Community SNMP:	" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Senha</label>
+                            <input type="text" id="senhaVal" required  class="form-control mb-1"  placeholder="Nome do group" style=" z-index: 2; background: transparent;"/>
+                        </div>
+                        <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
+                        <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
+                    </div>
+                </div> <!-- end row -->
+            </div>
+        </div>
 @endsection
 
 
@@ -134,4 +156,77 @@
         });
     </script>
 
+     <script>
+        var row;
+        function showEdit(buscarSondaId) {
+            var editPage = document.getElementById("edit");
+            editPage.style.display ="block";
+            row = document.getElementById(buscarSondaId);
+
+            var hostName = row.querySelector('td:nth-child(2)').textContent;
+            var routerId = row.querySelector('td:nth-child(3)').textContent;
+            var vendor = row.querySelector('td:nth-child(4)').textContent;
+            var family = row.querySelector('td:nth-child(5)').textContent;
+            var protocolo = row.querySelector('td:nth-child(6)').textContent;
+            var porta = row.querySelector('td:nth-child(7)').textContent;
+            var user = row.querySelector('td:nth-child(8)').textContent;
+            var pwd = row.querySelector('td:nth-child(9)').textContent;
+
+            $('#hostVal').val(hostName);
+            $('#routerVal').val(routerId);
+            $('#vendorVal').val(vendor);
+            $('#familyVal').val(family);
+            $('#protocoloVal').val(protocolo);
+            $('#portaVal').val(porta);
+            $('#useVal').val(user);
+            $('#senhaVal').val(pwd);
+
+        }
+
+        let saveData = () => {
+
+            var hostName = $('#hostVal').val();
+            var routerId = $('#routerVal').val();
+            var vendor = $('#vendorVal').val();
+            var family = $('#familyVal').val();
+            var protocolo = $('#protocoloVal').val();
+            var porta = $('#portaVal').val();
+            var user =$('#useVal').val();
+            var pwd = $('#senhaVal').val();
+            var equipId = row.querySelector('td:nth-child(1)').textContent;
+            $.ajax({
+                type: "PUT",
+                url: '{{ route("mpls_pe.update", 1) }}',
+                data: {
+                    hostName : hostName,
+                    routerId : routerId,
+                    vendor : vendor,
+                    family : family,
+                    protocolo : protocolo,
+                    porta : porta,
+                    user : user,
+                    pwd : pwd,
+                    equipId : equipId,
+                    clientId : '{{$clientId}}',
+                    _token : '{{ csrf_token() }}'
+                }
+            }).done(function( msg ) {
+                if(msg['status'] == 'ok') {
+                    console.log(msg);
+                    row.querySelector('td:nth-child(2)').textContent = hostName;
+                    row.querySelector('td:nth-child(3)').textContent = routerId;
+                    row.querySelector('td:nth-child(4)').textContent = vendor;
+                    row.querySelector('td:nth-child(5)').textContent = family;
+                    row.querySelector('td:nth-child(6)').textContent = protocolo;
+                    row.querySelector('td:nth-child(7)').textContent = porta;
+                    row.querySelector('td:nth-child(8)').textContent = user;
+                    row.querySelector('td:nth-child(9)').textContent = pwd;
+                }
+            });
+        }
+        let closeEdit = () => {
+            var editPage = document.getElementById("edit");
+            editPage.style.display ="none";
+        }
+    </script>
 @endsection

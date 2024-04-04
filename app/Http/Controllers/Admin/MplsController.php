@@ -22,16 +22,22 @@ class MplsController extends Controller
         $layout = true;
         $clientId = $req->query()['client_id'];
 
+        $clients = $this->database->getReference('clientes')->getValue();
+        $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
+        $buscaEquipment = $clientDetailData['equipamentos'];
+        $buscaBgpTransito = $clientDetailData['bgp']['interconexoes']['transito'];
+        $buscaBgpIx = $clientDetailData['bgp']['interconexoes']['ix'];
+        $buscaBgpClientes = $clientDetailData['bgp']['interconexoes']['clientesbgp'];
+        $nomeClient = $clientDetailData['nome'];
+        $senhaInocmon = $clientDetailData['seguranca']['senhainocmon'];
+        $asn = $clientDetailData['bgp']['asn'];
+        $community = $clientDetailData['bgp']['community0'];
 
-        $equipments = $this->database->getReference('clientes/' . $clientId . '/equipamentos')->getSnapshot()->getValue();
-        // $buscaBgpTransito = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/interconexoes/transito')->getSnapshot();
-        // $buscaBgpIx = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/interconexoes/ix')->getSnapshot();
-        // $buscaBgpClientes = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/interconexoes/clientesbgp')->getSnapshot();
-	    // $nomeCliente = $database->getReference('clientes/' . $_GET["clienteid"] . '/nome')->getSnapshot()->getValue();
-        // $SenhaInocmon = $database->getReference('clientes/' . $_GET["clienteid"] . '/seguranca/senhainocmon')->getSnapshot()->getValue();
-        // $asn = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/asn')->getSnapshot()->getValue();
-        // $community0  = $database->getReference('clientes/' . $_GET["clienteid"] . '/bgp/community0')->getSnapshot()->getValue();
-        return view('admin.assetmanagement.mpls_pe', compact('layout', 'equipments'));
+        $toSendData = [
+            'equipments' => $buscaEquipment
+        ];
+
+        return view('admin.assetmanagement.mpls_pe', compact('layout', 'toSendData', 'clients','clientId'));
     }
 
     /**
@@ -39,9 +45,12 @@ class MplsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $clients = $this->database->getReference('clientes')->getValue();
+        $layout = true;
+        $clientId = $request->query()['client_id'];
+        return view('admin.assetmanagement.mpls_create', compact('clients', 'layout', 'clientId'));
     }
 
     /**
@@ -52,7 +61,35 @@ class MplsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $status = "";
+        $clientId = $request['client_id'];
+	    try {
+            $key = $this->database->getReference('clientes/'.$clientId.'/equipamentos')->push()->getKey();
+            $data = [
+                'configs' => [],
+                'debug' => "ideal",
+                'grupo-ibgp' => "",
+                'hostname' => $request['hostname'],
+                'porta' => $request['porta'],
+                'protocolo' => $request['protocolo'],
+                'pwd' => $request['senha'],
+                'routerid' => $request['routerId'],
+                'template-vendor' =>$request['vendor'],
+                'template-family' => $request['family'],
+                'user' => $request['user']
+            ];
+
+            $this->database->getReference('clientes/'.$clientId.'/equipamentos/' . $key)->set($data);
+
+            $status = "success";
+
+        } catch(Exception  $err) {
+            dd("sfdd");exit;
+            $status = $err;
+        }
+        return response()->json([
+            'status' => 'ok',
+        ]);
     }
 
     /**
@@ -84,9 +121,28 @@ class MplsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $equipId = $request['equipId'];
+        $toSaveData = [
+            'hostname' => $request['hostName'],
+            'routerid' => $request['routerId'],
+            'template-vendor' => $request['vendor'],
+            'template-family' => $request['family'],
+            'protocolo' => $request['protocolo'],
+            'porta' => $request['porta'],
+            'user' => $request['user'],
+            'pwd' => $request['pwd']
+        ];
+
+        $proxyId = $request['proxyId'];
+        $clientId = $request['clientId'];
+
+        $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipId)->update($toSaveData);
+
+        return response()->json([
+            'status' => 'ok'
+        ]);
     }
 
     /**

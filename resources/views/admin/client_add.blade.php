@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card-box p-1">
-                <div class="card-body">  
+                <div class="card-body">
                     <form action="{{ route("client.store") }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
@@ -68,6 +68,7 @@
                                 </select>
                             </div>
                             <button class="btn btn-primary ml-2 mt-1" type="submit">atualizar</button>
+                            <a class="btn btn-primary ml-2 mt-1" href="{{route("client.index")}}" style="color : white" type="submit">go back</a>
                         </div>
                     </form>
                 </div> <!-- end row -->

@@ -92,7 +92,7 @@ class ProxySummaryController extends Controller
         $proxyId = $request['proxyId'];
         $clientId = $request['clientId'];
 
-        $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId)->set($toSaveData);
+        $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId)->update($toSaveData);
 
         return response()->json([
             'status' => 'ok'

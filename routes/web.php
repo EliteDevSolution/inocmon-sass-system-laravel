@@ -55,15 +55,26 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('proxy-template/applyconfigPes', 'Admin\PRTemplateController@applyConfigPes');
 
     Route::post('pr-summary/update', 'Admin\PRSummaryController@update')->name('pr-summary.update');
+    Route::post('mpls-detail/applyConfig', 'Admin\MplsDetailController@applyConfig')->name('mpls-detail.applyConfig');
 
-
+    Route::resource('mpls-detail', 'Admin\MplsDetailController')->names([
+        'index' => 'mpls-detail.index',
+    ]);
 
     Route::resource('mpls_pe', 'Admin\MplsController')->names([
         'index' => 'mpls_pe.index',
+        'update' => 'mpls_pe.update',
+        'create' => 'mpls_pe.create',
     ]);
     Route::get('pr-summary', 'Admin\PRSummaryController@index')->name('asset_manage.pr_summary');
 
     Route::resource('upstreams', 'Admin\Upstreams\TrafficController');
+    Route::post('upstreams/update', 'Admin\Upstreams\TrafficController@update')->name('upstreams.update');
+    Route::post('upstreams/store', 'Admin\Upstreams\TrafficController@store')->name('upstreams.store');
+
+    Route::resource('template-generate-config', 'Admin\Upstreams\TemplateConfigController');
+
+
     Route::resource('upstreams-ix', 'Admin\Upstreams\IxController');
     Route::resource('upstreams-peer', 'Admin\Upstreams\PeerController');
     Route::resource('upstreams-cdn', 'Admin\Upstreams\CdnController');

@@ -64,7 +64,7 @@ class ClientController extends Controller
                     'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
                 ],
                 'email' => $request->all()['email'],
-                'equipamentos' => '',
+                'equipamentos' => [],
                 'nome' => $request->all()['nome'],
                 'seguranca' => [
                     'nomedogrupo' => $request->all()['nomedogrupo'],
@@ -134,7 +134,7 @@ class ClientController extends Controller
                 'bgp' => [
                     'asn' => $request->all()['asn'],
                     'community0' => $request->all()['community0'],
-                    'interconexoes' => '',
+                    'interconexoes' => [],
                     'ipv4bgpmultihop' => $request->all()['ipv4bgpmultihop'],
                     'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
                 ],
@@ -148,11 +148,11 @@ class ClientController extends Controller
                     'snmpcommunity' => $request->all()['snmpcommunity'],
                     'userinocmon' => $request->all()['userinocmon']
                 ],
-                'sondas' => '',
+                'sondas' => [],
                 'status' => $request->all()['status']
             ];
 
-            $this->database->getReference('clientes/' . $key)->set($data);
+            $this->database->getReference('clientes/' . $key)->update($data);
 
             $status = "success";
 

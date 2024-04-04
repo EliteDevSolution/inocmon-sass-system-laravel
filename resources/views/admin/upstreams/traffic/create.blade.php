@@ -44,43 +44,42 @@
                     <h2 class="header-title text-blue text-center">Novo transito</h2>
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">ID do transitos</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="ID do transito" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Nome transito</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Nome transito" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" required ="nome" id="nome" class="form-control mb-1" placeholder="Nome transito" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">PoP de acesso</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="PoP de accesso" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" required name="pop" id="pop" class="form-control mb-1" placeholder="PoP de accesso" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 01:</label>
+                            <input type="text" required name="bgp01" id="bgp01" class="form-control mb-1" placeholder="Ipv6 remoto bgp 01" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">ASN do transito</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="ASN do transito" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="asn" required id="asn" class="form-control mb-1" placeholder="ASN do transito" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Ipv4 remoto bgp 01:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv4 remoto bgp 01" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="bgp1" id="bgp1" required class="form-control mb-1" placeholder="Ipv4 remoto bgp 01" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Ipv4 remoto bgp 02:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv4 remoto bgp 02" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="bgp2" id="bgp2" required class="form-control mb-1" placeholder="Ipv4 remoto bgp 02" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 01:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv6 remoto bgp 01" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 02:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv6 remoto bgp 02" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="bgp02" id="bgp02" required class="form-control mb-1" placeholder="Ipv6 remoto bgp 02" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Equipamento PE:</label>
-                            <select class="form-control" data-toggle="select2">
-                                <option>Selecone o PE</option>
-                                <option>SsW3-PE-SIS-DTC1-01</option>
+                            <select class="form-control" id="equip" required data-toggle="select2">
+                                @foreach ($buscaEquipamentos as $index => $value)
+                                    <option value="{{$index}}">{{$value['hostname']}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="row ml-2 mt-2">
                             <div class="form-group">
                                 <div class="custom-control custom-checkbox form-check">
-                                    <input type="checkbox" class="custom-control-input" id="invalidCheck" required>
+                                    <input type="checkbox" class="custom-control-input" id="check">
                                     <label class="custom-control-label" for="invalidCheck">Bloquear clientes de trânsito</label>
                                     <div class="invalid-feedback">
                                         You must agree before submitting.
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary ml-2 " type="submit">Cadastrar</button>
+                            <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -89,36 +88,23 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="datatable" class="table nowrap">
-                        <thead>
-                        <tr>
-                            <th width=50>
-                                ID do transitos
-                            </th>
-                            <th>
-                                Nome transio
-                            </th>
-                            <th>
-                                PoP de acesso
-                            </th>
-                            <th>
-                                ASN do transito
-                            </th>
-                            <th>
-                                Ipv4 remoto bgp 01
-                            </th>
-                            <th>
-                                &nbsp;Ipv4 remoto bgp 02
-                            </th>
-                            <th>
-                                &nbsp;Ipv6 remoto bgp 01
-                            </th>
-                            <th>
-                                &nbsp;Ipv6 remoto bgp 02
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <ul>
+                        @foreach ($cdns as $index => $value)
+                            @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
+                                <li>
+                                    <div class="p-md-1">
+                                        <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
+                                        {{$value['nomedogrupo'].'-'.$index}}
+                                    </div>
+                                @else
+                                    <div class="p-md-1">
+                                        <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
+                                        {{$value['nomedogrupo'].'-'.$index}}
+                                    </div>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
@@ -129,51 +115,50 @@
 @section('scripts')
     @parent
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/js/pages/datatables.init.js') }}"></script>
 
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="select2"]').select2()
-        });
-    </script>
 
-    @parent
-    <!-- third party js -->
-    <script src="{{ asset('admin_assets/libs/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.responsive.min.js') }}"></script>
-    <!-- third party js ends -->
-    <!-- Datatables init -->
-    <script>
-        $(document).ready(function(){
-            $('#datatable').DataTable({
-                responsive: false,
-                stateSave: true,
-                stateDuration: 60 * 60 * 24 * 60 * 60,
-                autoWidth: false,
-                scrollCollapse: true,
-                scrollX: true,
-                bProcessing: true,
-                lengthMenu: [
-                    [ 10, 50, 100, 500],
-                    [ '10', '50', '100', '500' ]
-                ],
-                columnDefs: [
-                    { "width": "10%", "targets": 1 }
-                ],
-                pageLength: 50,
-                language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only"></span>',
-                    paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
-                    }
-                },
-                order: [[ 0, "asc" ]]
+        function saveData(){
+
+            var nomeVal = $('#nome').val();
+            var popVal = $('#pop').val();
+            var asnVal = $('#asn').val();
+            var bgp1Val = $('#bgp1').val();
+            var bgp2Val = $('#bgp2').val();
+            var bgp01Val = $('#bgp01').val();
+            var bgp02Val = $('#bgp02').val();
+            var equipVal = $('#equip').val();
+            var checkVal = $('#check').val();
+            $.ajax({
+                type: "POST",
+                url: '{{ route("upstreams.store") }}',
+                data: {
+                    nomeVal :nomeVal,
+                    popVal :popVal,
+                    asnVal :asnVal,
+                    bgp1Val :bgp1Val,
+                    bgp2Val :bgp2Val,
+                    bgp01Val :bgp01Val,
+                    bgp02Val :bgp02Val,
+                    equipVal :equipVal,
+                    checkVal :checkVal,
+                    clientId : '{{$clientId}}',
+                    _token : '{{ csrf_token() }}'
+                }
+            }).done(function( msg ) {
+                console.log(msg);
+                if(msg['status'] == 'ok') {
+                    $('#nome').val("");
+                    $('#pop').val("");
+                    $('#asn').val("");
+                    $('#bgp1').val("");
+                    $('#bgp2').val("");
+                    $('#bgp01').val("");
+                    $('#bgp02').val("");
+                    $('#equip').val("");
+                    $('#check').val("");
+                }
             });
-
-
-        });
+        }
     </script>
-
 @endsection
