@@ -14,8 +14,7 @@ class NovoTransitController extends Controller
      */
     public function index()
     {
-        $users = \App\User::all();
-        return view('admin.bgpconnection.transit', compact('users'));
+        return view('admin.bgpconnection.transit');
     }
 
     /**

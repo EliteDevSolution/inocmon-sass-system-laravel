@@ -33,7 +33,6 @@ class ClientController extends Controller
      */
     public function create()
     {
-        $user = \App\User::all();
         return view('admin.client_add');
     }
 
@@ -104,7 +103,6 @@ class ClientController extends Controller
      */
     public function edit($key)
     {
-        $user = \App\User::all();
 	    $path = 'clientes/'.$key;
         $client = $this->database->getReference($path)->getValue();
 
@@ -153,9 +151,7 @@ class ClientController extends Controller
             $status = $err;
         }
 
-        $clients = $this->database->getReference('clientes')->getValue();
-        $layout = false;
-        return view('admin.client_home' ,compact('status', 'clients', 'layout'));
+        return view('admin.client_home' ,compact('status'));
     }
 
     /**

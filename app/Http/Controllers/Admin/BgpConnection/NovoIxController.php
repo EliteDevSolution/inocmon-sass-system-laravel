@@ -14,8 +14,7 @@ class NovoIxController extends Controller
      */
     public function index()
     {
-        $users = \App\User::all();
-        return view('admin.bgpconnection.ix', compact('users'));
+        return view('admin.bgpconnection.ix');
     }
 
     /**

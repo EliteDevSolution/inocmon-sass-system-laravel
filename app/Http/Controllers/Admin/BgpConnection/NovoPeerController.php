@@ -14,8 +14,7 @@ class NovoPeerController extends Controller
      */
     public function index()
     {
-        $users = \App\User::all();
-        return view('admin.bgpconnection.peer', compact('users'));
+        return view('admin.bgpconnection.peer');
     }
 
     /**

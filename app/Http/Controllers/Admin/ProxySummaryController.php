@@ -20,10 +20,8 @@ class ProxySummaryController extends Controller
 
     public function index(Request $req)
     {
-        $layout = true;
         $clientId = $req->query()['client_id'];
-        $clients = $this->database->getReference('clientes')->getValue();
-        $buscarSondas = $clients[$clientId]['sondas'];
+        $buscarSondas = $this->database->getReference('clientes/'. $clientId . '/sondas')->getSnapshot()->getValue();
         return view('admin.assetmanagement.proxy_summary', compact('buscarSondas', 'clientId'));
     }
 

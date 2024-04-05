@@ -24,9 +24,7 @@ class TrafficController extends Controller
 
     public function index(Request $req)
     {
-        $layout = true;
         $clientId = $req->query()['client_id'];
-        $clients = $this->database->getReference('clientes')->getValue();
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
 
         $buscaEquipamentos = $detailClientData['equipamentos'];
@@ -37,7 +35,7 @@ class TrafficController extends Controller
             'buscaEquip' => $buscaEquipamentos
         ];
 
-        return view('admin.upstreams.traffic.index', compact('layout','clientId', 'clients', 'toSendData'));
+        return view('admin.upstreams.traffic.index', compact('clientId', 'toSendData'));
     }
 
     /**

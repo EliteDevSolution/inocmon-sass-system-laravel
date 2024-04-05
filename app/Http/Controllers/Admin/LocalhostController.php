@@ -27,7 +27,6 @@ class LocalhostController extends Controller
             $clientId = $req['clientId'];
             $proxyId = $req['proxyId'];
 
-            $clients = $this->database->getReference('clientes')->getValue();
             $detailClientData = $this->database->getReference('clientes/' . $req['clientId'])->getSnapshot()->getValue();
 
             $hostName = $detailClientData['sondas'][$req['proxyId']]['hostname'];
