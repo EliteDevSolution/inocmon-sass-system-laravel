@@ -28,10 +28,10 @@
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="/">iNOCmon</a></li>
                             <li class="breadcrumb-item active">Network assets</li>
-                            <li class="breadcrumb-item active">Proxy</li>
+                            <li class="breadcrumb-item active">Novo Proxy</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Proxy</h4>
+                    <h4 class="page-title">Novo Proxy</h4>
                 </div>
             </div>
         </div>
@@ -43,29 +43,29 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Hostname</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="02" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="hostname" id="hostname" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">POP</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="POP" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="pop" id="pop" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">IPv4</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="IPv4" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="ipv4" id="ipv4" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">IPv6</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="IPv6" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Porta SSH</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Pota SSH" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="ipv6" id="ipv6" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">Porta Ssh</label>
+                            <input type="text" name="ssh" id="ssh" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Porta HTTP</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Porta HTTP" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="http" id="http" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">usuario</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="usuario" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="user" id="user" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">senha</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Porta" style=" z-index: 2; background: transparent;"/>
-                            <button class="mt-3 btn btn-primary ml-2 " type="submit">Cadastrar</button>
+                            <input type="text" name="senha" id="senha" class="form-control mb-1"/>
+                            <button class="mt-3 btn btn-primary ml-2" onclick="saveData()" type="submit">Cadastrar</button>
                         </div>
                     </div>
-                </div> <!-- end row -->
+                </div>
             </div>
         </div>
     </div>
@@ -77,11 +77,6 @@
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
     <script src="{{ asset('admin_assets/js/pages/datatables.init.js') }}"></script>
 
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="select2"]').select2()
-        });
-    </script>
 
     @parent
     <!-- third party js -->
@@ -122,4 +117,37 @@
         });
     </script>
 
+    <script>
+        function saveData(){
+
+            $.ajax({
+                type: "POST",
+                url: '{{ route("network-proxy.store") }}',
+                data: {
+                    hostname : $("#hostname").val(),
+                    pop : $("#pop").val(),
+                    ipv4 : $("#ipv4").val(),
+                    ipv6 : $("#ipv6").val(),
+                    ssh : $("#ssh").val(),
+                    http : $("#http").val(),
+                    user : $("#user").val(),
+                    senha : $("#senha").val(),
+                    clientId : '{{$clientId}}',
+                    _token : '{{ csrf_token() }}'
+                }
+            }).done(function( msg ) {
+                console.log(msg);
+                if(msg['status'] == 'ok') {
+                    $("#hostname").val("");
+                    $("#ipv4").val("");
+                    $("#ipv6").val("");
+                    $("#ssh").val("");
+                    $("#http").val("");
+                    $("#porta").val("");
+                    $("#user").val("");
+                    $("#senha").val("");
+                }
+            });
+        }
+    </script>
 @endsection

@@ -40,11 +40,14 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <p class="header-title mb-4 text-success  mt-0">Console</p>
-                    <p class="ml-2 text-danger font-12" id="console_data">
-                        {{$toSendData['console-data']}}
-                    </p>
+                <div class="card-header bg-blue py-3 text-white">
+                    <div class="card-widgets">
+                        <a data-toggle="collapse" href="#console" role="button" aria-expanded="false" aria-controls="cardCollpase2"><i class="mdi mdi-minus"></i></a>
+                    </div>
+                    <h5 class="card-title mb-0 text-white">Console</h5>
+                </div>
+                <div id="console" class="card-body collapse show">
+                    <p class="text-danger mb-0 font-12" id="console_data">{{$toSendData['console-data']}}</p>
                 </div>
             </div>
         </div>
@@ -61,7 +64,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#connect" data-toggle="tab" aria-expanded="false" class="nav-link active">
+                        <a href="#connect" data-toggle="tab" aria-expanded="false" class="nav-link">
                             Detalhes da conexaos
                         </a>
                     </li>
@@ -73,12 +76,12 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane" id="configuration">
-                        <p class="mb-3">Essa é a configuração obrigatória para este RR. É mandatório que seja aplicada antes te estebalecerem sessões com os routers PE
+                        <p class="mb-3">
+                            Essa é a configuração obrigatória para este RR. É mandatório que seja aplicada antes te estebalecerem sessões com os routers PE
                         </p>
-
                         <div class="row">
-                            <div class="col-6">
-                                <div class="card-box p-2">
+                            <div class="col-12">
+                                <div class="p-2">
                                     <h4 class="header-title mb-2">
                                         A configuração candidata pode ser revisada no botão abaixo:
                                     </h4>
@@ -108,7 +111,7 @@
                                         <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Visual Config Base</button>
                                     </div>
                                 </div>
-                                <div class="card-box mb-0">
+                                <div class="mb-0">
                                     <table class="table nowrap mb-0">
                                         <thead>
                                         <tr>
@@ -132,7 +135,7 @@
                                         </tr>
                                         <tr>
                                             <th>Atualizar inoc-config</th>
-                                            <th><button onclick="" class="btn btn-info waves-effect waves-light">autalizar inoc-config</button></th>
+                                            <th><button onclick="applyConfig()" class="btn btn-info waves-effect waves-light">autalizar inoc-config</button></th>
                                         </tr>
                                         </thead>
                                     </table>
@@ -141,17 +144,58 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="connect">
-                            <h4 class="header-title mb-2"> DETAIL
-                            </h4>
-                        <div class="card-box col-6">
-
+                        <h4 class="header-title mb-2"> DETAIL INFROMATION
+                        </h4>
+                        <div class="col-12">
+                            <p>ID da conexao: {{$toSendData['id']}}</p>
+                            <p>ASN remoto: {{$toSendData['remoteAs']}}</p>
+                            <p>Ipv4 remoto 01: {{$toSendData['ipv401']}}</p>
+                            <p>Ipv4 remoto 02: {{$toSendData['ipv402']}}</p>
+                            <p>Ipv6 remoto 01: {{$toSendData['ipv601']}}</p>
+                            <p> Ipv6 remoto 02: {{$toSendData['ipv602']}}</p>
+                            <p>Template Vendor: {{$toSendData['templateVendor']}}</p>
+                            <p> Template Family: {{$toSendData['templateFamily']}}</p>
+                            <p>Target PE: {{$toSendData['targetPeName']}}</p>
                         </div>
                     </div>
                     <div class="tab-pane show active" id="relator">
-                            <h4 class="header-title mb-2"> Registro das últimas configurações aplicadas em :
+                            <h4 class="header-title mb-2"> Registro das últimas configurações aplicadas em : {{$toSendData['targetPeName']}}
                             </h4>
-                        <div class="card-box col-6">
-
+                        <div class="col-12">
+                            <div class="button-list">
+                                @if (is_array($toSendData['buscaRelatorios']))
+                                    @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
+                                        <button type="button" class="btn btn-success waves-effect waves-light d-block" data-toggle="modal" data-target="#modal{{$relatorIndex}}">{{$relatorIndex}}</button>
+                                    @endforeach
+                                @endif
+                            </div>
+                            @if (is_array($toSendData['buscaRelatorios']))
+                                @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
+                                    <div id="modal{{$relatorIndex}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Config: : {{$toSendData['nomeDoGrupo']}}</h4>
+                                                    <h4 class="modal-title">Token : {{$toSendData['configToken']}}</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body p-3">
+                                                    <div class="col">
+                                                        <p class="header-title mb-2">Relatório de configuração:</p>
+                                                        <p>{{$relatorVal}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-info waves-effect waves-light">Fetchar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- /.modal -->
+                                @endforeach
+                            @else
+                                <p class="header text-danger">not data</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -165,49 +209,23 @@
     @parent
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
 
-    {{-- <script>
-
-        function saveData(){
-
-            var nomeVal = $('#nome').val();
-            var popVal = $('#pop').val();
-            var asnVal = $('#asn').val();
-            var bgp1Val = $('#bgp1').val();
-            var bgp2Val = $('#bgp2').val();
-            var bgp01Val = $('#bgp01').val();
-            var bgp02Val = $('#bgp02').val();
-            var equipVal = $('#equip').val();
-            var checkVal = $('#check').val();
+    <script>
+        function applyConfig(){
+            var proxyId = $("#proxyid").val();
             $.ajax({
                 type: "POST",
-                url: '{{ route("upstreams.store") }}',
+                url: "{{route('template-generate-config.applyConfig')}}",
                 data: {
-                    nomeVal :nomeVal,
-                    popVal :popVal,
-                    asnVal :asnVal,
-                    bgp1Val :bgp1Val,
-                    bgp2Val :bgp2Val,
-                    bgp01Val :bgp01Val,
-                    bgp02Val :bgp02Val,
-                    equipVal :equipVal,
-                    checkVal :checkVal,
+                    tipoConexao : "{{$toSendData['tipoConexao']}}",
+                    communityGroup : "{{$toSendData['communityGroup']}}",
+                    id : "{{$toSendData['id']}}",
+                    proxyId : proxyId,
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
                 console.log(msg);
-                if(msg['status'] == 'ok') {
-                    $('#nome').val("");
-                    $('#pop').val("");
-                    $('#asn').val("");
-                    $('#bgp1').val("");
-                    $('#bgp2').val("");
-                    $('#bgp01').val("");
-                    $('#bgp02').val("");
-                    $('#equip').val("");
-                    $('#check').val("");
-                }
             });
         }
-    </script> --}}
+    </script>
 @endsection

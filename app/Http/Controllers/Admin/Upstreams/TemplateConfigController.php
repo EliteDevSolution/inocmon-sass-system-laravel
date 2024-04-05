@@ -16,6 +16,116 @@ class TemplateConfigController extends Controller
         $this->middleware('auth');
         $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
     }
+
+    public function applyConfig(Request $request)
+    {
+        $clientId = $request['clientId'];
+        $proxyId = $request['proxyId'];
+        $tipoConexao = $request['tipoConexao'];
+        $id = $request['id'];
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $diretorioConexaoBgp = 'clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao.'/'.$id;
+		$buscaDadosDaConexao = $detailClientData['bgp']['interconexoes'][$tipoConexao][$id];
+        $debugDir = $diretorioConexaoBgp.'/debug';
+        $debugFile = 'DEBUG-'.$clientId;
+        $nomeDoGrupo = $buscaDadosDaConexao['nomedogrupo'];
+		$targetPeId = $buscaDadosDaConexao['peid'];
+        $templateVendor = $detailClientData['equipamentos'][$targetPeId]['template-vendor'];
+        $templateFamily = $detailClientData['equipamentos'][$targetPeId]['template-family'];
+        $buscaTemplate = $this->database->getReference('lib/templates/bgp/'.$tipoConexao.'/'.$templateVendor.'/'.$templateFamily)->getSnapshot();
+        $targetPeRouterId = $detailClientData['equipamentos'][$targetPeId]['routerid'];
+        $targetPeName = $detailClientData['equipamentos'][$targetPeId]['hostname'];
+        $userInform = $detailClientData['seguranca'];
+        $userInocmon = $userInform['userinocmon'];
+        $senhaInocmon = $userInform['senhainocmon'];
+
+        $this->database->getReference($debugDir)->set('preparando config base para '.$nomeDoGrupo);
+
+        if(! $buscaTemplate->getValue()) {
+            $this->database->getReference($debugDir)->set('# não foram encontradas templates para '.$templateVendor.' '.$templateFamily);
+        }
+        else {
+            $routerId = $targetPeRouterId;
+            $hostName = $targetPeName;
+            $porta = $detailClientData['equipamentos'][$targetPeId]['porta'];
+            $user = $detailClientData['equipamentos'][$targetPeId]['user'];
+            $pwd = $detailClientData['equipamentos'][$targetPeId]['pwd'];
+
+            if (!$user) { $user = $userInocmon; }
+            if (!$pwd) { $pwd = $senhaInocmon; }
+
+            $configFinal = $buscaDadosDaConexao['config'];
+            $configFinal = str_replace("<br />","",$configFinal);
+            $configFileName = 'CONFIG-BGP-'.$tipoConexao.'-'.$id.'-'.$nomeDoGrupo.'-'.$clientId;
+            $uploadFile = 'configuracoes/'.$configFileName;
+
+            Storage::put($uploadFile, $configFinal);
+
+            $this->database->getReference($debugDir)->set('arquivo '.$configFileName.' gerado com sucesso! preparando transferência...');
+            $proxyHostName = $detailClientData['sondas'][$proxyId]['hostname'];
+            $proxyIpv4 = $detailClientData['sondas'][$proxyId]['ipv4'];
+            $proxyPortaSsh = $detailClientData['sondas'][$proxyId]['portassh'];
+            $proxyUser = $detailClientData['sondas'][$proxyId]['user'];
+            $proxyPwd = $detailClientData['sondas'][$proxyId]['pwd'];
+            $configToken = bin2hex(random_bytes(64));
+            $configToken = substr($configToken,0, -85);
+
+            $this->database->getReference($debugDir)->set('conectando ao proxy: '.$proxyHostName.' '.$proxyIpv4.' '.$proxyPortaSsh.' '.$proxyUser.' '.base64_encode($proxyPwd));
+
+            $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
+
+            if (!$ssh->login($proxyUser, $proxyPwd)) {
+                $this->database->getReference($debugDir)->set('falha de login no proxy...');
+            } else {
+                    $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+                    $scp = new SCP($ssh);
+                    $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
+                    $scp->put($configFileName, 'configuracoes/'.$configFileName, 1);
+                    $lineCount = substr_count($configFinal, "\n");
+                    $this->database->getReference($debugDir)->set('iniciando config em PE '.$targetPeName.'... tempo estimado: '.$lineCount.'s');
+                    $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileName.' '.$debugFile.' & ');
+                    if (str_contains($comandoRemoto, 'Err')) {
+                        $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
+                    }else{
+                        for ($i = 0; $i < $lineCount; $i++){
+                            $tempoEstimado = ($lineCount - $i);
+                            $progresso = ($i / $lineCount  * 100);
+                            $progresso = round($progresso, 0);
+                            $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                            sleep(1);
+                        }
+                    }
+                    $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
+                    $lineCount = 15;
+                    for ($i = 0; $i < $lineCount; $i++)
+                    {
+                        $tempoEstimado = ($lineCount - $i);
+                        $progresso = ($i / $lineCount  * 100);
+                        $progresso = round($progresso, 0);
+                        $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
+                    }
+
+                    $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
+                    if (!$ssh->login($proxyUser, $proxyPwd)) {
+                        $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                    } else {
+                        $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+                        $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
+                        $now = date("Y-M-d").'-'.date("h-i-sa");
+                        $this->database->getReference($diretorioConexaoBgp.'/relatorios/'.$now)->set($relatorio);
+                        $this->database->getReference($debugDir)->set('Configuração concluída!');
+                        $this->database->getReference($debugDir)->set('idle');
+                    }
+            }
+        }
+
+        $updatedDebug = $this->database->getReference($debugDir)->getSnapshot()->getValue();
+
+        return response()->json([
+            'status' => 'ok',
+            'updatedDebug' => $updatedDebug
+        ]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -23,9 +133,7 @@ class TemplateConfigController extends Controller
      */
     public function index(Request $req)
     {
-        $layout = true;
         $clientId = $req->query()['client_id'];
-        $clients = $this->database->getReference('clientes')->getValue();
         $communityGroup = $req['groupKey'];
         $tipoConexao = $req['key'];
         $id = $req['indexId'];
@@ -48,8 +156,13 @@ class TemplateConfigController extends Controller
         $community0 = $detailClientData['bgp']['community0'];
         $asn = $detailClientData['bgp']['asn'];
 
-        // $buscaRelatorios = $buscaDadosDaConexao['relatorios'];
-		$targetPeId = $buscaDadosDaConexao['peid'];
+        if(isset($buscaDadosDaConexao['relatorios'])) {
+            $buscaRelatorios = $buscaDadosDaConexao['relatorios'];
+        } else {
+            $buscaRelatorios = "not data";
+        }
+
+        $targetPeId = $buscaDadosDaConexao['peid'];
 		$debugDir = $diretorioConexaoBgp.'/debug';
 		$this->database->getReference($debugDir)->set('idle');
 
@@ -159,10 +272,23 @@ class TemplateConfigController extends Controller
             'configSalva' => $configSalva,
             'buscaProxy' => $buscaProxy,
             'targetPeRouterId' => $targetPeRouterId,
-            'targetPeId' => $targetPeId
+            'targetPeId' => $targetPeId,
+            'id' => $id,
+            'communityGroup' =>$communityGroup,
+            'tipoConexao' => $tipoConexao,
+            'remoteAs' => $remoteAs,
+            'ipv401' => $ipv401,
+            'ipv402' => $ipv402,
+            'ipv601' => $ipv601,
+            'ipv602' => $ipv602,
+            'templateVendor' => $templateVendor,
+            'templateFamily' => $templateFamily,
+            'targetPeName' => $targetPeName,
+            'buscaRelatorios' => $buscaRelatorios,
+            'configToken' => $configToken
         ];
 
-        return view('admin.upstreams.template-generall-config', compact('layout','clientId', 'clients','toSendData'));
+        return view('admin.upstreams.template-generall-config', compact('clientId', 'toSendData'));
     }
 
     /**

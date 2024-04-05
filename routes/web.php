@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth']], function () {
         'update' => 'proxy-summary.update'
     ]);
 
-    Route::resource('proxy-template', 'Admin\PRTemplateController');
+Route::resource('proxy-template', 'Admin\PRTemplateController');
     Route::post('proxy-template/applyconfig', 'Admin\PRTemplateController@applyBaseConfig');
     Route::post('proxy-template/applyconfigPes', 'Admin\PRTemplateController@applyConfigPes');
 
@@ -73,24 +73,43 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('upstreams/store', 'Admin\Upstreams\TrafficController@store')->name('upstreams.store');
 
     Route::resource('template-generate-config', 'Admin\Upstreams\TemplateConfigController');
+    Route::post('template-generate-config/applyconfig', 'Admin\Upstreams\TemplateConfigController@applyConfig')->name('template-generate-config.applyConfig');
 
 
     Route::resource('upstreams-ix', 'Admin\Upstreams\IxController');
+    Route::post('upstreams-ix/update', 'Admin\Upstreams\IxController@update')->name('upstreams-ix.update');
+    Route::post('upstreams-ix/store', 'Admin\Upstreams\IxController@store')->name('upstreams-ix.store');
+
     Route::resource('upstreams-peer', 'Admin\Upstreams\PeerController');
+    Route::post('upstreams-peer/update', 'Admin\Upstreams\PeerController@update')->name('upstreams-peer.update');
+    Route::post('upstreams-peer/store', 'Admin\Upstreams\PeerController@store')->name('upstreams-peer.store');
+
     Route::resource('upstreams-cdn', 'Admin\Upstreams\CdnController');
+    Route::post('upstreams-cdn/update', 'Admin\Upstreams\CdnController@update')->name('upstreams-cdn.update');
+    Route::post('upstreams-cdn/store', 'Admin\Upstreams\CdnController@store')->name('upstreams-cdn.store');
 
     Route::resource('downstreams-clients', 'Admin\Downstreams\ClientsController');
 
-    Route::resource('bgpconnection-transit', 'Admin\BgpConnection\NovoTransitController');
-    Route::resource('bgpconnection-ix', 'Admin\BgpConnection\NovoIxController');
-    Route::resource('bgpconnection-peer', 'Admin\BgpConnection\NovoPeerController');
-    Route::resource('bgpconnection-cdn', 'Admin\BgpConnection\NovoCdnController');
+    // Route::resource('bgpconnection-transit', 'Admin\BgpConnection\NovoTransitController');
+    // Route::resource('bgpconnection-ix', 'Admin\BgpConnection\NovoIxController');
+    // Route::resource('bgpconnection-peer', 'Admin\BgpConnection\NovoPeerController');
+    // Route::resource('bgpconnection-cdn', 'Admin\BgpConnection\NovoCdnController');
+
     Route::resource('bgpconnection-client', 'Admin\BgpConnection\NovoBcbClientController');
+    Route::post('bgpconnection-client/store', 'Admin\BgpConnection\NovoBcbClientController@store')->name('bgpconnection-client.store');
 
     Route::resource('network-pe', 'Admin\Network\PeController');
-    Route::resource('network-router-reflector', 'Admin\Network\RouteReflectorController');
-    Route::resource('network-proxy', 'Admin\Network\ProxyController');
+    Route::post('network-pe/store', 'Admin\Network\PeController@store')->name('network-pe.store');
 
+
+    Route::resource('network-router-reflector', 'Admin\Network\RouteReflectorController');
+    Route::post('network-router-reflector/store', 'Admin\Network\RouteReflectorController@store')->name('network-router-reflector.store');
+
+
+    Route::resource('network-proxy', 'Admin\Network\ProxyController');
+    Route::post('network-proxy/store', 'Admin\Network\ProxyController@store')->name('network-proxy.store');
+
+    Route::resource('changelog', 'Admin\ChangelogController');
 
 
     Route::resource('permissions', 'Admin\PermissionsController');

@@ -22,6 +22,7 @@ class ProxySummaryController extends Controller
     {
         $layout = true;
         $clientId = $req->query()['client_id'];
+        $clients = $this->database->getReference('clientes')->getValue();
         $buscarSondas = $clients[$clientId]['sondas'];
         return view('admin.assetmanagement.proxy_summary', compact('buscarSondas', 'clientId'));
     }

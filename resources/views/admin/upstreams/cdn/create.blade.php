@@ -28,11 +28,11 @@
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="/">iNOCmon</a></li>
                             <li class="breadcrumb-item active">Upstreams</li>
-                            <li class="breadcrumb-item active">Traffic</li>
+                            <li class="breadcrumb-item active">Cdn</li>
                             <li class="breadcrumb-item active">Create</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Create Traffic</h4>
+                    <h4 class="page-title">Cdn</h4>
                 </div>
             </div>
         </div>
@@ -41,46 +41,44 @@
         <div class="col-12">
             <div class="card-box p-1">
                 <div class="card-body">
-                    <h2 class="header-title text-blue text-center">Novo cdn</h2>
+                    <h2 class="header-title text-blue text-center">Novo Cdn</h2>
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">ID do cdn</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="ID do transito" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Nome cdn</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Nome transito" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">PoP de acesso</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="PoP de accesso" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Nome do Cliente</label>
+                            <input type="text" name="nome" required id="nome" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">ASN do cliente</label>
+                            <input type="text" name="asn" required id="asn" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">POP DO ACESSO</label>
+                            <input type="text" name="pop" required id="pop" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">blocos-ipv4</label>
+                            <input type="text" name="cos4" required id="cos4" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">ASN do cdn</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="ASN do transito" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Ipv4 remoto bgp 01:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv4 remoto bgp 01" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Ipv4 remoto bgp 02:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv4 remoto bgp 02" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">blocos-ipv6</label>
+                            <input type="text" name="cos6" required id="cos6" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV4 lado provedor</label>
+                            <input type="text" name="ipv4pro" required id="ipv4pro" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV4 lado cliente</label>
+                            <input type="text" name="ipv4client" required id="ipv4client" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV6 lado provedor</label>
+                            <input type="text" name="ipv6pro" required id="ipv6pro" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 01:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv6 remoto bgp 01" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 02:</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Ipv6 remoto bgp 02" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Equipamento PE:</label>
-                            <select class="form-control" data-toggle="select2">
-                                <option>Selecone o PE</option>
-                                <option>SsW3-PE-SIS-DTC1-01</option>
+                            <label class="mb-1 font-weight-bold text-muted">IPV6 lado cliente</label>
+                            <input type="text" name="ipv6client" required id="ipv6client" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">ASN de clientes recursivos</label>
+                            <input type="text" name="recursivos" required id="recursivos" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">(insira todos separados por vírgula)</label></label>
+                            <input type="text" name="vírgula" required id="vírgula" class="form-control mb-1"/>
+                            <select class="form-control" id="equip" required data-toggle="select2">
+                                @foreach ($buscaEquipamentos as $index => $value)
+                                    <option value="{{$index}}" id="equip">{{$value['hostname']}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="row ml-2 mt-2">
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox form-check">
-                                    <input type="checkbox" class="custom-control-input" id="invalidCheck" required>
-                                    <label class="custom-control-label" for="invalidCheck">Bloquear clientes de trânsito</label>
-                                    <div class="invalid-feedback">
-                                        You must agree before submitting.
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary ml-2 " type="submit">Cadastrar</button>
+                            <div class="mt-2"><input type="checkbox" value="check" id="check"> Bloquear</div>
+                            <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -89,36 +87,24 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="datatable" class="table nowrap">
-                        <thead>
-                        <tr>
-                            <th width=50>
-                                ID do cdn
-                            </th>
-                            <th>
-                                Nome cdn
-                            </th>
-                            <th>
-                                PoP de acesso
-                            </th>
-                            <th>
-                                ASN do cdn
-                            </th>
-                            <th>
-                                Ipv4 remoto bgp 01
-                            </th>
-                            <th>
-                                &nbsp;Ipv4 remoto bgp 02
-                            </th>
-                            <th>
-                                &nbsp;Ipv6 remoto bgp 01
-                            </th>
-                            <th>
-                                &nbsp;Ipv6 remoto bgp 02
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <h3 class="header-title text-success">Cdn em banco</h3>
+                    <ul id="cdn">
+                        @foreach ($cdns as $index => $value)
+                            @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
+                                <li>
+                                    <div class="p-md-2">
+                                        <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
+                                        {{$value['nomedogrupo'].'-'.$index}}
+                                    </div>
+                                @else
+                                    <div class="p-md-2">
+                                        <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
+                                        {{$value['nomedogrupo'].'-'.$index}}
+                                    </div>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>
@@ -129,51 +115,28 @@
 @section('scripts')
     @parent
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/js/pages/datatables.init.js') }}"></script>
 
     <script>
-        $(document).ready(function(){
-            $('[data-toggle="select2"]').select2()
-        });
-    </script>
-
-    @parent
-    <!-- third party js -->
-    <script src="{{ asset('admin_assets/libs/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.responsive.min.js') }}"></script>
-    <!-- third party js ends -->
-    <!-- Datatables init -->
-    <script>
-        $(document).ready(function(){
-            $('#datatable').DataTable({
-                responsive: false,
-                stateSave: true,
-                stateDuration: 60 * 60 * 24 * 60 * 60,
-                autoWidth: false,
-                scrollCollapse: true,
-                scrollX: true,
-                bProcessing: true,
-                lengthMenu: [
-                    [ 10, 50, 100, 500],
-                    [ '10', '50', '100', '500' ]
-                ],
-                columnDefs: [
-                    { "width": "10%", "targets": 1 }
-                ],
-                pageLength: 50,
-                language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only"></span>',
-                    paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
-                    }
-                },
-                order: [[ 0, "asc" ]]
+        var communityArray = [];
+        function saveData(){
+            $('input:checkbox[name=equip]').each(function()
+            {
+                if($(this).is(':checked'))
+                    checkedEquipArray.push($(this).val());
             });
-
-
-        });
+            $.ajax({
+                type: "POST",
+                url: '{{ route("bgpconnection-client.store") }}',
+                data: {
+                    clientId : '{{$clientId}}',
+                    _token : '{{ csrf_token() }}'
+                }
+            }).done(function( msg ) {
+                console.log(msg);
+                if(msg['status'] == 'ok') {
+                    console.log(msg);
+                }
+            });
+        }
     </script>
-
 @endsection

@@ -10,7 +10,7 @@
             $clientId = request()->query()['client_id'];
             $clientIdQueryParam = array("client_id" => $clientId);
         @endphp
-        
+
         <ul class="metismenu" id="side-menu">
             <li class="menu-title">Navigation</li>
             <li>
@@ -95,13 +95,13 @@
                         <a href="{{ route('upstreams.index', $clientIdQueryParam) }}">Traffic</a>
                     </li>
                     <li>
-                        <a href="{{ route('upstreams-ix.index') }}">IX</a>
+                        <a href="{{ route('upstreams-ix.index', $clientIdQueryParam) }}">IX</a>
                     </li>
                     <li>
-                        <a href="{{ route('upstreams-peer.index') }}">Peering</a>
+                        <a href="{{ route('upstreams-peer.index', $clientIdQueryParam) }}">Peering</a>
                     </li>
                     <li>
-                        <a href="{{ route('upstreams-cdn.index') }}">CDN</a>
+                        <a href="{{ route('upstreams-cdn.index', $clientIdQueryParam) }}">CDN</a>
                     </li>
                 </ul>
             </li>
@@ -123,29 +123,29 @@
                 </ul>
             </li>
 
-            <li class="menu-title mt-2">Register</li>
+            <li class="menu-title mt-2">Cadastro</li>
 
             <li>
                 <a href="javascript: void(0);">
                     <i class="fe-pocket"></i>
-                    <span> BGP connections </span>
+                    <span> Cadastro BGP</span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li>
-                        <a href="{{ route('bgpconnection-transit.index') }}">Novo IP Transit</a>
+                        <a href="{{ route('upstreams.create', $clientIdQueryParam) }}">Novo IP Transito</a>
                     </li>
                     <li>
-                        <a href="{{ route('bgpconnection-ix.index') }}">Novo IX</a>
+                        <a href="{{ route('upstreams-ix.create', $clientIdQueryParam) }}">Novo IX</a>
                     </li>
                     <li>
-                        <a href="{{ route('bgpconnection-peer.index') }}">Novo Peering</a>
+                        <a href="{{ route('upstreams-peer.create', $clientIdQueryParam) }}">Novo Peering</a>
                     </li>
                     <li>
-                        <a href="{{ route('bgpconnection-cdn.index') }}">Novo CDN</a>
+                        <a href="{{ route('upstreams-cdn.create', $clientIdQueryParam) }}">Novo CDN</a>
                     </li>
                     <li>
-                        <a href="{{ route('bgpconnection-client.index') }}">Novo  BGP client</a>
+                        <a href="{{ route('bgpconnection-client.index', $clientIdQueryParam) }}">Novo  BGP client</a>
                     </li>
                 </ul>
             </li>
@@ -158,18 +158,19 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li>
-                        <a href="{{ route('network-pe.index') }}">Novo PE</a>
+                        <a href="{{ route('network-pe.index' ,$clientIdQueryParam) }}">Novo PE</a>
                     </li>
                     <li>
-                        <a href="{{ route('network-router-reflector.index') }}">Novo Route Refletor</a>
+                        <a href="{{ route('network-router-reflector.index' ,$clientIdQueryParam) }}">Novo Route Refletor</a>
                     </li>
                     <li>
-                        <a href="{{ route('network-proxy.index') }}">Novo Proxy</a>
+                        <a href="{{ route('network-proxy.index' ,$clientIdQueryParam) }}">Novo Proxy</a>
                     </li>
                 </ul>
             </li>
 
             <li class="menu-title mt-2">more</li>
+
             <li>
                 <a href="javascript: void(0);">
                     <i class="fe-pocket"></i>
@@ -178,17 +179,23 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li >
-                        <a href="{{ route('client.index') }}">Admin</a>
+                        <a href="{{ route('client.index',$clientIdQueryParam) }}">Admin</a>
                     </li>
                 </ul>
             </li>
 
-            {{--        <li>--}}
-            {{--            <a href="javascript: void(0);">--}}
-            {{--                <i class="fe-pocket"></i>--}}
-            {{--                <a href=""> ChangeLog </a>--}}
-            {{--            </a>--}}
-            {{--        </li>--}}
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-pocket"></i>
+                    <span> ChangeLogs </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('changelog.index',$clientIdQueryParam) }}">Change Log</a>
+                    </li>
+                </ul>
+            </li>
 
             <li class="menu-title mt-2">admin</li>
 
@@ -201,19 +208,6 @@
                 <ul class="nav-second-level" aria-expanded="false">
                     <li >
                         <a href="{{ route('users.index') }}">Users</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li>
-                <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
-                    <span> Customers </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li>
-                        <a href="apps-kanbanboard.html">test</a>
                     </li>
                 </ul>
             </li>

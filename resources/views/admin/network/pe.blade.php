@@ -43,40 +43,47 @@
                     <div class="row">
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Hostname</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="02" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="hostname" id="hostname" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">RouterID</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Nome transito" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="routerid" id="routerid" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Group IBGP</label>
-                            <select class="form-control" data-toggle="select2">
+                            <select id="ibgps" class="form-control" >
                                 <option>IBGP-PARCIAL</option>
                                 <option>IBGP-FUll</option>
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Template Vendor</label>
-                            <select class="form-control" data-toggle="select2">
-                                <option>huawei</option>
-                                <option>juniper</option>
+                            <select id="vendor" class="form-control" >
+                                @foreach ($buscaTemplates as $indexTemp => $indexVal)
+                                    <option value="{{$indexTemp}}">
+                                        {{$indexTemp}}
+                                    </option>
+                                @endforeach
                             </select>
-                            <label class="mt-sm-2 font-weight-bold text-muted">Template Family</label>
-                            <select class="form-control" data-toggle="select2">
-                                <option>nexx</option>
-                                <option>s6700</option>
-                                <option>mx</option>
+                            <label class="mb-1 font-weight-bold text-muted">Template Family</label>
+                            <select id="family" class="form-control" >
+                                @foreach ($buscaTemplates as $indexTemp => $indexVal)
+                                    @foreach ( $indexVal as $vendorIndex => $vendorVal)
+                                        <option value="{{$vendorIndex}}">
+                                            {{$vendorIndex}}
+                                        </option>
+                                    @endforeach
+                                @endforeach
                             </select>
-                            <label class="mt-1 font-weight-bold text-muted">Protocol</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Protocol" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Protocol</label>
+                            <input type="text" name="protocol" id="protocol" class="form-control mb-1" placeholder="Protocol" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Porta</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Porta" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="porta" id="porta" class="form-control mb-1" placeholder="Porta" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">User</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="User" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="user" id="user" class="form-control mb-1" placeholder="User" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Senha</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Senha" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" name="senha" id="senha" class="form-control mb-1" placeholder="Senha" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <div class="row ml-2 mt-2">
-                            <button class="btn btn-primary ml-2 " type="submit">Cadastrar</button>
+                            <button class="btn btn-primary ml-2" onclick="saveData()" type="submit">Cadastrar</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -91,11 +98,6 @@
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
     <script src="{{ asset('admin_assets/js/pages/datatables.init.js') }}"></script>
 
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="select2"]').select2()
-        });
-    </script>
 
     @parent
     <!-- third party js -->
@@ -134,6 +136,42 @@
 
 
         });
+    </script>
+
+    <script>
+        function saveData(){
+
+            $.ajax({
+                type: "POST",
+                url: '{{ route("network-pe.store") }}',
+                data: {
+                    hostname : $("#hostname").val(),
+                    routerid : $("#routerid").val(),
+                    ibgp : $("#ibgp").val(),
+                    vendor : $("#vendor").val(),
+                    family : $("#family").val(),
+                    protocol : $("#protocol").val(),
+                    porta : $("#porta").val(),
+                    user : $("#user").val(),
+                    senha : $("#senha").val(),
+                    clientId : '{{$clientId}}',
+                    _token : '{{ csrf_token() }}'
+                }
+            }).done(function( msg ) {
+                console.log(msg);
+                if(msg['status'] == 'ok') {
+                    $("#hostname").val("");
+                    $("#routerid").val("");
+                    $("#ibgp").val("");
+                    $("#vendor").val("");
+                    $("#family").val("");
+                    $("#protocol").val("");
+                    $("#porta").val("");
+                    $("#user").val("");
+                    $("#senha").val("");
+                }
+            });
+        }
     </script>
 
 @endsection

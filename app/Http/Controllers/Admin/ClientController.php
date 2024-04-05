@@ -22,7 +22,6 @@ class ClientController extends Controller
 
     public function index()
     {
-        $user = \App\User::all();
         $clients = $this->database->getReference('clientes')->getValue();
         return view('admin.client_home', compact('clients'));
     }

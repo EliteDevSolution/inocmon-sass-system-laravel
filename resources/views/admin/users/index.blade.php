@@ -31,6 +31,7 @@
                 <table id="datatable" class="table nowrap">
                     <thead>
                         <tr>
+                            <th></th>
                             <th width=30>
                                 {{ trans('cruds.user.fields.id') }}
                             </th>
@@ -54,6 +55,7 @@
                     <tbody>
                         @foreach($users as $key => $user)
                             <tr data-entry-id="{{ $user->id }}">
+                                <td></td>
                                 <td>
                                     {{ $user->id ?? '' }}
                                 </td>
@@ -77,19 +79,7 @@
                                         <span class="badge badge-success">{{ $user->status }}</span>
                                     @endif
                                 </td>
-                                <td>
-                                    @if($user->id != 1)
-                                    <a class="btn btn-xs btn-info" href="{{ route('users.edit', $user->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
 
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                    @endif
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -135,9 +125,9 @@
                 },
                 order: [[ 0, "asc" ]]
             });
-        
-        
+
+
         });
     </script>
-    
+
 @endsection

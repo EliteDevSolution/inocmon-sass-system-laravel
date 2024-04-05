@@ -31,7 +31,6 @@ class TrafficController extends Controller
 
         $buscaEquipamentos = $detailClientData['equipamentos'];
 
-        $mensagem = '';
         $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['transito'];
         $toSendData = [
             'buscaBgp' => $buscaBgpConexoes,
@@ -48,13 +47,11 @@ class TrafficController extends Controller
      */
     public function create(Request $req)
     {
-        $layout = true;
         $clientId = $req->query()['client_id'];
-        $clients = $this->database->getReference('clientes')->getValue();
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos= $detailClientData['equipamentos'];
         $cdns = $detailClientData['bgp']['interconexoes']['transito'];
-        return view('admin.upstreams.traffic.create', compact('layout','clientId','clients', 'buscaEquipamentos','cdns'));
+        return view('admin.upstreams.traffic.create', compact('clientId', 'buscaEquipamentos','cdns'));
 
     }
 
@@ -67,7 +64,7 @@ class TrafficController extends Controller
     public function store(Request $request)
     {
         $clientId = $request['clientId'];
-        $tipoConexao = "cdn";
+        $tipoConexao = "transito";
         $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
         $lastId = 0;
         foreach ($buscaBgpConexoes as $index => $value) {
@@ -106,6 +103,11 @@ class TrafficController extends Controller
 
         return response()->json([
                     'status' => 'ok',
+                    'addedData' => [
+                        'id' => $nextId,
+                        'remoteas' => $remoteas,
+                        'nomedogrupo' => $nomeDoGrupo
+                    ]
                 ]);
     }
 

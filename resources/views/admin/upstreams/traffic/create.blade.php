@@ -70,14 +70,9 @@
                             </select>
                         </div>
                         <div class="row ml-2 mt-2">
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox form-check">
-                                    <input type="checkbox" class="custom-control-input" id="check">
-                                    <label class="custom-control-label" for="invalidCheck">Bloquear clientes de trânsito</label>
-                                    <div class="invalid-feedback">
-                                        You must agree before submitting.
-                                    </div>
-                                </div>
+                            <div class="mt-lg-1">
+                                <input type="checkbox"  id="check">
+                                Bloquear clientes de trânsito
                             </div>
                             <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
                         </div>
@@ -157,6 +152,25 @@
                     $('#bgp02').val("");
                     $('#equip').val("");
                     $('#check').val("");
+                    var id = msg['addedData']['id'];
+                    var imgSrc = msg['addedData']['remoteas'];
+                    var text = msg['addedData']['nomedogrupo'];
+                    var name = text.concat("", id);
+                    console.log(name);
+                    var myList = document.getElementById('cdn');
+                    var newItem1 = document.createElement('li');
+                    var div1 = document.createElement('div');
+                    div1.className = 'p-md-2';
+                    var img1 = document.createElement('img');
+
+                    img1.src = '{{ asset('img/undefined.jpg') }}';
+                    img1.style.width = '30px';
+                    img1.style.height = '30px';
+                    var text = document.createTextNode(name);
+                    div1.appendChild(img1);
+                    div1.appendChild(text);
+                    newItem1.appendChild(div1);
+                    myList.appendChild(newItem1);
                 }
             });
         }

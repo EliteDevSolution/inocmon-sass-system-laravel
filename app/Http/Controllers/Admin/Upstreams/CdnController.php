@@ -4,18 +4,37 @@ namespace App\Http\Controllers\Admin\Upstreams;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use phpseclib\Net\SSH2;
+use phpseclib\Crypt\RSA;
+use phpseclib\Net\SCP;
 
 class CdnController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        $users = \App\User::all();
-        return view('admin.upstreams.cdn.index');
+        $clientId = $req->query()['client_id'];
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $buscaEquipamentos = $detailClientData['equipamentos'];
+        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['cdn'];
+
+        $toSendData = [
+            'buscaBgp' => $buscaBgpConexoes,
+            'buscaEquip' => $buscaEquipamentos
+        ];
+
+        return view('admin.upstreams.cdn.index', compact('clientId', 'toSendData'));
     }
 
     /**
@@ -23,10 +42,15 @@ class CdnController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $req)
     {
-        $users = \App\User::all();
-        return view('admin.upstreams.cdn.create', compact('users'));
+        $clientId = $req->query()['client_id'];
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $buscaEquipamentos= $detailClientData['equipamentos'];
+        $cdns = $detailClientData['bgp']['interconexoes']['cdn'];
+        $buscaBaseDadosIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->GetValue();
+
+        return view('admin.upstreams.cdn.create', compact('clientId', 'buscaEquipamentos','cdns', 'buscaBaseDadosIxbr'));
     }
 
     /**
@@ -37,7 +61,65 @@ class CdnController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $clientId = $request['clientId'];
+        $tipoConexao = "cdn";
+        $communityGroup = 4;
+        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
+        $lastId = 0;
+        foreach ($buscaBgpConexoes as $index => $value) {
+            $lastId = $index;
+        }
+        $nextId = $lastId + 1;
+        if($nextId < 10) {
+            $nextId = '0'.$nextId;
+        }
+        $community0 = $this->database->getReference('clientes/'.$clientId.'/bgp/community0')->getSnapshot()->GetValue();
+
+        $nome = $request['nome'];
+        $pop = $request['pop'];
+        $equipId = $request['equip'];
+        $nomeDoGrupo = 'CDN-'.$nextId.'-'.strtoupper($nome).'-'.strtoupper($pop);
+        $remoteas = $request['asn'];
+        $ipv401 = $request['ipv401'];
+        $ipv402 = $request['ipv402'];
+        $ipv601 = $request['ipv601'];
+        $ipv602 = $request['ipv602'];
+        $peid = $equipId;
+        $denycustomerin = $request['check'];
+
+
+        $novoBgp = [
+            'provedor'  => strtoupper($nome),
+            'pop'    => strtoupper($pop),
+            'remoteas'    => $remoteas,
+            'ipv4-01'    => $ipv401,
+            'ipv4-02'    => $ipv402,
+            'ipv6-01'    => $ipv601,
+            'ipv6-02'    => $ipv602,
+            'peid'    => $peid,
+            'denycustomerin'    => $denycustomerin,
+            'nomedogrupo'   => $nomeDoGrupo,
+            'communities' => [
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$nextId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$nextId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$nextId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$nextId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$nextId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$nextId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$nextId.'6'
+            ],
+        ];
+
+	    $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao.'/'.$nextId)->set($novoBgp);
+
+        return response()->json([
+            'status' => 'ok',
+            'addedData' => [
+                'id' => $nextId,
+                'remoteas' => $remoteas,
+                'nomedogrupo' => $nomeDoGrupo
+            ]
+        ]);
     }
 
     /**
@@ -71,7 +153,34 @@ class CdnController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $toSaveData = [
+            'remoteas' => $request['asnVal'],
+            'pop' => $request['popVal']
+        ];
+
+        $cdnId = $request['cdnId'];
+        $clientId = $request['clientId'];
+
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $buscaEquipamentos = $detailClientData['equipamentos'];
+        $buscaEquipamentos = $detailClientData['equipamentos'];
+        $equipPeidPath = $detailClientData['bgp']['interconexoes']['cdn'][$cdnId]['peid'];
+
+        $toSaveAnotherData = [
+            'hostname' => $request['peVal']
+        ];
+
+        try {
+            $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/cdn/'.$cdnId.'/')->update($toSaveData);
+            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
+            return response()->json([
+                'status' => 'ok'
+            ]);
+        } catch (Throwable $th) {
+            return response()->json([
+                'status' => 'failed'
+            ]);
+        }
     }
 
     /**

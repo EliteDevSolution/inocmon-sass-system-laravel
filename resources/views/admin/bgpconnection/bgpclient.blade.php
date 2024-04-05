@@ -43,43 +43,37 @@
                     <h2 class="header-title text-blue text-center">Novo cdn</h2>
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">ID do cdn</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="02" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">Nome cdn</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="Nome transito" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">PoP de acesso</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="PoP de accesso" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Nome do Client</label>
+                            <input type="text" name="nome" id="nome" class="form-control mb-1" />
+                            <label class="mb-1 font-weight-bold text-muted">ASN do cliente</label>
+                            <input type="text" name="asn" id="asn" class="form-control mb-1" />
+                            <label class="mb-1 font-weight-bold text-muted">POP DO ACESSO</label>
+                            <input type="text" name="pop" id="pop" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">blocos-ipv4</label>
+                            <input type="text" name="blocosipv4" id="blocosipv4" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">ASN do cdn</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="ASN do transito" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">IPV4 remoto gbp 01</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="IPV4 remoto gbp 01" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">IPV4 remoto gbp 02</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="IPV4 remoto gbp 01" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">blocos-ipv6</label>
+                            <input type="text" name="blocosipv6" id="blocosipv6" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV4 lado provedor</label>
+                            <input type="text" name="ipv4pro" id="ipv4pro" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV4 lado cliente</label>
+                            <input type="text" name="ipv4client" id="ipv4client" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV6 lado provedor</label>
+                            <input type="text" name="ipv6pro" id="ipv6pro" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">IPV6 remoto gbp 01</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="IPV6 remoto gbp 01" style=" z-index: 2; background: transparent;"/>
-                            <label class="mb-1 font-weight-bold text-muted">IPV6 remoto gbp 02</label>
-                            <input type="text" name="country" id="autocomplete-ajax" class="form-control mb-1" placeholder="IPV6 remoto gbp 02" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV6 lado cliente</label>
+                            <input type="text" name="ipv6client" id="ipv6client" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">ASN de clientes recursivos</label>
+                            <input type="text" name="recursivos" id="recursivos" class="form-control mb-1" placeholder="IPV6 remoto gbp 01" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Equipamento PE</label>
-                            <select class="form-control" data-toggle="select2">
-                                <option>Selecione o PE</option>
-                                <option>SW3-PE-SIS-DTCL-01</option>
+                            <select class="form-control" id="equip" data-toggle="select2">
+                                @foreach ( $buscaEquipamentos as $equipIndex => $equipVal )
+                                    <option value="$equipIndex">{{$equipVal['hostname']}}</option>
+                                @endforeach
                             </select>
-                        </div>
-                        <div class="row ml-2 mt-2">
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox form-check">
-                                    <input type="checkbox" class="custom-control-input" id="invalidCheck" required>
-                                    <label class="custom-control-label" for="invalidCheck">Bloquear clientes de trânsito</label>
-                                    <div class="invalid-feedback">
-                                        You must agree before submitting.
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary ml-2 " type="submit">Cadastrar</button>
+                            <button class="btn btn-primary mt-4 " type="" onclick="saveData()">Cadastrar</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -88,24 +82,111 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table id="datatable" class="table nowrap">
-                        <thead>
-                        <tr>
-                            <th>
-                                NOME DO GRUPO
-                            </th>
-                            <th>
-                                ASN
-                            </th>
-                            <th>
-                                POP
-                            </th>
-                            <th>
-                                PE
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
+                    <div id="accordion">
+                        <div class="card mb-1">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="m-0">
+                                    <a class="text-dark" data-toggle="collapse" href="#collapseOne" aria-expanded="true">
+                                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                        Mostrar/ocultar modo avançado
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseOne" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+                                <div class="card-body">
+                                    <div id="accordion1">
+                                        <div class="card mb-1">
+                                            <div class="card-header" id="headingTwo">
+                                                <h5 class="m-0">
+                                                    <a class="text-dark" data-toggle="collapse" href="#collapseTwo" aria-expanded="true">
+                                                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                        Mostrar/ocultar communities globaix
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseTwo" class="collapse hide" aria-labelledby="headingTwo" data-parent="#accordion1">
+                                                <div class="card-body">
+                                                    <ul>
+                                                        <div class="p-1">
+                                                            <input type="checkbox" id="global" value="{{$community}}:999"/> EXPORT-GLOBAL ({{$community}}:999)
+                                                        </div>
+                                                        <div class="p-1">
+                                                            <input type="checkbox" id="transito" value="{{$community}}910"/> NO-EXPORT-ALL-TRANSIT ({{$community}}:910)
+                                                        </div>
+                                                        <div class="p-1">
+                                                            <input type="checkbox" id="ix" value="{{$community}}920"/> NO-EXPORT-ALL-IX ({{$community}}:920)
+                                                        </div>
+                                                        <div class="p-1">
+                                                            <input type="checkbox" id="peering" value="{{$community}}930"/> NO-EXPORT-ALL-PEERING ({{$community}}:930)
+                                                        </div>
+                                                        <div class="p-1">
+                                                            <input type="checkbox" id="cdn" value="{{$community}}940"/> NO-EXPORT-ALL-CDN ({{$community}}:940)
+                                                        </div>
+                                                        <div class="p-1">
+                                                            <input type="checkbox" value="no-export"/> NO-EXPORT-GLOBAL (no-export)
+                                                        </div>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="accordion2">
+                                        <div class="card mb-1">
+                                            <div class="card-header" id="heading3">
+                                                <h5 class="m-0">
+                                                    <a class="text-dark" data-toggle="collapse" href="#collapse3" aria-expanded="true">
+                                                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                        Mostrar/ocultar communities para trânsito
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapse3" class="collapse hide" aria-labelledby="heading3" data-parent="#accordion2">
+                                                <div class="card-body">
+                                                    @foreach ($buscaCommunitiesTransito as $transitoIndex => $transitoValue)
+                                                        <p class="p-1 text-success font-15 mb-0">
+                                                            {{$transitoValue['nomedogrupo']}}
+                                                        </p>
+                                                        @foreach ($transitoValue['communities'] as $communityIndex => $communitValue)
+                                                            <div  class="p-1">
+                                                                <input type="checkbox" class="checkbox" name="community" value="{{$communitValue}}"/> {{$communityIndex}}
+                                                            </div>
+                                                        @endforeach
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="accordion3">
+                                        <div class="card mb-1">
+                                            <div class="card-header" id="heading4">
+                                                <h5 class="m-0">
+                                                    <a class="text-dark" data-toggle="collapse" href="#collapse4" aria-expanded="true">
+                                                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                        Mostrar/ocultar communities para IX
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapse4" class="collapse hide" aria-labelledby="heading4" data-parent="#accordion3">
+                                                <div class="card-body">
+                                                    @foreach ($buscaCommunitiesIx as $ixIndex => $ixValue)
+                                                        <p class="p-1 text-success font-15 mb-0">
+                                                            {{$ixValue['nomedogrupo']}}
+                                                        </p>
+                                                        @foreach ($ixValue['communities'] as $communityIndex => $communitValue)
+                                                            <div  class="p-1">
+                                                                <input type="checkbox" name="community" class="checkbox" value="{{$communitValue}}"/> {{$communityIndex}}
+                                                            </div>
+                                                        @endforeach
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -163,4 +244,58 @@
         });
     </script>
 
+    <script>
+    function saveData(){
+        var communityArray = [];
+        $('input:checkbox[name=community]').each(function()
+        {
+            if($(this).is(':checked'))
+                communityArray.push($(this).val());
+        });
+        $.ajax({
+            type: "POST",
+            url: '{{ route("bgpconnection-client.store") }}',
+            data: {
+                nome : $("#nome").val(),
+                asn : $("#asn").val(),
+                pop : $("#pop").val(),
+                blocosipv4 : $("#blocosipv4").val(),
+                blocosipv6 : $("#blocosipv6").val(),
+                ipv4pro : $("#ipv4pro").val(),
+                ipv4client : $("#ipv4client").val(),
+                ipv6pro : $("#ipv6pro").val(),
+                ipv6client : $("#ipv6client").val(),
+                recursivos : $("#recursivos").val(),
+                equip : $("#equip").val(),
+                global : $("#global").val(),
+                ix : $("#ix").val(),
+                peering : $("#peering").val(),
+                cdn : $("#cdn").val(),
+                community : communityArray,
+                clientId : '{{$clientId}}',
+                _token : '{{ csrf_token() }}'
+            }
+        }).done(function( msg ) {
+            console.log(msg);
+            if(msg['status'] == 'ok') {
+                console.log(msg['status']);
+                var ele=document.getElementsByClassName('checkbox');
+                for(var i=0; i<ele.length; i++){
+                    if(ele[i].type=='checkbox')
+                        ele[i].checked=false;
+                }
+                $("#nome").val("");
+                $("#asn").val("");
+                $("#pop").val("");
+                $("#blocosipv4").val("");
+                $("#blocosipv6").val("");
+                $("#ipv4pro").val("");
+                $("#ipv4client").val("");
+                $("#ipv6pro").val("");
+                $("#ipv6client").val("");
+                $("#recursivos").val("");
+            }
+        });
+    }
+</script>
 @endsection

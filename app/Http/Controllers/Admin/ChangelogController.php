@@ -5,16 +5,25 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ChangeController extends Controller
+class ChangelogController extends Controller
 {
+
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        //
+        $clientId = $req->query()['client_id'];
+        $changelogData = $this->database->getReference('lib/changelog')->getSnapshot()->getValue();
+        return view('admin.changelog', compact('clientId', 'changelogData'));
     }
 
     /**
