@@ -80,8 +80,8 @@
                                         <h4 class="header-title mb-2">
                                             A configuração candidata pode ser revisada no botão abaixo:
                                         </h4>
-                                        <div id="con-close-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-                                            <div class="modal-dialog">
+                                        <div id="con-close-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">PR hostName : {{$toSendData['hostName']}}</h4>
@@ -94,8 +94,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-info waves-effect waves-light">Fetchar</button>
+                                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -174,8 +173,8 @@
                                     @endforeach
                                 </div>
                                 @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
-                                    <div id="modal{{$relatorIndex}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-                                        <div class="modal-dialog">
+                                    <div id="modal{{$relatorIndex}}" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                        <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h4 class="modal-title">Host : {{$toSendData['hostName']}}</h4>
@@ -189,8 +188,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-info waves-effect waves-light">Fetchar</button>
+                                                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
                                                 </div>
                                             </div>
                                         </div>

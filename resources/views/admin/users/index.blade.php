@@ -79,7 +79,19 @@
                                         <span class="badge badge-success">{{ $user->status }}</span>
                                     @endif
                                 </td>
+                                <td>
+                                    @if($user->id != 1)
+                                    <a class="btn btn-xs btn-info" href="{{ route('users.edit', $user->id) }}">
+                                        Edit
+                                    </a>
 
+                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                    </form>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -125,7 +137,6 @@
                 },
                 order: [[ 0, "asc" ]]
             });
-
 
         });
     </script>

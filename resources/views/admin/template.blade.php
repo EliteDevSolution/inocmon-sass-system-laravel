@@ -108,7 +108,7 @@
                                                             <textarea rows = 10 cols = 100 id="{{$index}}">
                                                                 {{$value}}
                                                             </textarea>
-                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
+                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
                                                                 Garava
                                                             </button>
                                                         </div>

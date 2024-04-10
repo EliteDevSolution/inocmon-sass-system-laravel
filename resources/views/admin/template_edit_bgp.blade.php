@@ -41,7 +41,7 @@
                 <p class="header-title mb-2">Nova Family</p>
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted"> Vendor </label>
-                    <select class="form-control custom-input" id="vendor" required>
+                    <select class="form-control custom-input" id="vendor" required >
                         @foreach ($templates as $indexTemp => $valueTemp)
                             <option value="{{$indexTemp}}">
                                 {{$indexTemp}}
@@ -108,7 +108,7 @@
                                                             <textarea rows = 10 cols = 100 id="{{$index}}">
                                                                 {{$value}}
                                                             </textarea>
-                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
+                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
                                                                 Garava
                                                             </button>
                                                         </div>

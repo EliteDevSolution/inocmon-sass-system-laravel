@@ -58,7 +58,7 @@
                 </div>
                 <div class="group-input">
                     <label class="mb-1 font-weight-bold text-muted">Nova Family</label>
-                    <select class="form-control" id="novafamily" required data-toggle="select2">
+                    <select class="form-control" id="novafamily" required >
                         @foreach ($templates as $indexTemp => $valueTemp)
                             <option value="{{$indexTemp}}">
                                 {{$indexTemp}}
@@ -78,7 +78,7 @@
                 </div>
                 <div class="group-input">
                     <label class="mb-1 font-weight-bold text-muted">Nova config section</label>
-                    <select class="form-control" id="configsection" required data-toggle="select2">
+                    <select class="form-control" id="configsection" required>
                         @foreach ($templates as $indexTemp => $valueTemp)
                             @foreach ($templates[$indexTemp] as $index => $value)
                                 <option value="{{$indexTemp.'/'.$index}}">
@@ -123,7 +123,7 @@
                                                             <textarea rows = 10 cols = 100 id="{{$index}}">
                                                                 {{$value}}
                                                             </textarea>
-                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
+                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
                                                                 Garava
                                                             </button>
                                                         </div>

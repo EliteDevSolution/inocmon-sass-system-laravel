@@ -99,6 +99,7 @@ class TempEditController extends Controller
                 } catch (\Throwable $th) {
                     $status = "failed";
                 }
+                $notification = 'Family '.$newFamily.' cadastrada!';
             }
         } else if($todo == 'config-section') {
             if(isset($family)) {
@@ -112,6 +113,7 @@ class TempEditController extends Controller
                     $status = "failed";
                 }
             }
+            $notification = 'Config Section'.$family.'  cadastrada!';
         } else {
             try {
                 $status = 'ok';
@@ -122,9 +124,11 @@ class TempEditController extends Controller
             } catch (\Throwable $th) {
                 $status = 'failed';
             }
+            $notification = 'dados invalidos';
         }
         return response()->json([
-            'status' => $status
+            'status' => $status,
+            'notification' => $notification
         ]);
     }
 

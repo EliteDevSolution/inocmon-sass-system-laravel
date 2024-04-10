@@ -86,7 +86,7 @@ class TempEditFirstController extends Controller
         $secondId = $request['secondId'];
         $thirdId = $request['thirdId'];
         $textVal = $request['textVal'];
-
+        $notification = '';
         if($todo == 'family-update') {
             if(isset($newFamily)) {
                 try {
@@ -98,6 +98,7 @@ class TempEditFirstController extends Controller
                 } catch (\Throwable $th) {
                     $status = "failed";
                 }
+                $notification = 'Family '.$newFamily.' cadastrada!';
             }
         } else if($todo == 'config-section') {
             if(isset($family)) {
@@ -110,6 +111,7 @@ class TempEditFirstController extends Controller
                 } catch (\Throwable $th) {
                     $status = "failed";
                 }
+                $notification = 'Config Section'.$family.'  cadastrada!';
             }
         } else {
             try {
@@ -121,9 +123,11 @@ class TempEditFirstController extends Controller
             } catch (\Throwable $th) {
                 $status = 'failed';
             }
+            $notification = 'dados invalidos';
         }
         return response()->json([
-            'status' => $status
+            'status' => $status,
+            'notification' => $notification
         ]);
     }
 

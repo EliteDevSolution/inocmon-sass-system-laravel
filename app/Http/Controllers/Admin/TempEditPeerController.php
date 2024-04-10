@@ -86,6 +86,7 @@ class TempEditPeerController extends Controller
         $thirdId = $request['thirdId'];
         $textVal = $request['textVal'];
         $newVendor = $request['novaVendor'];
+        $notification = '';
 
         if($todo == 'family-update') {
             if(isset($newFamily)) {
@@ -98,6 +99,7 @@ class TempEditPeerController extends Controller
                 } catch (\Throwable $th) {
                     $status = "failed";
                 }
+                $notification = 'Family '.$newFamily.' cadastrada!';
             }
         } else if($todo == 'config-section') {
             if(isset($family)) {
@@ -110,6 +112,7 @@ class TempEditPeerController extends Controller
                 } catch (\Throwable $th) {
                     $status = "failed";
                 }
+                $notification = 'Config Section'.$family.'  cadastrada!';
             }
         } else if($todo == 'vendor-update') {
             if(isset($newVendor)) {
@@ -123,6 +126,7 @@ class TempEditPeerController extends Controller
                     $status = "failed";
                 }
             }
+            $notification = 'Config Section'.$family.'  cadastrada!';
         }
         else {
             try {
@@ -134,9 +138,11 @@ class TempEditPeerController extends Controller
             } catch (\Throwable $th) {
                 $status = 'failed';
             }
+            $notification = 'dados invalidos';
         }
         return response()->json([
-            'status' => $status
+            'status' => $status,
+            'notificatoni' => $notification
         ]);
     }
 
