@@ -267,7 +267,6 @@ class MplsDetailController extends Controller
             $buscaConfigs[$indexConfig] = $config;
             $configGlobal .= $config;
         }
-
         $rrTemplateData = $this->database->getReference('lib/templates/rr')->getSnapshot()->getValue();
         foreach ($buscaRr as $buscaRrIds => $rrVal) {
             if($buscaRrIds != 0) {
@@ -279,11 +278,11 @@ class MplsDetailController extends Controller
                 $configRr = str_replace("%asn%",$asn, $configRr);
                 $configRr = str_replace("%hostname%",$hostName, $configRr);
                 $configRr = str_replace("%grupo-ibgp%",$grupoIbgp, $configRr);
+                $buscaRr[$buscaRrIds]['toLunchConfig'] = $configRr;
                 $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipId.'/configs/rr'.$buscaRrIds)->set($configRr);
             }
-            $buscaRr[$buscaRrIds] = $config;
         }
-
+        // dd($buscaRr[1]['toLunchConfig']);
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
         $toSendData = [

@@ -98,36 +98,40 @@
                                 </td>
                             </tr>
                             @foreach ($toSendData['buscaRr'] as $indexRr => $rrVal)
-                                <tr>
-                                    <td>
-                                        <div class="row">
-                                            <div class="col-xl-12">
-                                                <div id="accordion">
-                                                    <div class="card mb-1">
-                                                        <div class="card-header" id="headingOne{{$indexRr}}">
-                                                            <h5 class="m-0">
-                                                                <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexRr}}" aria-expanded="true">
-                                                                    <i class="mdi mdi-help-circle mr-1 text-primary"></i>
-                                                                    Mostrar/ocultar config RR {{$indexRr}}
-                                                                </a>
-                                                            </h5>
-                                                        </div>
+                                @if($rrVal != null)
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-xl-12">
+                                                    <div id="accordion">
+                                                        <div class="card mb-1">
+                                                            <div class="card-header" id="headingOne{{$indexRr}}">
+                                                                <h5 class="m-0">
+                                                                    <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexRr}}" aria-expanded="true">
+                                                                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                                        Mostrar/ocultar config RR {{$indexRr}}
+                                                                    </a>
+                                                                </h5>
+                                                            </div>
 
-                                                        <div id="collapseOne{{$indexRr}}" class="collapse hide" aria-labelledby="headingOne{{$indexRr}}" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                {!! nl2br($rrVal) !!}
+                                                            <div id="collapseOne{{$indexRr}}" class="collapse hide" aria-labelledby="headingOne{{$indexRr}}" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    @if(isset($rrVal['toLunchConfig']))
+                                                                        {!! nl2br($rrVal['toLunchConfig']) !!}
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td style="text-align : center">
-                                        <input class="mt-1" type="checkbox" id="" name="buscaRr" value="{{$indexRr}}">
-                                        <label for="base"> selecionar RR </label>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td style="text-align : center">
+                                            <input class="mt-1" type="checkbox" id="" name="buscaRr" value="{{$indexRr}}">
+                                            <label for="base"> selecionar RR </label>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                             <tr>
                                 <td> <label for="id">Token: {{$toSendData['configToken']}}</label></td>
