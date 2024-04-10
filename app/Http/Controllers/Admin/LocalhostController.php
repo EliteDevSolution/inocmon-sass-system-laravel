@@ -24,6 +24,7 @@ class LocalhostController extends Controller
     public function applyBaseConfig(Request $req)
     {
         if(request()->ajax()) {
+            $status = '';
             $clientId = $req['clientId'];
             $proxyId = $req['proxyId'];
 
@@ -32,19 +33,17 @@ class LocalhostController extends Controller
             $hostName = $detailClientData['sondas'][$req['proxyId']]['hostname'];
             $proxyPortaSsh = $detailClientData['sondas'][$req['proxyId']]['portassh'];
             $proxyUser = $detailClientData['sondas'][$req['proxyId']]['user'];
-            $proxyPwd = $detailClientData['sondas'][$req['proxyId']]['pwd'];
-            $userInocmon = $detailClientData['seguranca']['userinocmon'];
-            $senhaInocmon = $detailClientData['seguranca']['senhainocmon'];
-            $proxyUser = $detailClientData['sondas'][$proxyId]['user'];
-            $proxyPwd = $detailClientData['sondas'][$proxyId]['pwd'];
+            $proxyPwd = $detailClientData['sondas'][$req['proxyId']]['pwd'] ?? '';
+            $userInocmon = $detailClientData['seguranca']['userinocmon'] ?? '';
+            $senhaInocmon = $detailClientData['seguranca']['senhainocmon'] ?? '';
 
             $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
-            $proxyIp4 = $detailClientData['sondas'][$req['proxyId']]['ipv4'];
-            $platform = $detailClientData['sondas'][$req['proxyId']]['plataforma'];
-            $so = $detailClientData['sondas'][$req['proxyId']]['so'];
-            $community0 = $detailClientData['bgp']['community0'];
-            $asn = $detailClientData['bgp']['asn'];
-            // $buscarRelators = $detailClientData['sondas'][$req['proxyId']]['relatorios'];
+            $proxyIp4 = $detailClientData['sondas'][$req['proxyId']]['ipv4'] ;
+            $platform = $detailClientData['sondas'][$req['proxyId']]['plataforma'] ?? '';
+            $so = $detailClientData['sondas'][$req['proxyId']]['so'] ?? '';
+            $community0 = $detailClientData['bgp']['community0'] ?? '';
+            $asn = $detailClientData['bgp']['asn'] ?? '';
+            // $buscarRelators = $detailClientData['sondas'][$req['proxyId']]['relatorios'] ?? '';
             $buscaSondas = $detailClientData['sondas'];
             $buscaEquipmet = $detailClientData['equipamentos'];
 
@@ -69,8 +68,12 @@ class LocalhostController extends Controller
 
             $configFileName = 'CONFIG-PROXY'.$proxyId.'-'.$hostName.'-'.$req['clientId'].'.sh';
             $uploadFilePath = 'configuracoes/'.$configFileName;
-
-            Storage::put($uploadFilePath, $configBaseFinal);
+            try {
+                Storage::put($uploadFilePath, $configBaseFinal);
+                $status = 'ok';
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
 
             $this->database->getReference($debugDir)->set('arquivo '.$configFileName.' gerado com sucesso! preparando transferência...');
 
@@ -82,55 +85,62 @@ class LocalhostController extends Controller
 
             $configToken = bin2hex(random_bytes(64));
             $configToken = substr($configToken,0, -85);
-            // $_SESSION['token_config_rr'] = $configToken;
+            $_SESSION['token_config_rr'] = $configToken;
 
-            // if (!$ssh->login($proxyUser, $proxyPwd)) {
-            //     $this->database->getReference($debugDir)->set('falha de login no proxy...');
-            // } else {
-            //     $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+            try {
+                if (!$ssh->login($proxyUser, $proxyPwd)) {
+                    $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                    $status = 'failed';
+                } else {
+                    $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
 
-			// 	$scp = new SCP($ssh);
-            //     $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
-			// 	$scp->put($configFileName, 'configuracoes/'.$configFileName, NET_SCP_LOCAL_FILE);
+                    $scp = new SCP($ssh);
+                    $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
+                    $scp->put($configFileName, 'configuracoes/'.$configFileName, NET_SCP_LOCAL_FILE);
 
 
-			// 	$lineCount = substr_count($configBaseFinal, "\n");
-			// 	$this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
-			// 	$comandoRemoto = $ssh->exec('sh '.$configFileName.' >> '.$debugFile.' & ');
+                    $lineCount = substr_count($configBaseFinal, "\n");
+                    $this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
+                    $comandoRemoto = $ssh->exec('sh '.$configFileName.' >> '.$debugFile.' & ');
 
-            //     for ($i = 0; $i < $lineCount; $i++){
-            //         $tempoEstimado = ($lineCount - $i);
-            //         $progresso = ($i / $lineCount  * 100);
-            //         $progresso = round($progresso, 0);
-            //         $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
-            //     }
-            // }
+                    for ($i = 0; $i < $lineCount; $i++){
+                        $tempoEstimado = ($lineCount - $i);
+                        $progresso = ($i / $lineCount  * 100);
+                        $progresso = round($progresso, 0);
+                        $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                    }
+                    $status = 'ok';
+                }
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
 
-            // $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
+            $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
 
-            // $lineCount = 10;
-            // for ($i = 0; $i < $lineCount; $i++)
-            // {
-            //     $tempoEstimado = ($lineCount - $i);
-            //     $progresso = ($i / $lineCount  * 100);
-            //     $progresso = round($progresso, 0);
-            //     $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
-            // }
+            $lineCount = 10;
+            for ($i = 0; $i < $lineCount; $i++)
+            {
+                $tempoEstimado = ($lineCount - $i);
+                $progresso = ($i / $lineCount  * 100);
+                $progresso = round($progresso, 0);
+                $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
+            }
 
-            // $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
-            // $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
+            $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+            $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
 
-            // /*gravar relatorio */
-            // $now = date("h-i-sa").'-'.date("Y-M-d");
-            // $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/relatorios/'.$now)->set($relatorio);
+            /*gravar relatorio */
+            $now = date("h-i-sa").'-'.date("Y-M-d");
+            $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/relatorios/'.$now)->set($relatorio);
 
-            // $this->database->getReference($debugDir)->set('Configuração concluída!');
-            // sleep(5);
-            // $this->database->getReference($debugDir)->set('idle');
+            $this->database->getReference($debugDir)->set('Configuração concluída!');
+            sleep(5);
+            $this->database->getReference($debugDir)->set('idle');
+
             $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
 
             return response()->json([
-                'status' => 'ok',
+                'status' => $status,
                 'console_data' => $consoleData
             ]);
         }
@@ -138,18 +148,21 @@ class LocalhostController extends Controller
 
     public function updataIncoConfig(Request $req)
     {
+        $status = '';
         $proxyId = $req['proxyId'];
         $clientId = $req['clientId'];
         $debugDir = 'clientes/'.$clientId.'/sondas/'.$proxyId.'/debug';
         $debugFile = 'DEBUG-'.$clientId;
         $getTemplateUpdate =  $this->database->getReference('lib/templates/proxy/proxy-update-config')->getSnapshot()->getValue();
-
+        $configToken = bin2hex(random_bytes(64));
+        $configToken = substr($configToken,0, -85);
+        $_SESSION['token_config_rr'] = $configToken;
 	    $proxyData = $this->database->getReference('clientes/' . $clientId . '/sondas/'.$proxyId)->getSnapshot()->getValue();
         $proxyHostName = $proxyData['hostname'];
         $proxyIpv4 = $proxyData['ipv4'];
         $proxyPortaSsh = $proxyData['portassh'];
         $proxyUser = $proxyData['user'];
-        $proxyPwd = $proxyData['pwd'];
+        $proxyPwd = $proxyData['pwd'] ?? '';
 	    $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         $userInocmon = $detailClientData['seguranca']['userinocmon'];
         $senhaInocmon = $detailClientData['seguranca']['senhainocmon'];
@@ -163,18 +176,74 @@ class LocalhostController extends Controller
         $configBaseFinal = str_replace("<br />","",$configBaseSalva);
         $configFileName = 'CONFIG-PROXY'.$proxyId.'-'.$proxyHostName.'-'.$clientId.'.sh';
 	    $uploadFilePath = 'configuracoes/'.$configFileName;
-        Storage::put($uploadFilePath, $configBaseFinal);
+        try {
+            Storage::put($uploadFilePath, $configBaseFinal);
+            $status = 'ok';
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+
 	    $this->database->getReference($debugDir)->set('arquivo '.$configFileName.' gerado com sucesso! preparando transferência...');
 	    $this->database->getReference($debugDir)->set('conectando ao proxy: '.$proxyHostName.' '.$proxyIpv4.' '.$proxyPortaSsh.' '.$proxyUser.' '.base64_encode($proxyPwd));
 	    $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
-        // if (!$ssh->login($proxyUser, $proxyPwd)) {
-		// 	$this->database->getReference($debugDir)->set('falha de login no proxy...');
-        // } else {
-            /*gerenciar-config*/
-        // }
+
+        try {
+            if (!$ssh->login($proxyUser, $proxyPwd)) {
+                $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                $status = 'failed';
+            } else {
+                $output = shell_exec('echo \'config begin -> '.$configToken.'\' >> configuracoes/'.$debugFile.'.log');
+                #echo "<pre>$output</pre>";
+                $scp = new SCP($ssh);
+                $this->database->getReference($debugDir)->set('iniciando copia dos arquivos...');
+                $scp->put('inoc-config', '/usr/bin/inoc-config', 1);
+                $scp->put('inoc-command', '/usr/bin/inoc-command', 1);
+
+                $lineCount = substr_count($configUpdateFinal, "\n");
+                $this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$proxyHostName.'... tempo estimado: '.$lineCount.'s');
+                $output = shell_exec('inoc-config '.$proxyIpv4.' '.$proxyUser.' \''.$proxyPwd.'\' '.$proxyPortaSsh.' configuracoes/'.$configFileName.' configuracoes/'.$debugFile.' &');
+                sleep(5);
+
+                for ($i = 0; $i < $lineCount; $i++){
+                    $tempoEstimado = ($lineCount - $i);
+                    $progresso = ($i / $lineCount  * 100);
+                    $progresso = round($progresso, 0);
+                    $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$proxyHostName.' tempo estimado: '.$tempoEstimado.'s ');
+                    sleep(1);
+                }
+                $status = 'failed';
+            }
+            $status = 'ok';
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+
+        $this->database->getReference($debugDir)->set('atualização finalizada! Gerando relatório...');
+
+        $lineCount = 10;
+        for ($i = 0; $i < $lineCount; $i++)
+        {
+            $tempoEstimado = ($lineCount - $i);
+            $progresso = ($i / $lineCount  * 100);
+            $progresso = round($progresso, 0);
+            $this->database->getReference($debugDir)->set('atualização finalizada! Gerando relatório...'.$progresso.'%');
+        }
+
+        $relatorio = shell_exec('awk \'/config begin -> '.$configToken.'/ { f 1= 1 } f\' configuracoes/'.$debugFile.'.log');
+        #echo "<pre>$relatorio</pre>";
+        $this->database->getReference($debugDir)->set('atualização finalizada! Gerando relatório...100%');
+        sleep(1);
+
+        /*gravar relatorio */
+        $now = date("h-i-sa").'-'.date("Y-M-d");
+        $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/relatorios/'.$now)->set($relatorio);
+
+        $this->database->getReference($debugDir)->set('atualização concluída!');
+        $this->database->getReference($debugDir)->set('idle');
+
         $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
         return response()->json([
-            'status' => 'ok',
+            'status' => $status,
             'console_data' => $consoleData
         ]);
     }
@@ -220,7 +289,7 @@ class LocalhostController extends Controller
         $configBaseFinal = nl2br($configBaseFinal);
         $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/configs/baseconfig')->set($configBaseFinal);
 
-        $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
+        $consoleData = $detailClientData['sondas'][$proxyId]['debug'] ?? '';
         $toSendData = [
             'console_data' => $consoleData,
             'proxy_id' => $proxyId,

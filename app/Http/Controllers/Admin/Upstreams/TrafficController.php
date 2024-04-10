@@ -26,8 +26,10 @@ class TrafficController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $dataRef = $this->database->getReference('clientes/' .$clientId);
 
         $buscaEquipamentos = $detailClientData['equipamentos'];
+
 
         $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['transito'];
         $toSendData = [

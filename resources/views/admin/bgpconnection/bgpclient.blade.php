@@ -70,7 +70,7 @@
                             <label class="mb-1 font-weight-bold text-muted">Equipamento PE</label>
                             <select class="form-control" id="equip" data-toggle="select2">
                                 @foreach ( $buscaEquipamentos as $equipIndex => $equipVal )
-                                    <option value="$equipIndex">{{$equipVal['hostname']}}</option>
+                                    <option value="{{$equipIndex}}">{{$equipVal['hostname'] ?? ''}}</option>
                                 @endforeach
                             </select>
                             <button class="btn btn-primary mt-4 " type="" onclick="saveData()">Cadastrar</button>
@@ -108,7 +108,7 @@
                                                 <div class="card-body">
                                                     <ul>
                                                         <div class="p-1">
-                                                            <input type="checkbox" id="global" value="{{$community}}:999"/> EXPORT-GLOBAL ({{$community}}:999)
+                                                            <input type="checkbox" checked id="global" value="{{$community}}:999"/> EXPORT-GLOBAL ({{$community}}:999)
                                                         </div>
                                                         <div class="p-1">
                                                             <input type="checkbox" id="transito" value="{{$community}}910"/> NO-EXPORT-ALL-TRANSIT ({{$community}}:910)

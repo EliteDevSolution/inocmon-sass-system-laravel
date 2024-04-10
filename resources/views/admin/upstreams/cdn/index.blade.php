@@ -171,9 +171,9 @@
 
             row = document.getElementById(buscarSondaId);
 
-            var asn = row.querySelector('td:nth-child(2)').textContent;
-            var pop = row.querySelector('td:nth-child(3)').textContent;
-            var pe = row.querySelector('td:nth-child(4)').textContent;
+            var asn = row.querySelector('td:nth-child(2)').innerText;
+            var pop = row.querySelector('td:nth-child(3)').innerText;
+            var pe = row.querySelector('td:nth-child(4)').innerText;
 
             $('#asnVal').val(asn);
             $('#popVal').val(pop);
@@ -209,9 +209,9 @@
                 }
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
-                    row.querySelector('td:nth-child(2)').textContent = asnVal;
-                    row.querySelector('td:nth-child(3)').textContent = popVal;
-                    row.querySelector('td:nth-child(4)').textContent = peVal;
+                    row.querySelector('td:nth-child(2)').innerText = asnVal;
+                    row.querySelector('td:nth-child(3)').innerText = popVal;
+                    row.querySelector('td:nth-child(4)').innerText = peVal;
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"

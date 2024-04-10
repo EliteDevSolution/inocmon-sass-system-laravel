@@ -19,6 +19,7 @@ class TemplateConfigController extends Controller
 
     public function applyConfig(Request $request)
     {
+        $status = "";
         $clientId = $request['clientId'];
         $proxyId = $request['proxyId'];
         $tipoConexao = $request['tipoConexao'];
@@ -47,9 +48,9 @@ class TemplateConfigController extends Controller
         else {
             $routerId = $targetPeRouterId;
             $hostName = $targetPeName;
-            $porta = $detailClientData['equipamentos'][$targetPeId]['porta'];
-            $user = $detailClientData['equipamentos'][$targetPeId]['user'];
-            $pwd = $detailClientData['equipamentos'][$targetPeId]['pwd'];
+            $porta = $detailClientData['equipamentos'][$targetPeId]['porta'] ?? '';
+            $user = $detailClientData['equipamentos'][$targetPeId]['user'] ?? '';
+            $pwd = $detailClientData['equipamentos'][$targetPeId]['pwd'] ?? '';
 
             if (!$user) { $user = $userInocmon; }
             if (!$pwd) { $pwd = $senhaInocmon; }
@@ -74,9 +75,10 @@ class TemplateConfigController extends Controller
 
             $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
 
-            if (!$ssh->login($proxyUser, $proxyPwd)) {
-                $this->database->getReference($debugDir)->set('falha de login no proxy...');
-            } else {
+           try {
+                if (!$ssh->login($proxyUser, $proxyPwd)) {
+                    $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                } else {
                     $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                     $scp = new SCP($ssh);
                     $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
@@ -116,13 +118,17 @@ class TemplateConfigController extends Controller
                         $this->database->getReference($debugDir)->set('Configuração concluída!');
                         $this->database->getReference($debugDir)->set('idle');
                     }
-            }
+                }
+                $status = "ok";
+           } catch (\Throwable $th) {
+                $status = $th->getMessage();
+           }
         }
 
         $updatedDebug = $this->database->getReference($debugDir)->getSnapshot()->getValue();
 
         return response()->json([
-            'status' => 'ok',
+            'status' => $status,
             'updatedDebug' => $updatedDebug
         ]);
     }
@@ -187,9 +193,9 @@ class TemplateConfigController extends Controller
             $ipv602 = $buscaDadosDaConexao['rs2v6'];
             $lgv4 = $buscaDadosDaConexao['lgv4'];
             $lgv6 = $buscaDadosDaConexao['lgv6'];
-            // $localPref = $buscaDadosDaConexao['localpref']; if(!$localPref){$localPref = 110;}
-            // $medIn = $buscaDadosDaConexao['medin'];
-            // if( !$medIn ) $medIn = 0;
+            $localPref = $buscaDadosDaConexao['localpref']; if(!$localPref){$localPref = 110;}
+            $medIn = $buscaDadosDaConexao['medin'];
+            if( !$medIn ) $medIn = 0;
             $localpref = 110;
             $medIn = 0;
             $denyCustomerIn = 'yes';
@@ -201,12 +207,12 @@ class TemplateConfigController extends Controller
             $ipv601 = $buscaDadosDaConexao['ipv6-01'];
             $ipv602 = $buscaDadosDaConexao['ipv6-02'];
 
-            // $denyCustomerIn = $buscaDadosDaConexao['denycustomerin'];
+            $denyCustomerIn = $buscaDadosDaConexao['denycustomerin'] ?? '';
             $denyCustomerIn = 'yes';
             $localpref = 110;
             $medIn = 0;
-            // $localPref = $buscaDadosDaConexao['localpref'];
-            // $medIn = $buscaDadosDaConexao['medin'];
+            $localPref = $buscaDadosDaConexao['localpref'] ?? '';
+            $medIn = $buscaDadosDaConexao['medin'] ?? '';
         }
 
         $img = 'img/'.$remoteAs.'.jpg';
@@ -221,14 +227,14 @@ class TemplateConfigController extends Controller
 					if(isset($x['remoteas'])){
 						$configFinal .= str_replace("%customerasn%",$x['remoteas'],$getAspathTemplate);
 					}
-					// $getRecursiveAsn = explode(',', $x['recursive-asn']);
-					// if($getRecursiveAsn){
-					// 	foreach($getRecursiveAsn as $i => $y) {
-					// 		if($y) {
-                    //             $configFinal .= str_replace("%customerasn%",$y,$getAspathTemplate);
-					// 		}
-					// 	}
-					// }
+					$getRecursiveAsn = explode(',', $x['recursive-asn'] ?? '');
+					if($getRecursiveAsn){
+						foreach($getRecursiveAsn as $i => $y) {
+							if($y) {
+                                $configFinal .= str_replace("%customerasn%",$y,$getAspathTemplate);
+							}
+						}
+					}
 				}
 				$getPolicyTemplate = $this->database->getReference('lib/templates/bgp/deny-customer-in/activate/'.$templateVendor.'/'.$templateFamily.'/policy')->getSnapshot()->getValue();
 				$configFinal .= str_replace("%nomedogrupo%",$nomeDoGrupo,$getPolicyTemplate);
@@ -261,7 +267,7 @@ class TemplateConfigController extends Controller
         $this->database->getReference($diretorioConexaoBgp.'/config')->set($configFinal);
 	    $configSalva = $this->database->getReference($diretorioConexaoBgp.'/config')->getSnapshot()->getValue();
 
-        $debug = $detailClientData['bgp']['interconexoes'][$tipoConexao][$id]['debug'];
+        $debug = $detailClientData['bgp']['interconexoes'][$tipoConexao][$id]['debug'] ?? '';
 
         $toSendData = [
             'clientId' => $clientId,

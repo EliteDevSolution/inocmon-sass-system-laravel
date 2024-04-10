@@ -5,35 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CommunityBGPController extends Controller
+class IxbrController extends Controller
 {
+
     public function __construct(Request $request)
     {
         $this->middleware('auth');
         $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $req)
+    public function index(Request $request)
     {
-        $clientId = $req->query()['client_id'];
-        $data = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $community = $data['bgp']['community0'] ?? [];
-        $transito = $data['bgp']['interconexoes']['transito'] ?? [];
-        $ix = $data['bgp']['interconexoes']['ix'] ?? [];
-        $equipmento = $data['equipamentos'] ?? [];
-        $toSendData = [
-            "community" => $community,
-            "transito" => $transito,
-            "ix" => $ix,
-            "client_id" => $clientId,
-            "equipment" => $equipmento
-        ];
-
-        return view('admin.dashboard.community', compact('toSendData'));
+        $buscaLibIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->getValue();
+        return view('admin.ixbr', compact('buscaLibIxbr'));
     }
 
     /**
@@ -54,7 +43,33 @@ class CommunityBGPController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $status = "";
+        $id = $request['sigla'];
+        if(isset($id)) {
+            $novoIxbr = [
+                'cidade' =>  $request['cidade'],
+                'remoteas' =>  26162,
+                'lgremoteas' => 20121,
+                'rs1v4' => $request['rs1'],
+                'rs2v4' => $request['rs2'],
+                'lgv4'  => $request['lg4'],
+                'rs1v6' => $request['rs16'],
+                'rs2v6' => $request['rs26'],
+                'lgv6'  => $request['lg6']
+            ];
+            try {
+                $this->database->getReference('lib/ixbr/'.$id)->set($novoIxbr);
+                $status = 'ok';
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
+        } else {
+            $status = 'failed';
+        }
+
+        return response()->json([
+            'status' => $status
+        ]);
     }
 
     /**

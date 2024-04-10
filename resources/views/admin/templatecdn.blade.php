@@ -14,10 +14,10 @@
         .custom-lable {
             width: 150px;
         }
-        .custom-input {
+        /* .custom-input {
             float: left;
             width: 400px;
-        }
+        } */
     </style>
 @endsection
 
@@ -41,7 +41,7 @@
                 <p class="header-title mb-2">Nova Family</p>
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted"> Vendor </label>
-                    <select class="form-control custom-input" id="vendor" required data-toggle="select2">
+                    <select class="form-control custom-input" id="vendor" required >
                         @foreach ($templates as $indexTemp => $valueTemp)
                             <option value="{{$indexTemp}}">
                                 {{$indexTemp}}
@@ -65,7 +65,7 @@
                 </div>
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted">Nova config section</label>
-                    <select class="custom-input form-control" id="configsection" required data-toggle="select2">
+                    <select class="custom-input form-control" id="configsection" required >
                         @foreach ($templates as $indexTemp => $valueTemp)
                             @foreach ($templates[$indexTemp] as $index => $value)
                                 <option value="{{$indexTemp.'/'.$index}}">
@@ -153,7 +153,7 @@
             console.log(textVal);
             $.ajax({
                 type: "put",
-                url: "temp-edit-bgp/1",
+                url: "tempcdn-edit-bgp/1",
                 data: {
                     todo : todo,
                     vendor : vendor,

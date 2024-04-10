@@ -151,8 +151,6 @@
                         ,"#2ebbdb"
                         ,"success",
                     );
-                    var name = text.concat("", id);
-                    console.log(name);
                     var myList = document.getElementById('cdn');
                     var newItem1 = document.createElement('li');
                     var div1 = document.createElement('div');
@@ -174,8 +172,8 @@
                         ,"#2ebbdb"
                         ,"error",
                     );
-                    elementUnBlock('body');
                 }
+                elementUnBlock('body');
             });
         }
     </script>

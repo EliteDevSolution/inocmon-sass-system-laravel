@@ -203,14 +203,14 @@
             editPage.style.display ="block";
             row = document.getElementById(buscarSondaId);
 
-            var hostName = row.querySelector('td:nth-child(2)').textContent;
-            var routerId = row.querySelector('td:nth-child(3)').textContent;
-            var plataforma = row.querySelector('td:nth-child(4)').textContent;
-            var so = row.querySelector('td:nth-child(5)').textContent;
-            var portassh = row.querySelector('td:nth-child(6)').textContent;
-            var portahttp = row.querySelector('td:nth-child(7)').textContent;
-            var user = row.querySelector('td:nth-child(8)').textContent;
-            var pwd = row.querySelector('td:nth-child(9)').textContent;
+            var hostName = row.querySelector('td:nth-child(2)').innerText;
+            var routerId = row.querySelector('td:nth-child(3)').innerText;
+            var plataforma = row.querySelector('td:nth-child(4)').innerText;
+            var so = row.querySelector('td:nth-child(5)').innerText;
+            var portassh = row.querySelector('td:nth-child(6)').innerText;
+            var portahttp = row.querySelector('td:nth-child(7)').innerText;
+            var user = row.querySelector('td:nth-child(8)').innerText;
+            var pwd = row.querySelector('td:nth-child(9)').innerText;
 
             $('#hostVal').val(hostName);
             $('#routerVal').val(routerId);
@@ -232,7 +232,7 @@
             var portaVal  = $('#portaVal').val();
             var userVal  = $('#useVal').val();
             var pwdVal  = $('#senhaVal').val();
-            var proxyId = row.querySelector('td:nth-child(1)').textContent;
+            var proxyId = row.querySelector('td:nth-child(1)').innerText;
 
             if(hostVal == "" || routerVal == "" || plataFormaVal == "" || soVal == "" || portaSshVal == "" || portaVal == "" || userVal == "" || userVal == "" || pwdVal == ""
             )   {
@@ -265,14 +265,14 @@
                 }
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
-                    row.querySelector('td:nth-child(2)').textContent = hostVal;
-                    row.querySelector('td:nth-child(3)').textContent = routerVal;
-                    row.querySelector('td:nth-child(4)').textContent = plataFormaVal;
-                    row.querySelector('td:nth-child(5)').textContent = soVal;
-                    row.querySelector('td:nth-child(6)').textContent = portaSshVal;
-                    row.querySelector('td:nth-child(7)').textContent = portaVal;
-                    row.querySelector('td:nth-child(8)').textContent = userVal;
-                    row.querySelector('td:nth-child(9)').textContent = pwdVal;
+                    row.querySelector('td:nth-child(2)').innerText = hostVal;
+                    row.querySelector('td:nth-child(3)').innerText = routerVal;
+                    row.querySelector('td:nth-child(4)').innerText = plataFormaVal;
+                    row.querySelector('td:nth-child(5)').innerText = soVal;
+                    row.querySelector('td:nth-child(6)').innerText = portaSshVal;
+                    row.querySelector('td:nth-child(7)').innerText = portaVal;
+                    row.querySelector('td:nth-child(8)').innerText = userVal;
+                    row.querySelector('td:nth-child(9)').innerText = pwdVal;
                     $.NotificationApp.send("Alert!"
                         ,"Successfully updated!"
                         ,"top-right"

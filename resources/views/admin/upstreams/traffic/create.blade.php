@@ -83,7 +83,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <ul>
+                    <ul id="cdn">
                         @foreach ($cdns as $index => $value)
                             @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
                                 <li>
@@ -151,7 +151,7 @@
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
-                console.log(msg);
+                // console.log(msg);
                 if(msg['status'] == 'ok') {
                     $('#nome').val("");
                     $('#pop').val("");
@@ -172,7 +172,6 @@
                     var imgSrc = msg['addedData']['remoteas'];
                     var text = msg['addedData']['nomedogrupo'];
                     var name = text.concat("", id);
-                    console.log(name);
                     var myList = document.getElementById('cdn');
                     var newItem1 = document.createElement('li');
                     var div1 = document.createElement('div');

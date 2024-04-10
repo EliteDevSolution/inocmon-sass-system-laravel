@@ -117,7 +117,7 @@
                                         <tr>
                                             <th>Proxy</th>
                                             <th>
-                                                 <select name="proxyid" id="proxyid" required >
+                                                 <select name="proxyid" id="proxyid" required class="form-control">
                                                     @foreach ($toSendData['buscaProxy'] as $index => $y)
                                                         <option value="{{$index}}">{{$y['hostname']}}</option>
                                                     @endforeach
@@ -216,6 +216,7 @@
     <script>
         function applyConfig(){
             var proxyId = $("#proxyid").val();
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
                 url: "{{route('template-generate-config.applyConfig')}}",
@@ -228,7 +229,22 @@
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
-                console.log(msg);
+                if(msg['status'] == 'ok') {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
+                }
+                elementUnBlock('body');
             });
         }
     </script>

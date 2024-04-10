@@ -17,10 +17,10 @@
         label {
             width: 120px;
         }
-        select, input {
+        /* select, input {
             float: left !important;
             width: 250px  !important;
-        }
+        } */
     </style>
 @endsection
 

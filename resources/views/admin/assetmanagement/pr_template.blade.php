@@ -210,6 +210,7 @@
     let applyBaseConfig = () => {
         console.log("sdsds");
         var sondaId = $("#sondaid").val();
+        elementBlock('square1', 'body');
         $.ajax({
             type: "POST",
             url: 'proxy-template/applyconfig', // Not sure what to add as URL here
@@ -221,6 +222,22 @@
             }
         }).done(function( msg ) {
             console.log( msg );
+            if(msg['status'] == 'ok') {
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            } else {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+            }
+            elementUnBlock('body');
         });
     }
 
@@ -249,7 +266,16 @@
             if($(this).is(':checked'))
                 checkedEquipArray.push($(this).val());
         });
-
+        if(checkedEquipArray.length == "") {
+            $.NotificationApp.send("Alert!"
+                ,"Plese click check box!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"success",
+            );
+            return;
+        }
+        elementBlock('square1', 'body');
         if(checkedEquipArray!=null) {
             $.ajax({
             type: "POST",
@@ -271,12 +297,15 @@
                     );
                 } else {
                     $.NotificationApp.send("Alert!"
-                        ,"Can't connect!"
+                        ,"Failed!"
                         ,"top-right"
                         ,"#2ebbdb"
-                        ,"success",
+                        ,"error",
                     );
                 }
+
+                elementUnBlock('body');
+
             });
         }
 

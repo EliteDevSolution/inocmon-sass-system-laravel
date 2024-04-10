@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-    
+
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
@@ -196,6 +196,17 @@
                 buscaConfigIds.push($(this).val());
         });
 
+        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0) {
+            $.NotificationApp.send("Alarm!"
+                ,"Plese click checkbox!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"success",
+            );
+            return;
+        }
+
+        elementBlock('square1', 'body');
         console.log(buscaConfigIds, buscaRrIds);
 
         $.ajax({
@@ -211,6 +222,22 @@
             }
         }).done(function( msg ) {
             console.log( msg['message'] );
+            if(msg['status' == 'ok']) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            } else {
+                $.NotificationApp.send("Alarm!"
+                    ,'The operation failed!'
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+            }
+            elementUnBlock('body');
         });
     }
 </script>

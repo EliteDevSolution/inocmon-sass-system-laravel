@@ -219,7 +219,7 @@
                     );
                 } else {
                     $.NotificationApp.send("Alarm!"
-                        ,"Failed updated!"
+                        ,msg['status'],
                         ,"top-right"
                         ,"#2ebbdb"
                         ,"error",

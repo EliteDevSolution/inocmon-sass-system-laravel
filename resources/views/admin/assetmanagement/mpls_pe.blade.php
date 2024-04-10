@@ -181,14 +181,14 @@
             editPage.style.display ="block";
             row = document.getElementById(buscarSondaId);
 
-            var hostName = row.querySelector('td:nth-child(2)').textContent;
-            var routerId = row.querySelector('td:nth-child(3)').textContent;
-            var vendor = row.querySelector('td:nth-child(4)').textContent;
-            var family = row.querySelector('td:nth-child(5)').textContent;
-            var protocolo = row.querySelector('td:nth-child(6)').textContent;
-            var porta = row.querySelector('td:nth-child(7)').textContent;
-            var user = row.querySelector('td:nth-child(8)').textContent;
-            var pwd = row.querySelector('td:nth-child(9)').textContent;
+            var hostName = row.querySelector('td:nth-child(2)').innerText;
+            var routerId = row.querySelector('td:nth-child(3)').innerText;
+            var vendor = row.querySelector('td:nth-child(4)').innerText;
+            var family = row.querySelector('td:nth-child(5)').innerText;
+            var protocolo = row.querySelector('td:nth-child(6)').innerText;
+            var porta = row.querySelector('td:nth-child(7)').innerText;
+            var user = row.querySelector('td:nth-child(8)').innerText;
+            var pwd = row.querySelector('td:nth-child(9)').innerText;
 
             $('#hostVal').val(hostName);
             $('#routerVal').val(routerId);
@@ -211,7 +211,7 @@
             var porta = $('#portaVal').val();
             var user =$('#useVal').val();
             var pwd = $('#senhaVal').val();
-            var equipId = row.querySelector('td:nth-child(1)').textContent;
+            var equipId = row.querySelector('td:nth-child(1)').innerText;
 
             if(hostName == "" || routerId == "" || vendor == "" || family == "" || protocolo == "" || porta == "" || user == "" || equipId == "") {
                 $.NotificationApp.send("Alarm!"
@@ -248,14 +248,14 @@
                         ,"#2ebbdb"
                         ,"success",
                     );
-                    row.querySelector('td:nth-child(2)').textContent = hostName;
-                    row.querySelector('td:nth-child(3)').textContent = routerId;
-                    row.querySelector('td:nth-child(4)').textContent = vendor;
-                    row.querySelector('td:nth-child(5)').textContent = family;
-                    row.querySelector('td:nth-child(6)').textContent = protocolo;
-                    row.querySelector('td:nth-child(7)').textContent = porta;
-                    row.querySelector('td:nth-child(8)').textContent = user;
-                    row.querySelector('td:nth-child(9)').textContent = pwd;
+                    row.querySelector('td:nth-child(2)').innerText = hostName;
+                    row.querySelector('td:nth-child(3)').innerText = routerId;
+                    row.querySelector('td:nth-child(4)').innerText = vendor;
+                    row.querySelector('td:nth-child(5)').innerText = family;
+                    row.querySelector('td:nth-child(6)').innerText = protocolo;
+                    row.querySelector('td:nth-child(7)').innerText = porta;
+                    row.querySelector('td:nth-child(8)').innerText = user;
+                    row.querySelector('td:nth-child(9)').innerText = pwd;
                 } else {
                     $.NotificationApp.send("Alarm!"
                         ,"Failed updated!"

@@ -151,7 +151,7 @@
                     );
                 return;
             }
-            elementBlock('square1', 'body');
+            elementBlock('square1', 'div.card-box');
             $.ajax({
                 type: "POST",
                 url: '{{ route("network-pe.store") }}',
@@ -169,7 +169,6 @@
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
-                console.log(msg);
                 if(msg['status'] == 'ok') {
                     $("#hostname").val("");
                     $("#routerid").val("");
@@ -194,8 +193,7 @@
                         ,"error",
                     );
                 }
-
-                elementUnBlock('body');
+                elementUnBlock('div.card-box');
             });
         }
     </script>

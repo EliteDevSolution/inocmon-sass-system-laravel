@@ -11,13 +11,13 @@
             align-items: center;
             gap : 10px;
         }
-        /* label {
+        .custom-lable {
             width: 150px;
         }
-        select, input {
+        .custom-input {
             float: left;
-            width: 400px  !important;
-        } */
+            width: 400px;
+        }
     </style>
 @endsection
 
@@ -25,14 +25,14 @@
     <div class="columns" id="root">
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box m-2">
+                <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="/">iNOCmon</a></li>
-                            <li class="breadcrumb-item active">IxTemplate Edit</li>
+                            <li class="breadcrumb-item active">Template PE</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">IxTemplate Edit</h4>
+                    <h4 class="page-title">Templates PE</h4>
                 </div>
             </div>
         </div>
@@ -40,8 +40,8 @@
             <div class="col-6">
                 <p class="header-title mb-2">Nova Family</p>
                 <div class="group-input m-2">
-                    <label class="mb-1 font-weight-bold text-muted"> Vendor </label>
-                    <select class="form-control" id="vendor" required >
+                    <label class="mb-1 custom-lable font-weight-bold text-muted"> Vendor </label>
+                    <select class="form-control custom-input" id="vendor" required>
                         @foreach ($templates as $indexTemp => $valueTemp)
                             <option value="{{$indexTemp}}">
                                 {{$indexTemp}}
@@ -50,18 +50,22 @@
                     </select>
                 </div>
                 <div class="group-input m-2">
-                    <label class="mb-1 font-weight-bold text-muted">Nova Family</label>
-                    <input type="text" name="novafamily" required id="novafamily" class="form-control mb-1"/>
+                    <label class="mb-1 custom-lable font-weight-bold text-muted">Nova Family</label>
+                    <input type="text" name="novafamily" required id="novafamily" class="custom-input form-control mb-1"/>
                 </div>
-                <button class="btn btn-primary mt-2" onclick="saveData('family-update')">
+                <button class="ml-1 btn btn-primary mt-2" onclick="saveData('family-update')">
                     Cadastrar-Family
                 </button>
             </div>
             <div class="col-6">
                 <p class="header-title mb-2">Nova Config section</p>
                 <div class="group-input m-2">
-                    <label class="mb-1 font-weight-bold text-muted">Nova config section</label>
-                    <select class="form-control" id="configsection" required >
+                    <label class="mb-1 custom-lable font-weight-bold text-muted">Family</label>
+                    <input type="text" name="family" required id="family" class="custom-input form-control mb-1"/>
+                </div>
+                <div class="group-input m-2">
+                    <label class="mb-1 custom-lable font-weight-bold text-muted">Nova config section</label>
+                    <select class="custom-input form-control" id="configsection" required>
                         @foreach ($templates as $indexTemp => $valueTemp)
                             @foreach ($templates[$indexTemp] as $index => $value)
                                 <option value="{{$indexTemp.'/'.$index}}">
@@ -69,14 +73,9 @@
                                 </option>
                             @endforeach
                         @endforeach
-
                     </select>
                 </div>
-                <div class="group-input m-2">
-                    <label class="mb-1 font-weight-bold text-muted">Family</label>
-                    <input type="text" name="family" required id="family" class="form-control mb-1"/>
-                </div>
-                <button class="btn btn-primary mt-2" onclick="saveData('config-section')">
+                <button class="ml-1 btn btn-primary mt-2" onclick="saveData('config-section')">
                     Cadastrar-Section
                 </button>
             </div>
@@ -150,6 +149,7 @@
             var family = $("#family").val();
             var configSection = $("#configsection").val();
             var textVal = $(`#${todo}`).val();
+            console.log(textVal);
 
 
             if( todo == "family-update" && novaFamily == "" ) {
@@ -172,11 +172,10 @@
                 $("#family").focus();
                 return;
             }
-
             elementBlock('square1', 'body');
             $.ajax({
                 type: "put",
-                url: "tempix-edit-bgp/1",
+                url: "temp-edit/1",
                 data: {
                     todo : todo,
                     vendor : vendor,

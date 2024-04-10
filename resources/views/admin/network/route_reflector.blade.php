@@ -151,7 +151,7 @@
                 );
                 return;
             }
-            elementBlock('square1', 'body');
+            elementBlock('square1', 'div.card-box');
             $.ajax({
                 type: "POST",
                 url: '{{ route("network-router-reflector.store") }}',
@@ -191,7 +191,7 @@
                         ,"error",
                     );
                 }
-                elementUnBlock('body');
+                elementUnBlock('div.card-box');
             });
         }
 

@@ -118,10 +118,9 @@
                     <li>
                         <a href="{{ route('downstreams-clients.index', $clientIdQueryParam) }}">Clientes ASN</a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="apps-kanbanboard.html">Dedicated clients</a>
-                    </li>
-                    <li>
+                    </li> --}}
                 </ul>
             </li>
 
@@ -173,7 +172,7 @@
 
             <li class="menu-title mt-2">more</li>
 
-            <li>
+            {{-- <li>
                 <a href="javascript: void(0);">
                     <i class="fe-pocket"></i>
                     <span> Adming Page </span>
@@ -184,7 +183,7 @@
                         <a href="{{ route('client.index') }}">Admin</a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
 
             <li>
                 <a href="javascript: void(0);">
@@ -243,6 +242,9 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li >
+                        <a href="{{ route('temp-edit.index') }}">Template Editor PE</a>
+                    </li>
+                    <li >
                         <a href="{{ route('temp-edit-bgp.index') }}">BGP TRANSITO</a>
                     </li>
                     <li >
@@ -256,6 +258,23 @@
                     </li> --}}
                     <li >
                         <a href="{{ route('deny-customer.index') }}">Deny Customer-In</a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+            <li class="menu-title">IXBR</li>
+
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-airplay"></i>
+                    <span> IXBR </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('ixbr.index') }}">Ixbr</a>
                     </li>
                 </ul>
             </li>

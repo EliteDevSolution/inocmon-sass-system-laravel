@@ -8,10 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Template;
-use phpseclib3\Net\SSH2;
-use phpseclib3\Crypt\RSA;
 use Illuminate\Support\Facades\Storage;
+use phpseclib\Net\SSH2;
+use phpseclib\Crypt\RSA;
+use phpseclib\Net\SCP;
 
 class DashboardController extends Controller
 {
@@ -37,20 +37,20 @@ class DashboardController extends Controller
      * @param  int  $id
     */
 
-    public function executeSshCommand(Request $req)
+    public function executeSshCommand(Request $request)
     {
-        $proxyId = $req->all()['targetproxyid'];
-        $targetRrId = $req->all()['targetrrid'];
-
-        $clientId = $req->query()['client_id'];
+        $status = '';
+        $proxyId = $request['proxy'];
+        $targetRrId = $request['rr'];
+        $clientId = $request['clientId'];
 
         $proxyData = $this->database->getReference('clientes/' . $clientId . '/sondas/'.$proxyId)->getSnapshot()->getValue();
         $targetData = $this->database->getReference('clientes/' . $clientId . '/rr/'.$targetRrId)->getSnapshot()->getValue();
 
         $ssh = new SSH2($proxyData['ipv4'], $proxyData['portassh']);
 
-        $proxyUser = $proxyData['user'];
-        $proxyPwd = $proxyData['pwd'];
+        $proxyUser = $proxyData['user'] ?? '';
+        $proxyPwd = $proxyData['pwd'] ?? '';
 
         $userInform = $this->database->getReference('clientes/' . $clientId . '/seguranca/')->getSnapshot()->getValue();
         $userInocmon = $userInform['userinocmon'];
@@ -59,31 +59,36 @@ class DashboardController extends Controller
         if (!$proxyUser) { $proxyUser = $userInocmon; }
         if (!$proxyPwd) { $proxyPwd = $senhaInocmon; }  /*reference this part*/
 
-        // if ($ssh->login($proxyUser, $proxyPwd)) {
-        //     $output = $ssh->exec('ls -l');
-        //     return response()->json(['output' => $output]);
-        // } else {
-        //     return response()->json(['error' => 'SSH login failed']);
-        // }
+        try {
+            if ($ssh->login($proxyUser, $proxyPwd)) {
+                $status = 'ok';
+                $output = $ssh->exec('ls -l');
+            } else {
+                $status = 'failed';
+            }
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
 
-        // $targetRrIp = $targetData['routerid'];
-        // $targetRrPort = $targetData['porta'];
-        // $targetRrUser = $targetData['user'];
-        // $targetRrPwd = $targetData['pwd'];
-        // $targetRrVendor = $targetData['template-vendor'];
-        // $targetRrFamily = $targetData['template-family'];
+        $targetRrIp = $targetData['routerid'];
+        $targetRrPort = $targetData['porta'];
+        $targetRrUser = $targetData['user'];
+        $targetRrPwd = $targetData['pwd'];
+        $targetRrVendor = $targetData['template-vendor'];
+        $targetRrFamily = $targetData['template-family'];
 
-        // if (!$targetRrUser) { $targetRrUser = $userInocmon; }
-        // if (!$targetRrPwd) { $targetRrPwd = $senhaInocmon; }
-        // $finalCommand = $this->database->getReference('lib/commands/getospflsdb/'.$targetRrVendor.'/'.$targetRrFamily)->getSnapshot()->getValue();
-        // $getOspfLsdb = $ssh->exec('inoc-command '.$targetRrIp.' '. $targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' \''.$finalCommand.'\' &');
-        // sleep(5);
-        // $database->getReference('clientes/'.$clientId.'/ospf-lsdb/vendor')->set($targetRrVendor);
-        // $database->getReference('clientes/'.$clientId.'/ospf-lsdb/data')->set($getOspfLsdb);
+        if (!$targetRrUser) { $targetRrUser = $userInocmon; }
+        if (!$targetRrPwd) { $targetRrPwd = $senhaInocmon; }
 
+        $finalCommand = $this->database->getReference('lib/commands/getospflsdb/'.$targetRrVendor.'/'.$targetRrFamily)->getSnapshot()->getValue();
+        $getOspfLsdb = $ssh->exec('inoc-command '.$targetRrIp.' '. $targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' \''.$finalCommand.'\' &');
+        $this->database->getReference('clientes/'.$clientId.'/ospf-lsdb/vendor')->set($targetRrVendor);
+        $this->database->getReference('clientes/'.$clientId.'/ospf-lsdb/data')->set($getOspfLsdb);
         $layout = true;
 
-        return redirect()->route("dashboard", array( "client_id" => $clientId ));
+        return response()->json([
+            'status' => $status
+        ]);
     }
 
     public function index(Request $request)
@@ -137,18 +142,20 @@ class DashboardController extends Controller
                 $equipmentCount = count($client['equipamentos']);
             }
             $sondas = $client['sondas'] ?? [];
-            // $rr = $client['rr']; /*Current rr property is not here*/
+
+            $rr = $client['rr'] ?? []; /*Current rr property is not here*/
 
             $clienteDatabase  = $client;
 
             $UsoBancoDeDados = mb_strlen(json_encode($clienteDatabase, JSON_NUMERIC_CHECK), '8bit');
             $databaseInuse = formatBytes($UsoBancoDeDados);
-            // if( $client['license'] ) {
-            //     $license = $client['license'];
-            // }
-            // else {
-            //     $license = 'starter';
-            // }
+
+            if( array_key_exists('license', $client) ) {
+                $license = $client['license'];
+            }
+            else {
+                $license = 'starter';
+            }
 
             $license = 'starter';
             $fraquiaBanco = $this->database->getReference('lib/license/'.$license.'/databasesize')->getSnapshot()->getValue();
@@ -161,26 +168,27 @@ class DashboardController extends Controller
 
             $databasePercent = $usoDaFranquia;
 
-            // $getOspfLsdbData = $this->database->getReference($path . '/ospf-lsdb/data')->getSnapshot()->getValue();
-            // $getOspfLsdbVendor = $this->database->getReference($path . '/ospf-lsdb/vendor')->getSnapshot()->getValue();
+            $getOspfLsdbData = $this->database->getReference($path . '/ospf-lsdb/data')->getSnapshot()->getValue() ?? '';
+            $getOspfLsdbVendor = $this->database->getReference($path . '/ospf-lsdb/vendor')->getSnapshot()->getValue() ?? '';
+
             $getOspfLsdbData = $client['ospf-lsdb']['data'] ?? '';
             $getOspfLsdbVendor = $client['ospf-lsdb']['vendor'] ?? '';
 
-            if($getOspfLsdbData == null) $getOspfLsdbData = "";
-            if($getOspfLsdbVendor == null) $getOspfLsdbVendor = "";
+            if($getOspfLsdbData == null) $getOspfLsdbData = "111";
+            if($getOspfLsdbVendor == null) $getOspfLsdbVendor = "111";
+
+            $toDownloadFileName = 'ospf-lsdb-'.$getOspfLsdbVendor.'-'.$clientId;
 
             if($getOspfLsdbData) {
+
                 $targetPath = 'configuracoes';
                 if(!file_exists(public_path() . '/storage/' . $targetPath))
                 {
                     @mkdir(public_path() . '/storage/' . $targetPath, 0777, true);
+                    chmod($directoryPath, 0777); // Set the directory permissions explicitly
                 }
-                Storage::disk('local')->put('\configuracoes\example.txt', 'Contents');
-                // Storage::download('configuracoes\example.txt');
-                // $filePath = '\storage\configuracoes\aaa';
-                // $fileName = $getOspfLsdbVendor.'-'.$clientId;
-                // Storage::put($filePath, $getOspfLsdbData);
-                // response()->download((public_path().$filePath), 'aaa', array('Content-Type' => ''));
+                Storage::disk('local')->put('configuracoes/'.$toDownloadFileName, $getOspfLsdbData);
+
             }
             $buscaRr = $client['rr'];
             $dashboardData = [
@@ -192,7 +200,8 @@ class DashboardController extends Controller
                 'sondas' => $sondas,
                 'ospData' => $getOspfLsdbData,
                 'dspVendor' => $getOspfLsdbVendor,
-                'rr' => $buscaRr
+                'rr' => $buscaRr,
+                'fileName' => $toDownloadFileName
             ];
 
             return view('admin.dashboard.index', compact('dashboardData', 'clientId'));
@@ -200,4 +209,12 @@ class DashboardController extends Controller
             return redirect()->to('client');
         }
     }
+    public function downloadFile (Request $request) {
+        if(isset($request->filename)) {
+            return response()->download(storage_path("app/configuracoes/{$request->filename}"), $request->filename);
+        } else {
+            abort(404);
+        }
+    }
+
 }

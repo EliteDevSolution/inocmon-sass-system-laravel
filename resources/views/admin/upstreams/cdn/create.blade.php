@@ -168,6 +168,24 @@
                         ,"#2ebbdb"
                         ,"success",
                     );
+                    var id = msg['addedData']['id'];
+                    var imgSrc = msg['addedData']['remoteas'];
+                    var text = msg['addedData']['nomedogrupo'];
+                    var name = text.concat("", id);
+                    var myList = document.getElementById('cdn');
+                    var newItem1 = document.createElement('li');
+                    var div1 = document.createElement('div');
+                    div1.className = 'p-md-2';
+                    var img1 = document.createElement('img');
+
+                    img1.src = '{{ asset('img/undefined.jpg') }}';
+                    img1.style.width = '30px';
+                    img1.style.height = '30px';
+                    var text = document.createTextNode(name);
+                    div1.appendChild(img1);
+                    div1.appendChild(text);
+                    newItem1.appendChild(div1);
+                    myList.appendChild(newItem1);
                 } else {
                     $.NotificationApp.send("Alarm!"
                         ,"Failed updated!"

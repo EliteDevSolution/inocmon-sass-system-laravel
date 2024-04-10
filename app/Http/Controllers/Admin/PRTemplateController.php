@@ -65,31 +65,36 @@ class PRTemplateController extends Controller
 
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
-        if (!$ssh->login($sondaUser, $sondaPwd)) {
-            $status = "failed";
-			$this->database->getReference($debugDir)->set('falha de login no proxy...');
-	    } else {
-            $status = "ok";
-            $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-            $scp = new SCP($ssh);
-            $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-            $scp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
+        try {
+            if (!$ssh->login($sondaUser, $sondaPwd)) {
+                $status = "failed";
+                $this->database->getReference($debugDir)->set('falha de login no proxy...');
+            } else {
+                $status = "ok";
+                $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+                $scp = new SCP($ssh);
+                $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
+                $scp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
 
-            $lineCount = substr_count($configRrFinal, "\n");
-            $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
-            $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
+                $lineCount = substr_count($configRrFinal, "\n");
+                $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
+                $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
 
-            if (str_contains($comandoRemoto, 'Err')) {
-                $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
-            }else{
-                for ($i = 0; $i < $lineCount; $i++){
-                    $tempoEstimado = ($lineCount - $i);
-                    $progresso = ($i / $lineCount  * 100);
-                    $progresso = round($progresso, 0);
-                    $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                if (str_contains($comandoRemoto, 'Err')) {
+                    $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
+                }else{
+                    for ($i = 0; $i < $lineCount; $i++){
+                        $tempoEstimado = ($lineCount - $i);
+                        $progresso = ($i / $lineCount  * 100);
+                        $progresso = round($progresso, 0);
+                        $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                    }
                 }
             }
+        } catch (\Throwable $th) {
+            $status = 'failed';
         }
+
 		$this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
 
         $lineCount = 15;
@@ -101,21 +106,30 @@ class PRTemplateController extends Controller
         }
 
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
-        if (!$ssh->login($sondaUser, $sondaPwd))
-		{
+
+        try {
+            if (!$ssh->login($sondaUser, $sondaPwd))
+            {
+                $status = "failed";
+                $this->database->getReference($debugDir)->set('falha de login no proxy...');
+            } else {
+                $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+                $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
+                $now = date("h-i-sa").'-'.date("Y-M-d");
+                $this->database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);
+                $this->database->getReference($debugDir)->set('Configuração concluída!');
+                $this->database->getReference($debugDir)->set('idle');
+                $status = "ok";
+            }
+        } catch (\Throwable $th) {
             $status = "failed";
-			$this->database->getReference($debugDir)->set('falha de login no proxy...');
-		} else {
-            $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
-            $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
-            $now = date("h-i-sa").'-'.date("Y-M-d");
-            $this->database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);
-            $this->database->getReference($debugDir)->set('Configuração concluída!');
-            $this->database->getReference($debugDir)->set('idle');
-            $status = "ok";
         }
+
+        $lunchDebugData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
+
         return response()->json([
-            'status' => $status
+            'status' => $status,
+            'debugData' => $lunchDebugData
         ]);
     }
 
@@ -141,6 +155,8 @@ class PRTemplateController extends Controller
 
         if($equipIds != null){
             $this->database->getReference($debugDir)->set('preparando config BGP com'.$equipIds[count($equipIds)-1]);
+        } else {
+            return;
         }
 
         $configRrFinal = "";
@@ -180,28 +196,35 @@ class PRTemplateController extends Controller
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
-
-        if (!$ssh->login($sondaUser, $sondaPwd)) {
-			$this->database->getReference($debugDir)->set('falha de login no proxy...');
-	    } else {
-            $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-            $scp = new SCP($ssh);
-            $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-            $scp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
-            $lineCount = substr_count($configRrFinal, "\n");
-            $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
-            $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
-            if (str_contains($comandoRemoto, 'Err')) {
-                $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
+        try {
+            if (!$ssh->login($sondaUser, $sondaPwd)) {
+                $status ='failed';
+                $this->database->getReference($debugDir)->set('falha de login no proxy...');
             } else {
-                for ($i = 0; $i < $lineCount; $i++){
-                    $tempoEstimado = ($lineCount - $i);
-                    $progresso = ($i / $lineCount  * 100);
-                    $progresso = round($progresso, 0);
-                    $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+                $scp = new SCP($ssh);
+                $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
+                $scp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
+                $lineCount = substr_count($configRrFinal, "\n");
+                $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
+                $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
+                if (str_contains($comandoRemoto, 'Err')) {
+                    $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
+                } else {
+                    for ($i = 0; $i < $lineCount; $i++){
+                        $tempoEstimado = ($lineCount - $i);
+                        $progresso = ($i / $lineCount  * 100);
+                        $progresso = round($progresso, 0);
+                        $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                    }
                 }
+                $status = 'ok';
             }
+            $status = 'ok';
+        } catch (\Throwable $th) {
+            $status = 'failed';
         }
+
 		$this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
         $lineCount = 15;
         for ($i = 0; $i < $lineCount; $i++)
@@ -212,24 +235,29 @@ class PRTemplateController extends Controller
             $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
         }
     	$ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
+        try {
+            if (!$ssh->login($sondaUser, $sondaPwd))
+            {
+                $status = "failed";
+                $this->database->getReference($debugDir)->set('falha de login no proxy...');
+            } else {
+                $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+                $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
+                /*gravar relatorio */
+                $now = date("h-i-sa").'-'.date("Y-M-d");
+                $database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);
 
-        if (!$ssh->login($sondaUser, $sondaPwd))
-        {
-            $status = "failed";
-            $this->database->getReference($debugDir)->set('falha de login no proxy...');
-        } else {
-            $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
-            $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
-            /*gravar relatorio */
-            $now = date("h-i-sa").'-'.date("Y-M-d");
-            $database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);
-
-            $this->database->getReference($debugDir)->set('Configuração concluída!');
-            $this->database->getReference($debugDir)->set('idle');
-            $status = 'ok';
+                $this->database->getReference($debugDir)->set('Configuração concluída!');
+                $this->database->getReference($debugDir)->set('idle');
+                $status = 'ok';
+            }
+        } catch (\Throwable $th) {
+            $status = 'failed';
         }
+        $lunchDebugData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
         return response()->json([
-            'status' => $status
+            'status' => $status,
+            'debugData' => $lunchDebugData
         ]);
     }
 

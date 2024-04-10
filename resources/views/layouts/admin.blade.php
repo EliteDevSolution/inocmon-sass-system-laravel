@@ -66,9 +66,9 @@
                 </div> <!-- content -->
 
                 <!-- Footer Start -->
-                <footer class="footer">
+                {{-- <footer class="footer">
                   @include('partials.admin.footerbar')
-                </footer>
+                </footer> --}}
                 <!-- end Footer -->
 
             </div>

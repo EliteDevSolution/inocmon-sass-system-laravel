@@ -42,7 +42,7 @@
 <div class="logo-box">
     <a href="/" class="logo text-center">
         <span class="logo-lg">
-            <h3 class="text-white mt-sm-3">@lang('iNOCmon')</h3>
+            <h2 class="text-white mt-sm-3">@lang('iNOCmon')</h2>
             {{-- <img src="{{ asset('admin_assets/images/logo-light.png') }}" alt="" height="50" style="display: flex;height: 65px;width: 239px;margin-top: 2px;margin-left: 2px;"> --}}
             <!-- <span class="logo-lg-text-light">UBold</span> -->
         </span>

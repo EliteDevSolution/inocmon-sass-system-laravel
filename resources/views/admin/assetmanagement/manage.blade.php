@@ -170,13 +170,13 @@
             var editPage = document.getElementById("edit");
             editPage.style.display ="block";
             row = document.getElementById(buscarId);
-            var hostName = row.querySelector('td:nth-child(2)').textContent;
-            var routerId = row.querySelector('td:nth-child(3)').textContent;
-            var vendor = row.querySelector('td:nth-child(4)').textContent;
-            var family = row.querySelector('td:nth-child(5)').textContent;
-            var protocol = row.querySelector('td:nth-child(6)').textContent;
-            var user = row.querySelector('td:nth-child(7)').textContent;
-            var pwd = row.querySelector('td:nth-child(8)').textContent;
+            var hostName = row.querySelector('td:nth-child(2)').innerText;
+            var routerId = row.querySelector('td:nth-child(3)').innerText;
+            var vendor = row.querySelector('td:nth-child(4)').innerText;
+            var family = row.querySelector('td:nth-child(5)').innerText;
+            var protocol = row.querySelector('td:nth-child(6)').innerText;
+            var user = row.querySelector('td:nth-child(7)').innerText;
+            var pwd = row.querySelector('td:nth-child(8)').innerText;
 
             $('#hostVal').val(hostName);
             $('#routerVal').val(routerId);
@@ -192,7 +192,7 @@
             editPage.style.display ="none";
         }
         let saveData = () => {
-            var rrId = row.querySelector('td:nth-child(1)').textContent;
+            var rrId = row.querySelector('td:nth-child(1)').innerText;
             var hostName = $('#hostVal').val();
             var routerId = $('#routerVal').val();
             var family= $('#familyVal').val();
@@ -231,13 +231,13 @@
             }).done(function( msg ) {
                 console.log(msg);
                 if(msg['status'] == 'ok') {
-                    row.querySelector('td:nth-child(2)').textContent = hostName;
-                    row.querySelector('td:nth-child(3)').textContent = routerId;
-                    row.querySelector('td:nth-child(4)').textContent = vendor;
-                    row.querySelector('td:nth-child(5)').textContent = family;
-                    row.querySelector('td:nth-child(6)').textContent = protocol;
-                    row.querySelector('td:nth-child(7)').textContent = user;
-                    row.querySelector('td:nth-child(8)').textContent = pwd;
+                    row.querySelector('td:nth-child(2)').innerText = hostName;
+                    row.querySelector('td:nth-child(3)').innerText = routerId;
+                    row.querySelector('td:nth-child(4)').innerText = vendor;
+                    row.querySelector('td:nth-child(5)').innerText = family;
+                    row.querySelector('td:nth-child(6)').innerText = protocol;
+                    row.querySelector('td:nth-child(7)').innerText = user;
+                    row.querySelector('td:nth-child(8)').innerText = pwd;
                     $.NotificationApp.send("Alert!"
                         ,"Successfully updated!"
                         ,"top-right"

@@ -76,20 +76,16 @@
                                     <td> {{$value['remoteas'] ?? ''}} </td>
                                     <td> {{$value['pop'] ?? ''}} </td>
                                     <td>
-                                        <a>
-                                            @if (array_key_exists('idperemoto', $value))
-                                                {{$toSendData['equipment'][$value['idperemoto']]['hostname'] ?? ''}}
-                                            @endif
-                                        </a>
+                                        @if (array_key_exists('idperemoto', $value))
+                                            {{$toSendData['equipment'][$value['idperemoto']]['hostname'] ?? ''}}
+                                        @endif
                                     </td>
                                     <td> {{$value['ipv4-01'] ?? ''}} </td>
                                     <td> {{$value['ipv4-02'] ?? ''}} </td>
                                     <td> {{$value['ipv6-01'] ?? ''}} </td>
                                     <td> {{$value['ipv6-02'] ?? ''}} </td>
                                     <td>
-                                        <a>
-                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
-                                        </a>
+                                        <i class="fe-user"></i>
                                     </td>
                                     <td onclick="showEdit('{{$index}}')">
                                         <i class="fe-edit"></i>
@@ -193,14 +189,14 @@
 
             console.log(row);
 
-            var clientName = row.querySelector('td:nth-child(2)').textContent;
-            var asn = row.querySelector('td:nth-child(3)').textContent;
-            var pop = row.querySelector('td:nth-child(4)').textContent;
-            var pe = row.querySelector('td:nth-child(5)').textContent;
-            var ipv4Local = row.querySelector('td:nth-child(6)').textContent;
-            var ipv4Remote = row.querySelector('td:nth-child(7)').textContent;
-            var ipv6Local = row.querySelector('td:nth-child(8)').textContent;
-            var ipv6Remote = row.querySelector('td:nth-child(9)').textContent;
+            var clientName = row.querySelector('td:nth-child(2)').innerText;
+            var asn = row.querySelector('td:nth-child(3)').innerText;
+            var pop = row.querySelector('td:nth-child(4)').innerText;
+            var pe = row.querySelector('td:nth-child(5)').innerText;
+            var ipv4Local = row.querySelector('td:nth-child(6)').innerText;
+            var ipv4Remote = row.querySelector('td:nth-child(7)').innerText;
+            var ipv6Local = row.querySelector('td:nth-child(8)').innerText;
+            var ipv6Remote = row.querySelector('td:nth-child(9)').innerText;
 
             $('#clientnome').val(clientName);
             $('#asn').val(asn);
@@ -256,14 +252,14 @@
                 }
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
-                    row.querySelector('td:nth-child(2)').textContent = clientName;
-                    row.querySelector('td:nth-child(3)').textContent = asn;
-                    row.querySelector('td:nth-child(4)').textContent = pop;
-                    row.querySelector('td:nth-child(5)').textContent = pe;
-                    row.querySelector('td:nth-child(6)').textContent = ipv4Local;
-                    row.querySelector('td:nth-child(7)').textContent = ipv4Remote;
-                    row.querySelector('td:nth-child(8)').textContent = ipv6Local;
-                    row.querySelector('td:nth-child(9)').textContent = ipv6Remote;
+                    row.querySelector('td:nth-child(2)').innerText = clientName;
+                    row.querySelector('td:nth-child(3)').innerText = asn;
+                    row.querySelector('td:nth-child(4)').innerText = pop;
+                    row.querySelector('td:nth-child(5)').innerText = pe;
+                    row.querySelector('td:nth-child(6)').innerText = ipv4Local;
+                    row.querySelector('td:nth-child(7)').innerText = ipv4Remote;
+                    row.querySelector('td:nth-child(8)').innerText = ipv6Local;
+                    row.querySelector('td:nth-child(9)').innerText = ipv6Remote;
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"

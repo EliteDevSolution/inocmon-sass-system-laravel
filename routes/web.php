@@ -27,6 +27,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('client', 'Admin\ClientController');
 
+    Route::resource('ixbr', 'Admin\IxbrController');
+
+    Route::resource('temp-edit', 'Admin\TempEditFirstController');
+
     Route::resource('temp-edit-bgp', 'Admin\TempEditController');
 
     Route::resource('tempix-edit-bgp', 'Admin\TempEditIxController');
@@ -38,7 +42,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('deny-customer', 'Admin\DenyCustomer');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
-    Route::put('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');
+    Route::post('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');
+    Route::get('download-file', 'Admin\DashboardController@downloadFile')->name('downloadFile');
+
+
 
 //    Route::get('manage', 'Admin\DashboardController@viewManage')->name('manage');
 

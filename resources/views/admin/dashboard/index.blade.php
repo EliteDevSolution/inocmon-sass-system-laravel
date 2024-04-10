@@ -3,7 +3,6 @@
 <div class="column">
     <div class="row">
         <div class="col-12">
-            {{-- {{dd($dashboardData)}} --}}
             <div class="page-title-box">
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
@@ -25,7 +24,6 @@
                 <p class="text-muted mb-1 text-truncate text-center">UPSTREAMS cadastradoss</p>
                 <p class="text-muted mb-0 text-center">
                     <a href="{{route("mpls_pe.index", array('client_id' => $clientId))}}">ver detalhes</a>
-                    <a href="">ver detalhes</a>
                 </p>
             </div>
         </div>
@@ -37,7 +35,9 @@
                 <h2 class="text-primary my-3 text-center"><span data-plugin="counterup">{{$dashboardData['clientsCount']}}</span></h2>
                 <p class="text-muted mb-1 text-truncate text-center">sessões BGP de clientes</p>
                 <p class="text-muted mb-0 text-center">
-                    <a href="{{route("mpls_pe.index", array('client_id' => $clientId))}}">ver detalhes</a>
+                    <a href="{{route("mpls_pe.index", array('client_id' => $clientId))}}">
+                        ver detalhes
+                    </a>
                 </p>
             </div>
         </div>
@@ -71,40 +71,44 @@
             </div> <!-- end card-box-->
         </div> <!-- end col -->
     </div>
-    <div class="row">
-        <div class="col-lg-12">
+    <div class="row>
+        <div class="col-12">
             <div class="card-box ribbon-box">
                 <div class="ribbon ribbon-success float-left"><i class="mdi mdi-access-point mr-1"></i> Rede MPLS</div>
                 <div class="ribbon-content" style="text-align: center">
-                    <h4 class="text-success  mt-0">{{$dashboardData['equipmentCount']}} PEs cadastrados</h4>
-                    <h5 class="mt-3 text-dark"> <span> Arquivo lsdb </span></h5>
+                    <h4 class="text-success  mt-0">
+                        {{$dashboardData['equipmentCount']}} PEs cadastrados
+                    </h4>
+                    <p class="font-16 text-blue"> Arquivo lsdb </p>
                     @if (!$dashboardData['ospData'])
-                        <h5 class="text-muted p-1"> <span> Ainda não existe um arquivo! </span></h5>
+                        <p class="font-16 text-blue">
+                            Ainda não existe um arquivo!
+                        </p>
                     @else
-                        <a href="storage/configuracoes/ospf-lsdb-{{$dashboardData['dspVendor'].'-'.$clientId}}"> download {{$dashboardData['dspVendor']}}</a>
+                        <a href="{{ route('downloadFile') }}?filename={{ urlencode($dashboardData['fileName']) }}"> DOWNLOAD {{$dashboardData['dspVendor']}}</a>
                         <br>
-                        Abrir <a href="https://topolograph.com/upload-ospf-isis-lsdb" target="_blank">topolograph</a>
-                        <br><hr>
-                        Sobreescrever existente:
+                        <a href="https://topolograph.com/upload-ospf-isis-lsdb" target="_blank">TOPOLOGRAPH</a>
+                        <hr>
+                        <p class="font-14 text-blue">Sobreescrever Existente</p>
                     @endif
-                    <div class="col-12 mt-2">
-                        <form style="display: flex; width : max-content ; margin : auto; gap : 10px" action="{{ route('dashboard.executeSshCommand', array('client_id' => $clientId)) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <select name="targetproxyid" class="form-control" data-toggle="select2" >
+                    <div class="col-12 m-3">
+                        <div style="display: flex; width : max-content ; margin : auto; gap : 10px">
+                            <select name="targetproxyid" id="proxy" class="form-control">
                                 @foreach ($dashboardData['sondas'] as $index => $value)
                                     <option value="{{$index}}">{{$value['hostname']}}</option>
                                 @endforeach
                             </select>
-                            <select name="targetrrid" class="form-control" data-toggle="select2" >
+                            <select name="targetrr" class="form-control" id="rr">
                                 @foreach ($dashboardData['rr'] as $buscaIndex => $buscarVal)
                                     @if ($buscarVal != null)
                                         <option value="{{$buscaIndex}}">{{$buscarVal['hostname']}}</option>
                                     @endif
                                 @endforeach
                             </select>
-                            <button type="submit" class="btn btn-info dropdown-toggle">Gerar Lsdb</button>
-                        </form>
+                            <button onclick="excuteCommand()" class="btn btn-info dropdown-toggle">
+                                Gerar Lsdb
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,4 +118,42 @@
 </div>
 @endsection
 
+@section('scripts')
+    <script>
+        function excuteCommand() {
+            var proxy = $("#proxy").val();
+            var rr = $("#rr").val();
+            elementBlock('square1', '.ribbon-box');
+            $.ajax({
+                type: "post",
+                url: "{{ route('dashboard.executeSshCommand') }}",
+                data: {
+                    proxy : proxy,
+                    rr : rr,
+                    clientId : "{{$clientId}}",
+                    _token : '{{ csrf_token() }}'
+                }
+            }).done(function( msg ) {
+                console.log(msg);
+                if(msg['status'] == 'ok') {
+                    console.log(msg);
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
+                }
+                elementUnBlock('.ribbon-box');
+            });
+        }
+    </script>
+@endsection
 

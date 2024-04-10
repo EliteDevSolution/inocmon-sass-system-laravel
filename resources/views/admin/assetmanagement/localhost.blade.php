@@ -139,6 +139,7 @@
 @push("js")
 <script>
     let applyBaseConfig = () => {
+        elementBlock('square1', 'body');
         $.ajax({
             type: "POST",
             url: 'proxy-localhost/applyconfig', // Not sure what to add as URL here
@@ -151,10 +152,25 @@
             if(msg['status'] == 'ok') {
                 console.log( msg );
                 document.getElementById('console_data').innerHTML = msg['console_data'];
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            } else {
+                $.NotificationApp.send("Alarm!"
+                    ,'The operation failed!'
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             }
+            elementUnBlock('body');
         });
     }
     let updateIncoConfig = () => {
+        elementBlock('square1', 'body');
         $.ajax({
             type: "POST",
             url: 'proxy-localhost/update-inco-config', // Not sure what to add as URL here
@@ -166,8 +182,22 @@
         }).done(function( msg ) {
             if(msg['status'] == 'ok') {
                 console.log( msg );
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
                 document.getElementById('console_data').innerHTML = msg['console_data'];
+            } else {
+                $.NotificationApp.send("Alarm!"
+                    ,'The operation failed!'
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             }
+            elementUnBlock('body');
         });
     }
 </script>

@@ -29,8 +29,11 @@
     </div>
     <div class="col-lg-12">
         <div class="card-box">
-            <button class="btn btn-outline-secondary float-right mb-2" onclick="saveData()">
-                save
+            <button class="btn btn-outline-success float-right mb-2" onclick="saveData()">
+                Save
+            </button>
+            <button class="mr-2 btn btn-outline-secondary float-right mb-2" onclick="goBack()">
+                Back
             </button>
             @if($todo == 'update')
                 <div class="form-group mb-3">
@@ -135,6 +138,9 @@
                 }
                 elementUnBlock('body');
             });
+        }
+        function goBack() {
+            location.href = "/changelog?client_id={{$clientId}}"
         }
     </script>
     <!-- third party js ends -->
