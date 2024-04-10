@@ -54,7 +54,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Template Vendor</label>
-                            <select id="vendor" class="form-control" >
+                            <select id="vendor" class="form-control mb-1" >
                                 @foreach ($buscaTemplates as $indexTemp => $indexVal)
                                     <option value="{{$indexTemp}}">
                                         {{$indexTemp}}
@@ -62,7 +62,7 @@
                                 @endforeach
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">Template Family</label>
-                            <select id="family" class="form-control" >
+                            <select id="family" class="form-control mb-1" >
                                 @foreach ($buscaTemplates as $indexTemp => $indexVal)
                                     @foreach ( $indexVal as $vendorIndex => $vendorVal)
                                         <option value="{{$vendorIndex}}">
@@ -140,7 +140,18 @@
 
     <script>
         function saveData(){
-
+            if( $("#hostname").val()  == "" || $("#routerid").val()  == "" || $("#ibgp").val()  == "" ||
+                $("#vendor").val()  == "" || $("#family").val()  == "" || $("#protocol").val()  == "" ||
+                $("#porta").val()  == "" || $("#user").val()  == "" || $("#senha").val()  == "" ) {
+                    $.NotificationApp.send("Alarm!"
+                        ,"This is required field!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
                 url: '{{ route("network-pe.store") }}',
@@ -169,7 +180,22 @@
                     $("#porta").val("");
                     $("#user").val("");
                     $("#senha").val("");
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Faield"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+
+                elementUnBlock('body');
             });
         }
     </script>

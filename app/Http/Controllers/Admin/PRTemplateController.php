@@ -27,7 +27,7 @@ class PRTemplateController extends Controller
         $clientId = $req['clientId'];
         $rrId = $req['rrId'];
         $sondaId = $req['sondaId'];
-
+        $status = "";
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         $hostName = $detailClientData['rr'][$rrId]['hostname'];
         $porta = $detailClientData['rr'][$rrId]['porta'];
@@ -65,10 +65,11 @@ class PRTemplateController extends Controller
 
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
-        $ssh->login($sondaUser, $sondaPwd);
-        if (false) {
+        if (!$ssh->login($sondaUser, $sondaPwd)) {
+            $status = "failed";
 			$this->database->getReference($debugDir)->set('falha de login no proxy...');
 	    } else {
+            $status = "ok";
             $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
             $scp = new SCP($ssh);
             $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
@@ -102,6 +103,7 @@ class PRTemplateController extends Controller
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
         if (!$ssh->login($sondaUser, $sondaPwd))
 		{
+            $status = "failed";
 			$this->database->getReference($debugDir)->set('falha de login no proxy...');
 		} else {
             $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
@@ -110,9 +112,10 @@ class PRTemplateController extends Controller
             $this->database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);
             $this->database->getReference($debugDir)->set('Configuração concluída!');
             $this->database->getReference($debugDir)->set('idle');
+            $status = "ok";
         }
         return response()->json([
-            'status' => 'ok'
+            'status' => $status
         ]);
     }
 
@@ -120,7 +123,7 @@ class PRTemplateController extends Controller
         $clientId = $req['clientId'];
         $rrId = $req['rrId'];
         $sondaId = $req['sondaId'];
-
+        $status = "";
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
 
         $debugDir = 'clientes/'.$clientId.'/rr/'.$rrId.'/debug';
@@ -135,11 +138,11 @@ class PRTemplateController extends Controller
 	    $getTemplate = $this->database->getReference($dir)->getSnapshot()->getValue();
         $equipIds = $req['checkedEquipArray'];
         $asn = $detailClientData['bgp']['asn'];
-    
+
         if($equipIds != null){
             $this->database->getReference($debugDir)->set('preparando config BGP com'.$equipIds[count($equipIds)-1]);
         }
-    
+
         $configRrFinal = "";
         for ($i = 0; $i < count($equipIds); $i++) {
             $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'];
@@ -212,6 +215,7 @@ class PRTemplateController extends Controller
 
         if (!$ssh->login($sondaUser, $sondaPwd))
         {
+            $status = "failed";
             $this->database->getReference($debugDir)->set('falha de login no proxy...');
         } else {
             $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
@@ -222,9 +226,10 @@ class PRTemplateController extends Controller
 
             $this->database->getReference($debugDir)->set('Configuração concluída!');
             $this->database->getReference($debugDir)->set('idle');
+            $status = 'ok';
         }
         return response()->json([
-            'status' => 'ok'
+            'status' => $status
         ]);
     }
 
@@ -234,15 +239,15 @@ class PRTemplateController extends Controller
         $rrId = $req->query()['rr_id'];
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
 
-        $debug = $detailClientData['rr'][$rrId]['debug'];
+        $debug = $detailClientData['rr'][$rrId]['debug'] ?? '';
         $hostName = $detailClientData['rr'][$rrId]['hostname'];
         $routerId = $detailClientData['rr'][$rrId]['routerid'];
-        $templateVendor = $detailClientData['rr'][$rrId]['template-vendor'];
-        $templateFamily = $detailClientData['rr'][$rrId]['template-family'];
-        $configBaseRr = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'];
-        $buscaSondas = $detailClientData['sondas'];
-        $buscaEquipamentos = $detailClientData['equipamentos'];
-        $buscaRelatorios = $detailClientData['rr'][$rrId]['relatorios'];
+        $templateVendor = $detailClientData['rr'][$rrId]['template-vendor'] ?? '';
+        $templateFamily = $detailClientData['rr'][$rrId]['template-family'] ?? '';
+        $configBaseRr = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'] ?? '';
+        $buscaSondas = $detailClientData['sondas'] ?? '';
+        $buscaEquipamentos = $detailClientData['equipamentos']  ?? '';
+        $buscaRelatorios = $detailClientData['rr'][$rrId]['relatorios']  ?? '';
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
 
@@ -263,7 +268,6 @@ class PRTemplateController extends Controller
             'buscaRelatorios' => $buscaRelatorios,
             'configToken' => $configToken
         ];
-
         return view('admin.assetmanagement.pr_template', compact('clientId', 'toSendData'));
     }
 

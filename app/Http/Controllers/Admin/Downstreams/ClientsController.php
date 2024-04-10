@@ -7,14 +7,38 @@ use Illuminate\Http\Request;
 
 class ClientsController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $req)
     {
-        return view('admin.downstreams.clients');
+
+        $clientId = $req->query()['client_id'];
+        $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
+        $buscaBgpClientesTransito = $clientDetailData['bgp']['interconexoes']['clientesbgp'];
+        $clientName = $clientDetailData['nome'];
+        $senhainocmon = $clientDetailData['seguranca']['senhainocmon'];
+        $asn = $clientDetailData['bgp']['asn'];
+        $community = $clientDetailData['bgp']['community0'];
+        $equipments = $clientDetailData['equipamentos'];
+
+        $toSendData = [
+            'clientId' => $clientId,
+            'clientName' => $clientName,
+            'clientTransito' => $buscaBgpClientesTransito,
+            'senhainocmon' => $senhainocmon,
+            'asn' => $asn,
+            'community' => $community,
+            'equipment' => $equipments
+        ];
+        return view('admin.downstreams.clients', compact('toSendData', 'clientId'));
     }
 
     /**
@@ -69,7 +93,31 @@ class ClientsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $toStatus = '';
+        $updateId = $request['dataId'];
+        $clientId = $request['clientId'];
+        $toSaveData = [
+            'nomedoclientebgp' => $request['clientName'],
+            'remoteas' => $request['asn'],
+            'pop' => $request['pop'],
+            'ipv4-01' => $request['ipv4Local'],
+            'ipv4-02' => $request['ipv4Remote'],
+            'ipv6-01' => $request['ipv6Local'],
+            'ipv6-02' => $request['ipv6Remote'],
+        ];
+        $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
+        $equipId = $clientDetailData['bgp']['interconexoes']['clientesbgp'][$updateId]['idperemoto'];
+        $equipHostName = $request['pe'];
+        try {
+            $this->database->getReference('clientes/' . $clientId .'/bgp/interconexoes/clientesbgp/'.$updateId)->update($toSaveData);
+            $this->database->getReference('clientes/' . $clientId . '/equipamentos/' . $equipId . '/hostname')->set($equipHostName);
+            $status = 'ok';
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 
     /**
@@ -78,8 +126,20 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $clientId = $request['clientId'];
+        $toDeleteId = $request['toDeleteId'];
+        $path = 'clientes/'.$clientId.'/bgp/interconexoes/clientesbgp/'.$toDeleteId;
+        $status = "";
+        try {
+            $this->database->getReference($path)->remove();
+            $status = "success";
+        } catch (\Throwable $th) {
+            $status = "failed";
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 }

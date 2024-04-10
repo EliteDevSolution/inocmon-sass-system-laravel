@@ -112,7 +112,16 @@
     <script>
 
         function saveData(){
-
+            if( $('#nome').val() == "" || $('#pop').val()  == "" || $('#ipv401').val() == "" || $('#ipv402').val() == "" || $('#ipv601').val() == "" || $('#ipv602').val() == "" ) {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
                 url: '{{ route("upstreams-peer.store") }}',
@@ -136,6 +145,12 @@
                     var id = msg['addedData']['id'];
                     var imgSrc = msg['addedData']['remoteas'];
                     var text1 = msg['addedData']['nomedogrupo'];
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
                     var name = text.concat("", id);
                     console.log(name);
                     var myList = document.getElementById('cdn');
@@ -152,6 +167,14 @@
                     div1.appendChild(text);
                     newItem1.appendChild(div1);
                     myList.appendChild(newItem1);
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
+                    elementUnBlock('body');
                 }
             });
         }

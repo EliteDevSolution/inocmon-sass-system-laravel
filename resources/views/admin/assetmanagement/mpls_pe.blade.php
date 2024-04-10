@@ -9,6 +9,9 @@
         #edit {
             display:none;
         }
+        th, td {
+            text-align:  center
+        }
     </style>
 @endsection
 
@@ -35,7 +38,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title text-success mt-0 mb-2">P's e PEs  <a href="{{ route('mpls_pe.create', array('client_id' =>$clientId)) }}" class="success ml-2" >Adicionar Novo</a></h4>
+                    <h4 class="header-title text-success mt-0 mb-2">P's e PEs
+                        <a href="{{ route('mpls_pe.create', array('client_id' =>$clientId)) }}" class="btn-success ml-2 btn" >
+                        Adicionar Novo
+                        </a>
+                    </h4>
                     <table id="datatable" class="table nowrap">
                         <thead>
                             <tr>
@@ -58,18 +65,28 @@
                                 <tr id="equipId{{$index}}">
 
                                     <td>{{$index}}</td>
-                                    <td>{{$value['hostname']}}</td>
-                                    <td>{{$value['routerid']}}</td>
-                                    <td>{{$value['template-vendor']}}</td>
-                                    <td>{{$value['template-family']}}</td>
-                                    <td>{{$value['protocolo']}}</td>
-                                    <td>{{$value['porta']}}</td>
-                                    <td>{{$value['user']}}</td>
-                                    <td>{{$value['pwd']}}</td>
-                                    <td> <a href="{{ route("mpls-detail.index", array('client_id' =>
-                                        request()->query()['client_id'], 'equip_id' => $index ) ) }}">GERENCIAR CONFIG</a></td>
-                                    <td> <a  onclick="showEdit('equipId{{$index}}')" class="getRow">Edit</a></td>
-                                    <td> Delete </td>
+                                    <td>{{$value['hostname'] ?? ""}}</td>
+                                    <td>{{$value['routerid'] ?? ""}}</td>
+                                    <td>{{$value['template-vendor'] ?? ""}}</td>
+                                    <td>{{$value['template-family'] ?? ""}}</td>
+                                    <td>{{$value['protocolo'] ?? ""}}</td>
+                                    <td>{{$value['porta'] ?? ""}}</td>
+                                    <td>{{$value['user'] ?? ""}}</td>
+                                    <td>{{$value['pwd'] ?? ""}}</td>
+                                    <td>
+                                        <a href="{{ route("mpls-detail.index", array('client_id' =>
+                                        request()->query()['client_id'], 'equip_id' => $index ) ) }}">
+                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a  onclick="showEdit('equipId{{$index}}')" class="getRow">
+                                            <i class="fe-edit"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <i class="fe-trash" onclick="deleteEquip(this, '{{$index}}')"></i>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -125,8 +142,9 @@
     <!-- third party js ends -->
     <!-- Datatables init -->
     <script>
+        let datatable;
         $(document).ready(function(){
-            $('#datatable').DataTable({
+            datatable = $('#datatable').DataTable({
                 responsive: false,
                 stateSave: true,
                 stateDuration: 60 * 60 * 24 * 60 * 60,
@@ -194,6 +212,17 @@
             var user =$('#useVal').val();
             var pwd = $('#senhaVal').val();
             var equipId = row.querySelector('td:nth-child(1)').textContent;
+
+            if(hostName == "" || routerId == "" || vendor == "" || family == "" || protocolo == "" || porta == "" || user == "" || equipId == "") {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "PUT",
                 url: '{{ route("mpls_pe.update", 1) }}',
@@ -213,6 +242,12 @@
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
                     console.log(msg);
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
                     row.querySelector('td:nth-child(2)').textContent = hostName;
                     row.querySelector('td:nth-child(3)').textContent = routerId;
                     row.querySelector('td:nth-child(4)').textContent = vendor;
@@ -221,12 +256,74 @@
                     row.querySelector('td:nth-child(7)').textContent = porta;
                     row.querySelector('td:nth-child(8)').textContent = user;
                     row.querySelector('td:nth-child(9)').textContent = pwd;
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
         let closeEdit = () => {
             var editPage = document.getElementById("edit");
             editPage.style.display ="none";
+        }
+    </script>
+    <script>
+        function deleteEquip(current, equipId) {
+            console.log(current);
+             $.confirm({
+                    title: 'Alert',
+                    content: 'Are you sure to delete?',
+                    draggable: true,
+                    type: 'red',
+                    closeIcon: false,
+                    icon: 'fa fa-exclamation-triangle',
+                    closeAnimation: 'top',
+                    buttons: {
+                        somethingElse: {
+                            text: "Ok",
+                            btnClass: 'btn-danger',
+                            keys: ['shift'],
+                            action: function()
+                            {
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: '{{ route("mpls_pe.destroy", 1) }}',
+                                    data: {
+                                        clientId : '{{$clientId}}',
+                                        toDeleteId : equipId,
+                                        _token : '{{ csrf_token() }}'
+                                    }
+                                }).done(function( msg ) {
+                                    if(msg?.status === 'success')
+                                    {
+                                        datatable.row($(current).parents('tr')).remove().draw();
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Successfully updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"success",
+                                        );
+                                    } else {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Failed updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"error",
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    cancel: function () {
+                        return true;
+                    },
+                }
+            });
         }
     </script>
 @endsection

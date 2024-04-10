@@ -31,9 +31,18 @@ class ChangelogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $clientId = $request->query()['client_id'];
+        $changeId = "";
+        $todo = $request['todo'];
+        if(isset($request['change_id'])) {
+            $changeId = $request['change_id'];
+            $changelogData = $this->database->getReference('lib/changelog/'.$changeId)->getSnapshot()->getValue();
+        } else {
+            $changelogData = "";
+        }
+        return view('admin.log_update_add', compact('clientId', 'todo', 'changelogData', 'changeId'));
     }
 
     /**
@@ -44,7 +53,22 @@ class ChangelogController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $newId = $this->database->getReference('lib/changelog')->push()->getKey();
+        $toSaveData = [
+            'content' => $request['changelog'],
+            'date' => $request['changelogdata'],
+            'versao' => $request['version']
+        ];
+        $status = "";
+        try {
+            $this->database->getReference('lib/changelog/'.$newId )->set($toSaveData);
+            $status = "ok";
+        } catch (\Throwable $th) {
+            $status = "failed";
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 
     /**
@@ -66,7 +90,9 @@ class ChangelogController extends Controller
      */
     public function edit($id)
     {
-        //
+
+
+
     }
 
     /**
@@ -76,9 +102,28 @@ class ChangelogController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+    public function update(Request $request)
     {
-        //
+        $changeId = $request['changeId'];
+
+        $toUpdateData = [
+            'content' => $request['changelog'],
+            'date' => $request['changelogdata'],
+            'versao' => $request['version']
+        ];
+
+        $status = '';
+
+        try {
+            $this->database->getReference('lib/changelog/'.$changeId)->update($toUpdateData);
+            $status = 'ok';
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 
     /**

@@ -70,6 +70,7 @@
                             <input type="text" name="recursivos" required id="recursivos" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">(insira todos separados por vírgula)</label></label>
                             <input type="text" name="vírgula" required id="vírgula" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">Equipmentos</label></label>
                             <select class="form-control" id="equip" required data-toggle="select2">
                                 @foreach ($buscaEquipamentos as $index => $value)
                                     <option value="{{$index}}" id="equip">{{$value['hostname']}}</option>
@@ -124,10 +125,36 @@
                 if($(this).is(':checked'))
                     checkedEquipArray.push($(this).val());
             });
+            if( $('#nome').val() == "" || $('#pop').val() == "" || $('#asn').val() == "" ||
+                $('#cos4').val() == "" || $('#cos6').val() == "" || $('#ipv4pro').val() == "" ||
+                $('#ipv4client').val() == "" || $('#recursivos').val() == "" || $('#vírgula').val() == ""
+            ) {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
-                url: '{{ route("bgpconnection-client.store") }}',
+                url: '{{ route("upstreams-cdn.store") }}',
                 data: {
+                    nome : $('#nome').val(),
+                    pop : $('#pop').val(),
+                    asn : $('#asn').val(),
+                    cos4 : $('#cos4').val(),
+                    cos6 : $('#cos6').val(),
+                    ipv401 : $('#ipv4pro').val(),
+                    ipv402 : $('#ipv4client').val(),
+                    ipv601 : $('#ipv6pro').val(),
+                    ipv602 : $('#ipv6client').val(),
+                    recursivos  : $("#recursivos").val(),
+                    vírgula : $("#vírgula").val(),
+                    equip : $('#equip').val(),
+                    check : $('#check').val(),
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }
@@ -135,7 +162,21 @@
                 console.log(msg);
                 if(msg['status'] == 'ok') {
                     console.log(msg);
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
     </script>

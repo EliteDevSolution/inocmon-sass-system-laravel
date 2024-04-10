@@ -106,23 +106,27 @@
                                     </tr>
                                     <tr>
                                         <th>EXPORT-PADRAO-TRANSIT</th>
-                                        <th>{{$toSendData["community"]}}-911</th>
+                                        <th>{{$toSendData["community"]}}:911</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-2X-PADRAO-TRANSIT</th>
-                                        <th>{{$toSendData["community"]}}-912</th>
+                                        <th>{{$toSendData["community"]}}:912</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-3X-PADRAO-TRANSIT</th>
-                                        <th>{{$toSendData["community"]}}-913</th>
+                                        <th>{{$toSendData["community"]}}:913</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-4X-PADRAO-TRANSIT</th>
-                                        <th>{{$toSendData["community"]}}-914</th>
+                                        <th>{{$toSendData["community"]}}:914</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-5X-PADRAO-TRANSIT</th>
-                                        <th>{{$toSendData["community"]}}-915</th>
+                                        <th>{{$toSendData["community"]}}:915</th>
+                                    </tr>
+                                    <tr>
+                                        <th>EXPORT-6X-PADRAO-TRANSIT</th>
+                                        <th>{{$toSendData["community"]}}:916</th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -142,27 +146,31 @@
                                 <tbody>
                                 <tr>
                                     <th>NO-EXPORT-ALL-IX</th>
-                                    <th>{{$toSendData["community"]}}:911</th>
+                                    <th>{{$toSendData["community"]}}:920</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-PADRAO-IX</th>
-                                    <th>{{$toSendData["community"]}}-920</th>
+                                    <th>{{$toSendData["community"]}}:921</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-2X-PADRAO-IX</th>
-                                    <th>{{$toSendData["community"]}}-921</th>
+                                    <th>{{$toSendData["community"]}}:922</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-3X-PADRAO-IX</th>
-                                    <th>{{$toSendData["community"]}}-922</th>
+                                    <th>{{$toSendData["community"]}}:923</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-4X-PADRAO-IX</th>
-                                    <th>{{$toSendData["community"]}}-923</th>
+                                    <th>{{$toSendData["community"]}}:924</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-5X-PADRAO-IX</th>
-                                    <th>{{$toSendData["community"]}}-924</th>
+                                    <th>{{$toSendData["community"]}}:925</th>
+                                </tr>
+                                <tr>
+                                    <th>EXPORT-6X-PREPEND-ALL-IX</th>
+                                    <th>{{$toSendData["community"]}}:926</th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -186,23 +194,27 @@
                                 </tr>
                                 <tr>
                                     <th>EXPORT-PADRAO-PEERING</th>
-                                    <th>{{$toSendData["community"]}}-931</th>
+                                    <th>{{$toSendData["community"]}}:931</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-2X-PADRAO-PEERING</th>
-                                    <th>{{$toSendData["community"]}}-932</th>
+                                    <th>{{$toSendData["community"]}}:932</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-3X-PADRAO-PEERING</th>
-                                    <th>{{$toSendData["community"]}}-933</th>
+                                    <th>{{$toSendData["community"]}}:933</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-4X-PADRAO-PEERING</th>
-                                    <th>{{$toSendData["community"]}}-934</th>
+                                    <th>{{$toSendData["community"]}}:934</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-5X-PADRAO-PEERING</th>
-                                    <th>{{$toSendData["community"]}}-935</th>
+                                    <th>{{$toSendData["community"]}}:935</th>
+                                </tr>
+                                <tr>
+                                    <th>EXPORT-6X-PADRAO-PEERING</th>
+                                    <th>{{$toSendData["community"]}}:936</th>
                                 </tr>
                                 </tbody>
                             </table>
@@ -226,23 +238,27 @@
                                 </tr>
                                 <tr>
                                     <th>EXPORT-PADRAO-CDN</th>
-                                    <th>{{$toSendData["community"]}}-941</th>
+                                    <th>{{$toSendData["community"]}}:941</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-2X-PREPEND-ALL-CDN</th>
-                                    <th>{{$toSendData["community"]}}-942</th>
+                                    <th>{{$toSendData["community"]}}:942</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-3X-PREPEND-ALL-CDN</th>
-                                    <th>{{$toSendData["community"]}}-943</th>
+                                    <th>{{$toSendData["community"]}}:943</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-4X-PREPEND-ALL-CDN</th>
-                                    <th>{{$toSendData["community"]}}-944</th>
+                                    <th>{{$toSendData["community"]}}:944</th>
                                 </tr>
                                 <tr>
                                     <th>EXPORT-5X-PREPEND-ALL-CDN</th>
-                                    <th>{{$toSendData["community"]}}-945</th>
+                                    <th>{{$toSendData["community"]}}:945</th>
+                                </tr>
+                                <tr>
+                                    <th>EXPORT-6X-PREPEND-ALL-CDN</th>
+                                    <th>{{$toSendData["community"]}}:946</th>
                                 </tr>
                                 </tbody>
                             </table>

@@ -9,6 +9,9 @@
         #edit {
             display:none;
         }
+        td, th  {
+            text-align: center
+        }
     </style>
 @endsection
 
@@ -27,7 +30,6 @@
                         </ol>
                     </div>
                     <h4 class="page-title">PR sumary</h4>
-        			<span class="">Lets say you want to sort the fourth column (3) descending and the first column (0) ascending: your order: would look like this: order: [[ 3, 'desc' ], [ 0, 'asc' ]]</span>
                 </div>
             </div>
         </div>
@@ -67,13 +69,17 @@
                                         <td>{{$value['user']}}</td>
                                         <td>
                                             <a href={{ route("proxy-template.index",array('client_id' =>
-                                        request()->query()['client_id'], 'rr_id' => $index ) ) }}>gerenciar config</a>
+                                                request()->query()['client_id'], 'rr_id' => $index ) ) }}>
+                                                <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                        </a>
                                         </td>
                                         <td>
-                                            <a onclick="showEdit('prSummaryId{{$index}}')" class="getRow">editar</a>
+                                            <a onclick="showEdit('prSummaryId{{$index}}')" class="getRow">
+                                                <i class="fe-edit"></i>
+                                            </a>
                                         </td>
                                         <td>
-                                            <a href="">delete</a>
+                                            <i class="fe-trash" onclick="deleteProxy(this, '{{$index}}')"></i>
                                         </td>
                                     </tr>
                                 @endif
@@ -131,8 +137,9 @@
     <!-- third party js ends -->
     <!-- Datatables init -->
     <script>
+        let datatable;
         $(document).ready(function(){
-            $('#datatable').DataTable({
+            datatable = $('#datatable').DataTable({
                 responsive: false,
                 stateSave: true,
                 stateDuration: 60 * 60 * 24 * 60 * 60,
@@ -194,6 +201,18 @@
             var user = $('#userVal').val();
             var pwd = $('#senhaVal').val();
 
+            if(hostName == "" || routerId == "" || family == "" || vendor == "" || protocol == "" || user == "" || pwd == "") {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+
+            elementBlock('square1', 'body');
+
             $.ajax({
                 type: "post",
                 url: '{{ route("pr-summary.update", 1) }}',
@@ -219,6 +238,71 @@
                     row.querySelector('td:nth-child(6)').textContent = protocol;
                     row.querySelector('td:nth-child(7)').textContent = user;
                     row.querySelector('td:nth-child(8)').textContent = pwd;
+                    $.NotificationApp.send("Alert!"
+                        ,"Successfully updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alert!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
+                }
+                elementUnBlock('body');
+            });
+        }
+        function deleteProxy(current, id) {
+            console.log("dfdfd");
+            $.confirm({
+                    title: 'Alert',
+                    content: 'Are you sure to delete?',
+                    draggable: true,
+                    type: 'red',
+                    closeIcon: false,
+                    icon: 'fa fa-exclamation-triangle',
+                    closeAnimation: 'top',
+                    buttons: {
+                        somethingElse: {
+                            text: "Ok",
+                            btnClass: 'btn-danger',
+                            keys: ['shift'],
+                            action: function()
+                            {
+                                $.ajax({
+                                    type: "post",
+                                    url: `pr-summary/delete/${id}`,
+                                    data: {
+                                        clientId : "{{$clientId}}",
+                                        _token : '{{ csrf_token() }}'
+                                    }
+                                }).done(function( msg ) {
+                                    if(msg?.status === 'success')
+                                    {
+                                        datatable.row($(current).parents('tr')).remove().draw();
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Successfully updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"success",
+                                        );
+                                    } else {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Failed updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"error",
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    cancel: function () {
+                        return true;
+                    },
                 }
             });
         }

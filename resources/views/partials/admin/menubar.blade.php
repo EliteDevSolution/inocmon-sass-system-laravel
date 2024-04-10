@@ -53,7 +53,7 @@
                                 @endif
                             @endforeach
                             <li>
-                                <a href="{{ route('asset_manage.pr_summary', $clientIdQueryParam) }}">PR sumary</a>
+                                <a href="{{ route('asset_manage.pr_summary', $clientIdQueryParam) }}">RR Sumary</a>
                             </li>
                         </ul>
                     </li>
@@ -64,11 +64,13 @@
                         <ul class="nav-third-level nav" aria-expanded="false">
                             @foreach ($clients as $index => $proxys)
                                 @if ($index == request()->query()['client_id'])
-                                    @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
-                                        <li>
-                                            <a href="{{ route('proxy-localhost.index', array('client_id' => request()->query()['client_id'], 'proxy_id' => $proxyIndex))}}"> {{$proxy['hostname']}} </a>
-                                        </li>
-                                    @endforeach
+                                    @if(array_key_exists('sondas', $proxys))
+                                        @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
+                                            <li>
+                                                <a href="{{ route('proxy-localhost.index', array('client_id' => request()->query()['client_id'], 'proxy_id' => $proxyIndex))}}"> {{$proxy['hostname']}} </a>
+                                            </li>
+                                        @endforeach
+                                    @endif
                                 @endif
                             @endforeach
                             <li>
@@ -92,7 +94,7 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li>
-                        <a href="{{ route('upstreams.index', $clientIdQueryParam) }}">Traffic</a>
+                        <a href="{{ route('upstreams.index', $clientIdQueryParam) }}">Transito</a>
                     </li>
                     <li>
                         <a href="{{ route('upstreams-ix.index', $clientIdQueryParam) }}">IX</a>
@@ -114,7 +116,7 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li>
-                        <a href="{{ route('downstreams-clients.index') }}">ACN clients</a>
+                        <a href="{{ route('downstreams-clients.index', $clientIdQueryParam) }}">Clientes ASN</a>
                     </li>
                     <li>
                         <a href="apps-kanbanboard.html">Dedicated clients</a>
@@ -179,7 +181,7 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li >
-                        <a href="{{ route('client.index',$clientIdQueryParam) }}">Admin</a>
+                        <a href="{{ route('client.index') }}">Admin</a>
                     </li>
                 </ul>
             </li>
@@ -230,7 +232,35 @@
                     </ul>
                 @endforeach
             </li>
+
+            <li class="menu-title">Template Transitor</li>
+
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-airplay"></i>
+                    <span> Template Edit </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('temp-edit-bgp.index') }}">BGP TRANSITO</a>
+                    </li>
+                    <li >
+                        <a href="{{ route('tempix-edit-bgp.index') }}">BPG IX</a>
+                    </li>
+                    <li >
+                        <a href="{{ route('tempeer-edit-bgp.index') }}">BPG PEERING</a>
+                    </li>
+                    {{-- <li >
+                        <a href="{{ route('tempcdn-edit-bgp.index') }}">BGP CDN</a>
+                    </li> --}}
+                    <li >
+                        <a href="{{ route('deny-customer.index') }}">Deny Customer-In</a>
+                    </li>
+                </ul>
+            </li>
         </ul>
+
     @endif
 </div>
 

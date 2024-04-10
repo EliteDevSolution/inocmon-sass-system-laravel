@@ -6,6 +6,9 @@
         #edit {
             display:none;
         }
+        td, th {
+            text-align: center;
+        }
     </style>
 
     <link href="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css" />
@@ -84,18 +87,28 @@
                             @foreach ($buscarSondas as $index => $buscarSonda )
                                 <tr id="buscarSondaId{{$index}}">
                                     <td id='index'> {{$index}} </td>
-                                    <td id='hostname'> {{$buscarSonda['hostname']}} </td>
-                                    <td id='router'> {{$buscarSonda['ipv4']}} </td>
+                                    <td id='hostname'> {{$buscarSonda['hostname'] ?? ''}} </td>
+                                    <td id='router'> {{$buscarSonda['ipv4'] ?? ''}} </td>
                                     <td id='pltaforma'> pltaforma </td>
                                     <td id='so'> so </td>
-                                    <td id='portassh'> {{$buscarSonda['portassh']}} </td>
-                                    <td id='portahttp'> {{$buscarSonda['portahttp']}} </td>
-                                    <td id='user'> {{$buscarSonda['user']}} </td>
-                                    <td id='pwd'> {{$buscarSonda['pwd']}} </td>
-                                    <td> <a href="{{ route("proxy-localhost.index",array('client_id' =>
-                                        request()->query()['client_id'], 'proxy_id' => $index ) ) }}">GERENCIAR CONFIG</a></td>
-                                    <td> <a onclick="showEdit('buscarSondaId{{$index}}')" class="getRow">Edit</a></td>
-                                    <td> Delete </td>
+                                    <td id='portassh'> {{$buscarSonda['portassh'] ?? ''}} </td>
+                                    <td id='portahttp'> {{$buscarSonda['portahttp'] ?? ''}} </td>
+                                    <td id='user'> {{$buscarSonda['user'] ?? ''}} </td>
+                                    <td id='pwd'> {{$buscarSonda['pwd'] ?? ''}} </td>
+                                    <td>
+                                        <a href="{{ route("proxy-localhost.index",array('client_id' =>
+                                        request()->query()['client_id'], 'proxy_id' => $index ) ) }}">
+                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a onclick="showEdit('buscarSondaId{{$index}}')" class="getRow">
+                                            <i class="fe-edit"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <i class="fe-trash" onclick="deletePR(this, '{{$index}}')"></i>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -153,8 +166,9 @@
     <!-- third party js ends -->
     <!-- Datatables init -->
     <script>
+        let datatable;
         $(document).ready(function(){
-            $('#datatable').DataTable({
+            datatable = $('#datatable').DataTable({
                 responsive: false,
                 stateSave: true,
                 stateDuration: 60 * 60 * 24 * 60 * 60,
@@ -179,15 +193,12 @@
                 },
                 order: [[ 0, "asc" ]]
             });
-
-
         });
-    </script>
-    <script>
+
 
         var row;
 
-        function showEdit(buscarSondaId) {
+        let showEdit = (buscarSondaId) => {
             var editPage = document.getElementById("edit");
             editPage.style.display ="block";
             row = document.getElementById(buscarSondaId);
@@ -209,8 +220,8 @@
             $('#portaVal').val(portahttp);
             $('#useVal').val(user);
             $('#senhaVal').val(pwd);
-
         }
+
         let saveData = () => {
 
             var hostVal  = $('#hostVal').val();
@@ -222,6 +233,19 @@
             var userVal  = $('#useVal').val();
             var pwdVal  = $('#senhaVal').val();
             var proxyId = row.querySelector('td:nth-child(1)').textContent;
+
+            if(hostVal == "" || routerVal == "" || plataFormaVal == "" || soVal == "" || portaSshVal == "" || portaVal == "" || userVal == "" || userVal == "" || pwdVal == ""
+            )   {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+
+            elementBlock('square1', 'body');
 
             $.ajax({
                 type: "PUT",
@@ -249,13 +273,82 @@
                     row.querySelector('td:nth-child(7)').textContent = portaVal;
                     row.querySelector('td:nth-child(8)').textContent = userVal;
                     row.querySelector('td:nth-child(9)').textContent = pwdVal;
+                    $.NotificationApp.send("Alert!"
+                        ,"Successfully updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alert!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
+
         let closeEdit = () => {
             var editPage = document.getElementById("edit");
             editPage.style.display ="none";
         }
+
+        function deletePR(current, prId) {
+            console.log(current);
+             $.confirm({
+                    title: 'Alert',
+                    content: 'Are you sure to delete?',
+                    draggable: true,
+                    type: 'red',
+                    closeIcon: false,
+                    icon: 'fa fa-exclamation-triangle',
+                    closeAnimation: 'top',
+                    buttons: {
+                        somethingElse: {
+                            text: "Ok",
+                            btnClass: 'btn-danger',
+                            keys: ['shift'],
+                            action: function()
+                            {
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: '{{ route("proxy-summary.destroy", 1) }}',
+                                    data: {
+                                        clientId : '{{$clientId}}',
+                                        toDeleteId : prId,
+                                        _token : '{{ csrf_token() }}'
+                                    }
+                                }).done(function( msg ) {
+                                    if(msg?.status === 'success')
+                                    {
+                                        datatable.row($(current).parents('tr')).remove().draw();
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Successfully updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"success",
+                                        );
+                                    } else {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Failed updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"error",
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    cancel: function () {
+                        return true;
+                    },
+                }
+            });
+        }
+
     </script>
 
 @endsection

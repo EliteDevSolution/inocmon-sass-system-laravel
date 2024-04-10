@@ -112,7 +112,21 @@
                 order: [[ 0, "asc" ]]
             });
 
-
+            "@if(session('success') == 'success')"
+                $.NotificationApp.send("Alert!"
+                    ,"Successfully created!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            "@elseif (session('success') == 'failed')"
+                $.NotificationApp.send("Alert!"
+                    ,"Failed created!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+            "@endif"
         });
     </script>
 

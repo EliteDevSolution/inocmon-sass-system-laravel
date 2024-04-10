@@ -27,6 +27,16 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('client', 'Admin\ClientController');
 
+    Route::resource('temp-edit-bgp', 'Admin\TempEditController');
+
+    Route::resource('tempix-edit-bgp', 'Admin\TempEditIxController');
+
+    Route::resource('tempeer-edit-bgp', 'Admin\TempEditPeerController');
+
+    Route::resource('tempcdn-edit-bgp', 'Admin\TempEditCdnController');
+
+    Route::resource('deny-customer', 'Admin\DenyCustomer');
+
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
     Route::put('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');
 
@@ -39,9 +49,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('proxy-localhost/applyconfig', 'Admin\LocalhostController@applyBaseConfig');
     Route::post('proxy-localhost/update-inco-config', 'Admin\LocalhostController@updataIncoConfig');
 
-
-
-
     Route::resource('proxy-localhost', 'Admin\LocalhostController')->names([
         'index' => 'proxy-localhost.index',
     ]);
@@ -49,12 +56,14 @@ Route::group(['middleware' => ['auth']], function () {
         'index' => 'proxy-summary.index',
         'update' => 'proxy-summary.update'
     ]);
+    Route::get('pr-summary', 'Admin\PRSummaryController@index')->name('asset_manage.pr_summary');
+    Route::post('pr-summary/update', 'Admin\PRSummaryController@update')->name('pr-summary.update');
+    Route::post('pr-summary/delete/{id}', 'Admin\PRSummaryController@delete')->name('pr-summary.delete');
 
-Route::resource('proxy-template', 'Admin\PRTemplateController');
+    Route::resource('proxy-template', 'Admin\PRTemplateController');
     Route::post('proxy-template/applyconfig', 'Admin\PRTemplateController@applyBaseConfig');
     Route::post('proxy-template/applyconfigPes', 'Admin\PRTemplateController@applyConfigPes');
 
-    Route::post('pr-summary/update', 'Admin\PRSummaryController@update')->name('pr-summary.update');
     Route::post('mpls-detail/applyConfig', 'Admin\MplsDetailController@applyConfig')->name('mpls-detail.applyConfig');
 
     Route::resource('mpls-detail', 'Admin\MplsDetailController')->names([
@@ -66,7 +75,6 @@ Route::resource('proxy-template', 'Admin\PRTemplateController');
         'update' => 'mpls_pe.update',
         'create' => 'mpls_pe.create',
     ]);
-    Route::get('pr-summary', 'Admin\PRSummaryController@index')->name('asset_manage.pr_summary');
 
     Route::resource('upstreams', 'Admin\Upstreams\TrafficController');
     Route::post('upstreams/update', 'Admin\Upstreams\TrafficController@update')->name('upstreams.update');
@@ -74,7 +82,6 @@ Route::resource('proxy-template', 'Admin\PRTemplateController');
 
     Route::resource('template-generate-config', 'Admin\Upstreams\TemplateConfigController');
     Route::post('template-generate-config/applyconfig', 'Admin\Upstreams\TemplateConfigController@applyConfig')->name('template-generate-config.applyConfig');
-
 
     Route::resource('upstreams-ix', 'Admin\Upstreams\IxController');
     Route::post('upstreams-ix/update', 'Admin\Upstreams\IxController@update')->name('upstreams-ix.update');
@@ -105,12 +112,12 @@ Route::resource('proxy-template', 'Admin\PRTemplateController');
     Route::resource('network-router-reflector', 'Admin\Network\RouteReflectorController');
     Route::post('network-router-reflector/store', 'Admin\Network\RouteReflectorController@store')->name('network-router-reflector.store');
 
-
     Route::resource('network-proxy', 'Admin\Network\ProxyController');
     Route::post('network-proxy/store', 'Admin\Network\ProxyController@store')->name('network-proxy.store');
 
     Route::resource('changelog', 'Admin\ChangelogController');
-
+    Route::post('changelog/store', 'Admin\ChangelogController@store')->name('changelog.store');
+    Route::post('changelog/update', 'Admin\ChangelogController@update')->name('changelog.update');
 
     Route::resource('permissions', 'Admin\PermissionsController');
     Route::delete('permissions_mass_destroy', 'Admin\PermissionsController@massDestroy')->name('permissions.mass_destroy');

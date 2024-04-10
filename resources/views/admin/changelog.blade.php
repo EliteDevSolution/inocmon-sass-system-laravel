@@ -19,6 +19,18 @@
     .nodisplay  {
         display: none;
     }
+    .tablehead {
+        display: flex;
+        justify-content: space-around;
+    }
+    .addbtn {
+        font-size: 0.6rem ;
+        padding : 1px !important;
+    }
+    .update {
+        style="padding : 1.3px !important;
+        font-size:0.575rem";
+    }
   </style>
 @endsection
 
@@ -41,9 +53,14 @@
     <div class="row">
         <div class="col-xl-3">
             <div class="card-box">
-                <p class="font-15 text-blue">
-                    Chang Log
-                </p>
+                <div class="row tablehead">
+                    <p class="font-15 text-blue">
+                        Chang Log
+                    </p>
+                    <a class="m-0 mb-2 btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'store', 'client_id' => $clientId ))}}">
+                        Add
+                    </a>
+                </div>
                 <table class="table nowrap">
                     <thead>
                         <tr>
@@ -57,7 +74,9 @@
                             <tr id="{{$indexChangeLog}}">
                                 <td>{{$valueChangeLog['versao']}}</td>
                                 <td>{{$valueChangeLog['date']}}</td>
-                                <td><p class="btn-success btn" style="padding : 1.3px !important;font-size:0.575rem">Update</p></td>
+                                <td>
+                                    <a class="btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'update','client_id' => $clientId, 'change_id' => $indexChangeLog))}}">Update</a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

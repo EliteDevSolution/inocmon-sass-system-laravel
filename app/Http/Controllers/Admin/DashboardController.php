@@ -94,12 +94,12 @@ class DashboardController extends Controller
 
             $client = $this->database->getReference($path)->getValue();
 
-            $bgpInterConectors = $this->database->getReference($path)->getSnapshot()->GetValue()['bgp']['interconexoes'];
-            $buscaBgpTransito = $bgpInterConectors['transito'];
-            $buscaBgpIx = $bgpInterConectors['ix'];
-            $buscaBgpPeering = $bgpInterConectors['peering'];
-            $buscaBgpCdn = $bgpInterConectors['cdn'];
-            $buscaBgpClientes = $bgpInterConectors['clientesbgp'];
+            $bgpInterConectors = $this->database->getReference($path)->getSnapshot()->GetValue()['bgp']['interconexoes'] ?? '';
+            $buscaBgpTransito = $bgpInterConectors['transito'] ?? '';
+            $buscaBgpIx = $bgpInterConectors['ix'] ?? '';
+            $buscaBgpPeering = $bgpInterConectors['peering'] ?? '';
+            $buscaBgpCdn = $bgpInterConectors['cdn'] ?? '';
+            $buscaBgpClientes = $bgpInterConectors['clientesbgp'] ?? '';
 
             if(!is_array($buscaBgpTransito)) {
                 $countBgpTransito = 0;
@@ -132,10 +132,11 @@ class DashboardController extends Controller
             }
 
             $upstreamsCount = ($countBgpTransito + $countBgpIx + $countBgpPeering + $countBgpCdn);
-
-
-            $equipmentCount = count($client['equipamentos']);
-            $sondas = $client['sondas'];
+            $equipmentCount = 0;
+            if(is_array($client['equipamentos'])) {
+                $equipmentCount = count($client['equipamentos']);
+            }
+            $sondas = $client['sondas'] ?? [];
             // $rr = $client['rr']; /*Current rr property is not here*/
 
             $clienteDatabase  = $client;
@@ -162,8 +163,8 @@ class DashboardController extends Controller
 
             // $getOspfLsdbData = $this->database->getReference($path . '/ospf-lsdb/data')->getSnapshot()->getValue();
             // $getOspfLsdbVendor = $this->database->getReference($path . '/ospf-lsdb/vendor')->getSnapshot()->getValue();
-            $getOspfLsdbData = $client['ospf-lsdb']['data'];
-            $getOspfLsdbVendor = $client['ospf-lsdb']['vendor'];
+            $getOspfLsdbData = $client['ospf-lsdb']['data'] ?? '';
+            $getOspfLsdbVendor = $client['ospf-lsdb']['vendor'] ?? '';
 
             if($getOspfLsdbData == null) $getOspfLsdbData = "";
             if($getOspfLsdbVendor == null) $getOspfLsdbVendor = "";

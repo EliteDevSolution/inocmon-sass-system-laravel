@@ -51,4 +51,22 @@ class PRSummaryController extends Controller
             'toSaveData' => $toSaveData
         ]);
     }
+
+    public function delete($id, Request $request)
+    {
+        $toDeleteId = $id;
+        // $path = 'clientes/'.$toDeleteId;
+        $clientId = $request['clientId'];
+        $path = 'clientes/'.$clientId.'/rr/'.$toDeleteId;
+        $status = "";
+        try {
+            $this->database->getReference($path)->remove();
+            $status = "success";
+        } catch (\Throwable $th) {
+            $status = "failed";
+        }
+        return response()->json([
+            'status' => $status
+        ]);
+    }
 }

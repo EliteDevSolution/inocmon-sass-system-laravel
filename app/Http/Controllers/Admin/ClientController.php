@@ -22,8 +22,9 @@ class ClientController extends Controller
 
     public function index()
     {
+        $status = session('success');
         $clients = $this->database->getReference('clientes')->getValue();
-        return view('admin.client_home', compact('clients'));
+        return view('admin.client_home', compact('clients', 'status'));
     }
 
     /**
@@ -33,7 +34,8 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('admin.client_add');
+        $status = "";
+        return view('admin.client_add', compact('status'));
     }
 
     /**
@@ -44,7 +46,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $status = "";
+        $status = "success";
 
 	    try {
             $key = $this->database->getReference('clientes')->push()->getKey();
@@ -75,13 +77,13 @@ class ClientController extends Controller
             $this->database->getReference('clientes/' . $key)->set($data);
 
             $status = "success";
+            return redirect()->back()->with('success', $status);;
 
         } catch(Exception  $err) {
-            $status = $err;
+            $status = 'failed';
+            return redirect()->back()->with('failed', $status);;
         }
 
-        $clients = $this->database->getReference('clientes')->getValue();
-        return redirect()->route("client.create");
     }
 
     /**
@@ -148,10 +150,11 @@ class ClientController extends Controller
             $status = "success";
 
         } catch(Exception  $err) {
-            $status = $err;
+            $status = "failed";
         }
-
-        return view('admin.client_home' ,compact('status'));
+        $clients = $this->database->getReference('clientes')->getValue();
+        return redirect()->route('client.index')->with('success', $status);
+        // return view('admin.client_home' ,compact('status', 'clients'));
     }
 
     /**
@@ -160,8 +163,19 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $toDeleteId = $request['toDeleteId'];
+        $path = 'clientes/'.$toDeleteId;
+        $status = "";
+        try {
+            $this->database->getReference($path)->remove();
+            $status = "success";
+        } catch (\Throwable $th) {
+            $status = "failed";
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 }

@@ -77,18 +77,14 @@ class MplsController extends Controller
             ];
 
             $this->database->getReference('clientes/'.$clientId.'/equipamentos/' . $key)->set($data);
-
             $status = "success";
+            return redirect()->back()->with('success', $status);;
 
         } catch(Exception  $err) {
-            return response()->json([
-                'status' => $err,
-            ]);
+            $status = 'failed';
+            return redirect()->back()->with('failed', $status);
         }
 
-        return response()->json([
-            'status' => 'ok',
-        ]);
     }
 
     /**
@@ -150,8 +146,20 @@ class MplsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $clientId = $request['clientId'];
+        $toDeleteId = $request['toDeleteId'];
+        $path = 'clientes/'.$clientId.'/equipamentos/'.$toDeleteId;
+        $status = "";
+        try {
+            $this->database->getReference($path)->remove();
+            $status = "success";
+        } catch (\Throwable $th) {
+            $status = "failed";
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 }

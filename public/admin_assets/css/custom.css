@@ -13,3 +13,9 @@
 .navbar-custom , .nav-backcolor{
     background-color: #4a81d4 !important;
 }
+.close-jq-toast-single {
+
+    top: -10px !important;
+    right: -10px !important;
+
+}

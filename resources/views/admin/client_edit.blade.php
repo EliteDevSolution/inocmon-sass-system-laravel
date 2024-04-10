@@ -29,7 +29,7 @@
             <div class="card-box p-1">
                 <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Client id : {{$key}}</label>
                 <div class="card-body">
-                    <form action="{{ route("client.update", $key) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route("client.update", $key) }}" class="myForm" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -63,7 +63,7 @@
                                 <label class="mb-1 font-weight-bold text-muted">Nome do Grupo :	</label>
                                 <input type="text" name="nomedogrupo" id="nomedogrupo" required value="{{$client['seguranca']['nomedogrupo']}}" class="form-control mb-1"  placeholder="Nome do group" style=" z-index: 2; background: transparent;"/>
                                 <label class="mb-1 font-weight-bold text-muted">Stauts</label>
-                                <select  name="status" value="{{$client['status']}}" class="form-control" data-toggle="select2" >
+                                <select name="status" value="{{$client['status']}}" class="form-control" data-toggle="select2" >
                                     <option value="activo">activo</option>
                                     <option value="inactivo">inactivo</option>
                                 </select>
@@ -127,5 +127,7 @@
 
         });
     </script>
+
+
 
 @endsection

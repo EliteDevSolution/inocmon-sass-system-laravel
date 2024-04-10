@@ -252,6 +252,20 @@
             if($(this).is(':checked'))
                 communityArray.push($(this).val());
         });
+        if($("#nome").val() == "" || $("#asn").val() == "" || $("#pop").val() == "" ||
+            $("#blocosipv4").val() == "" || $("#blocosipv6").val() == "" || $("#ipv4pro").val() == "" ||
+            $("#ipv4client").val() == "" || $("#ipv6pro").val() == "" ||  $("#ipv6client").val() == "" ||
+             $("#recursivos").val() == "" ||  $("#equip").val() == ""
+        ) {
+            $.NotificationApp.send("Alarm!"
+                ,"This is required field!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"error",
+            );
+            return;
+        }
+        elementBlock('square1', 'body');
         $.ajax({
             type: "POST",
             url: '{{ route("bgpconnection-client.store") }}',
@@ -294,7 +308,21 @@
                 $("#ipv6pro").val("");
                 $("#ipv6client").val("");
                 $("#recursivos").val("");
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            } else {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             }
+            elementUnBlock('body');
         });
     }
 </script>

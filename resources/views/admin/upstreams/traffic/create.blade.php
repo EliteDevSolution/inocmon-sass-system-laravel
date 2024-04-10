@@ -124,6 +124,16 @@
             var bgp02Val = $('#bgp02').val();
             var equipVal = $('#equip').val();
             var checkVal = $('#check').val();
+            if(nomeVal == "" || popVal == "" || asnVal == "" || bgp1Val == "" || bgp2Val == "" || bgp01Val == "" ||bgp02Val == "" || equipVal == "") {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
                 url: '{{ route("upstreams.store") }}',
@@ -152,6 +162,12 @@
                     $('#bgp02').val("");
                     $('#equip').val("");
                     $('#check').val("");
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
                     var id = msg['addedData']['id'];
                     var imgSrc = msg['addedData']['remoteas'];
                     var text = msg['addedData']['nomedogrupo'];
@@ -171,7 +187,15 @@
                     div1.appendChild(text);
                     newItem1.appendChild(div1);
                     myList.appendChild(newItem1);
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
     </script>

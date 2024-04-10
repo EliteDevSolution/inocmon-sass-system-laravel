@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Template Family</label>
-                            <select id="ibgps" class="form-control" >
+                            <select id="ibgps" class="form-control mb-1" >
                                 @foreach ($buscaTemplates as $indexVendor => $valueVendor )
                                     @foreach ($valueVendor as $indexFamily => $valueFamily)
                                         <option value="{{$indexFamily}}">
@@ -139,6 +139,19 @@
     <script>
 
         function saveData(){
+            if( $("#hostname").val() == "" || $("#routerid").val() == "" || $("#vendor").val() == "" ||
+                $("#family").val() == "" || $("#protocol").val() == "" || $("#porta").val() == "" ||
+                $("#user").val() == "" || $("#senha").val() == ""
+            ) {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
                 url: '{{ route("network-router-reflector.store") }}',
@@ -164,7 +177,21 @@
                     $("#porta").val("");
                     $("#user").val("");
                     $("#senha").val("");
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Faield!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
 

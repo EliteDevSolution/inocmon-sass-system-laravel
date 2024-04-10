@@ -22,8 +22,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
+        <div class="row mt-2">
+            <div class="col-10 m-auto">
                 <div class="card">
                     <div class="card-body">
                         <a class="btn btn-success mb-3" href="{{ route("client.create") }}">
@@ -37,11 +37,12 @@
                                 <th> Status</th>
                                 <th> Gerenciar</th>
                                 <th> Edit</th>
+                                <th>Delete</th>
                             </tr>
                             </thead>
                             <tbody>
                                 @foreach($clients as $key => $client)
-                                    <tr data-entry-id="{{ $key }}">
+                                    <tr data-entry-id="{{ $key }}" id="{{$key}}">
                                         <td>
                                             {{$key}}
                                         </td>
@@ -51,11 +52,18 @@
                                         <td>
                                             {{ $client['status'] }}
                                         </td>
-                                        <td>
-                                            <a href="{{ route("dashboard", array( "client_id" => $key )) }}">more detail</a>
+                                        <td width="20" style="text-align: center">
+                                            <a href="{{ route("dashboard", array( "client_id" => $key )) }}" >
+                                                <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                            </a>
                                         </td>
-                                        <td>
-                                            <a href="{{ route("client.edit", $key) }}">edit</a>
+                                        <td width="20" style="text-align: center">
+                                            <a href="{{ route("client.edit", $key) }}">
+                                                <i class="fe-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td width="20" style="text-align: center">
+                                            <i class="fe-trash" onclick="deleteClient(this, '{{$key}}')"></i>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -71,8 +79,6 @@
 @section('scripts')
     @parent
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/js/pages/datatables.init.js') }}"></script>
-
     <script>
         $(document).ready(function(){
             $('[data-toggle="select2"]').select2()
@@ -87,8 +93,9 @@
     <!-- third party js ends -->
     <!-- Datatables init -->
     <script>
+        let datatable;
         $(document).ready(function(){
-            $('#datatable').DataTable({
+            datatable = $('#datatable').DataTable({
                 responsive: false,
                 stateSave: true,
                 stateDuration: 60 * 60 * 24 * 60 * 60,
@@ -114,8 +121,75 @@
                 order: [[ 0, "asc" ]]
             });
 
+            "@if($status == 'success')"
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            "@elseif ($status == 'failed')"
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+            "@endif"
 
         });
-    </script>
 
+        function deleteClient(current, proxyId) {
+            console.log(current);
+             $.confirm({
+                    title: 'Alert',
+                    content: 'Are you sure to delete?',
+                    draggable: true,
+                    type: 'red',
+                    closeIcon: false,
+                    icon: 'fa fa-exclamation-triangle',
+                    closeAnimation: 'top',
+                    buttons: {
+                        somethingElse: {
+                            text: "Ok",
+                            btnClass: 'btn-danger',
+                            keys: ['shift'],
+                            action: function()
+                            {
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: '{{ route("client.destroy", 1) }}',
+                                    data: {
+                                        toDeleteId : proxyId,
+                                        _token : '{{ csrf_token() }}'
+                                    }
+                                }).done(function( msg ) {
+                                    if(msg?.status === 'success')
+                                    {
+                                        datatable.row($(current).parents('tr')).remove().draw();
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Successfully updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"success",
+                                        );
+                                    } else {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Failed updated!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"error",
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                        cancel: function () {
+                            return true;
+                        },
+                    }
+                });
+        }
+
+    </script>
 @endsection

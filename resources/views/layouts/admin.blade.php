@@ -15,12 +15,19 @@
         <link href="{{ asset('admin_assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Customize css -->
         <link href="{{ asset('admin_assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('admin_assets/libs/jquery-toast/jquery.toast.min.css') }}" rel="stylesheet" type="text/css" />
+
+        <link href="{{ asset('common_assets/plugin/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('common_assets/plugin/blockui/blockUI.css') }}" rel="stylesheet" type="text/css" />
+
+
+
         @yield('styles')
         <style>
 
         </style>
     </head>
-    <body>        
+    <body>
         <!-- Begin page -->
         <div id="wrapper">
 
@@ -91,7 +98,35 @@
         <script src="{{ asset('admin_assets/js/vendor.min.js') }}"></script>
         <!-- App js-->
         <script src="{{ asset('admin_assets/js/app.min.js') }}"></script>
+
+        <script src="{{ asset('admin_assets/libs/jquery-toast/jquery.toast.min.js') }}"></script>
+        <script src="{{ asset('user_assets/js/pages/toastr.init.js') }}"></script>
+        <script src="{{ asset('common_assets/plugin/jquery-confirm/jquery-confirm.min.js') }}"></script>
+        <script src="{{ asset('common_assets/plugin/blockui/blockUI.js') }}"></script>
         @yield('scripts')
         @stack('js')
+
+        <script>
+              let elementBlock = (type, elements) => {
+                $(elements).block({
+                    overlayCSS: {
+                        opacity: 0.15
+                    },
+                    message: `
+                    <div id="${type}">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>`
+                });
+            }
+            let elementUnBlock = (elements) => {
+                $(elements).unblock();
+            }
+
+        </script>
+
     </body>
 </html>

@@ -197,11 +197,11 @@ class LocalhostController extends Controller
         $hostName = $detailClientData['sondas'][$proxyId]['hostname'];
         $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
         $proxyIp4 = $detailClientData['sondas'][$proxyId]['ipv4'];
-        $platform = $detailClientData['sondas'][$proxyId]['plataforma'];
-        $so = $detailClientData['sondas'][$proxyId]['so'];
+        $platform = $detailClientData['sondas'][$proxyId]['plataforma'] ?? '';
+        $so = $detailClientData['sondas'][$proxyId]['so'] ?? '';
         $community0 = $detailClientData['bgp']['community0'];
         $asn = $detailClientData['bgp']['asn'];
-        // $buscarRelators = $detailClientData['sondas'][$proxyId]['relatorios'];
+        $buscarRelators = $detailClientData['sondas'][$proxyId]['relatorios'] ?? '';
         $buscaSondas = $detailClientData['sondas'];
         $buscaEquipmet = $detailClientData['equipamentos'];
 
@@ -215,7 +215,7 @@ class LocalhostController extends Controller
         $configBaseFinal = str_replace("%snmpcommunity%",$snmpCommunity, $configBaseFinal);
         $configBaseFinal = str_replace("%community0%",$community0, $configBaseFinal);
         $configBaseFinal = str_replace("%asn%",$asn, $configBaseFinal);
-        $configBaseSalva = $detailClientData['sondas'][$proxyId]['configs']['baseconfig'];
+        $configBaseSalva = $detailClientData['sondas'][$proxyId]['configs']['baseconfig'] ?? '';
 
         $configBaseFinal = nl2br($configBaseFinal);
         $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/configs/baseconfig')->set($configBaseFinal);

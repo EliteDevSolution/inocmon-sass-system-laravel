@@ -9,6 +9,9 @@
         #edit {
             display:none;
         }
+        th, td {
+            text-align : center
+        }
     </style>
 @endsection
 
@@ -47,12 +50,13 @@
                                 <th>PE</th>
                                 <th>GERENCIAR CONFIG</th>
                                 <th>Edit</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($toSendData['buscaBgp'] as $index => $value )
                                 <tr id="ix{{$index}}">
-                                    <td>
+                                    <td style="text-align: left">
                                         @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
                                             <div>
                                                 <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
@@ -71,10 +75,17 @@
                                     <td>
                                         <a href="{{ route('template-generate-config.index',
                                         array('client_id'=>$clientId, 'indexId' => $index, 'key' => "ix", 'groupKey' => '02')) }}">
-                                            GERENCIAR CONFIG
+                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
                                         </a>
                                     </td>
-                                    <td> <a onclick="showEdit('ix{{$index}}')" class="getRow">Edit</a></td>
+                                    <td>
+                                        <a onclick="showEdit('ix{{$index}}')" class="getRow">
+                                            <i class="fe-edit"></i>
+                                        </a>
+                                    </td>
+                                    <th>
+                                        <i class="fe-trash" onclick="deleteIx(this, '{{$index}}')"></i>
+                                    </th>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -119,8 +130,9 @@
     <!-- third party js ends -->
     <!-- Datatables init -->
     <script>
+        let datatable;
         $(document).ready(function(){
-            $('#datatable').DataTable({
+            datatable = $('#datatable').DataTable({
                 responsive: false,
                 stateSave: true,
                 stateDuration: 60 * 60 * 24 * 60 * 60,
@@ -148,9 +160,7 @@
 
 
         });
-    </script>
 
-    <script>
         var row;
         function showEdit(buscarSondaId) {
             var editPage = document.getElementById("edit");
@@ -173,6 +183,16 @@
             var popVal  = $('#popVal').val();
             var peVal  = $('#peVal').val();
 
+            if(asnVal == "" || popVal == "" || peVal == "") {
+                $.NotificationApp.send("Alarm!"
+                    ,"This is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'body');
             var ixId  = $(row).prop('id');
             console.log(ixId.substring(2, ixId.lenght));
             $.ajax({
@@ -191,12 +211,80 @@
                     row.querySelector('td:nth-child(2)').textContent = asnVal;
                     row.querySelector('td:nth-child(3)').textContent = popVal;
                     row.querySelector('td:nth-child(4)').textContent = peVal;
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed updated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
+
         let closeEdit = () => {
             var editPage = document.getElementById("edit");
             editPage.style.display ="none";
+        }
+
+          function deleteIx(current, ixId) {
+            console.log(current);
+                $.confirm({
+                    title: 'Alert',
+                    content: 'Are you sure to delete?',
+                    draggable: true,
+                    type: 'red',
+                    closeIcon: false,
+                    icon: 'fa fa-exclamation-triangle',
+                    closeAnimation: 'top',
+                    buttons: {
+                        somethingElse: {
+                            text: "Ok",
+                            btnClass: 'btn-danger',
+                            keys: ['shift'],
+                            action: function()
+                            {
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: '{{ route("upstreams-ix.destroy", 1) }}',
+                                    data: {
+                                        clientId : '{{$clientId}}',
+                                        toDeleteId : ixId,
+                                        _token : '{{ csrf_token() }}'
+                                    }
+                                }).done(function( msg ) {
+                                    if(msg?.status === 'success')
+                                    {
+                                        datatable.row($(current).parents('tr')).remove().draw();
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Successfully deleted!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"success",
+                                        );
+                                    } else {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Failed deleted!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"error",
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    cancel: function () {
+                        return true;
+                    },
+                }
+            });
         }
     </script>
 @endsection

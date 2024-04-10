@@ -119,7 +119,18 @@
 
     <script>
         function saveData(){
-
+            if( $("#hostname").val() == "" || $("#pop").val() == "" || $("#ipv4").val() == "" ||
+                $("#ssh").val() == "" || $("#http").val() == "" || $("#user").val() == "" ||
+                $("#senha").val() == "" ) {
+                    $.NotificationApp.send("Alarm!"
+                        ,"This is required field!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
+                    return;
+                }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "POST",
                 url: '{{ route("network-proxy.store") }}',
@@ -146,7 +157,21 @@
                     $("#porta").val("");
                     $("#user").val("");
                     $("#senha").val("");
+                    $.NotificationApp.send("Alarm!"
+                        ,"Successfully added!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alarm!"
+                        ,"Faield!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"error",
+                    );
                 }
+                elementUnBlock('body');
             });
         }
     </script>

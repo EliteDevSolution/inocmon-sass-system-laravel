@@ -30,7 +30,7 @@
             <!-- Menubar Start -->
             <div class="topbar-menu">
               @include('partials.user.menubar')
-            </div>            
+            </div>
             <!-- end Topbar -->
         </header>
         <!-- End Navigation Bar-->

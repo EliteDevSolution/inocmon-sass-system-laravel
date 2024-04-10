@@ -41,7 +41,7 @@ class TrafficController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response11
      */
     public function create(Request $req)
     {
@@ -103,7 +103,7 @@ class TrafficController extends Controller
                     'status' => 'ok',
                     'addedData' => [
                         'id' => $nextId,
-                        'remoteas' => $remoteas,
+                        'remoteas' => $request['asnVal'],
                         'nomedogrupo' => $nomeDoGrupo
                     ]
                 ]);
@@ -174,8 +174,20 @@ class TrafficController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $clientId = $request['clientId'];
+        $toDeleteId = $request['toDeleteId'];
+        $path = 'clientes/'.$clientId.'/bgp/interconexoes/transito/'.$toDeleteId;
+        $status = "";
+        try {
+            $this->database->getReference($path)->remove();
+            $status = "success";
+        } catch (\Throwable $th) {
+            $status = "failed";
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 }

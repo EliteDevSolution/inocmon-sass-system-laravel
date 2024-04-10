@@ -50,15 +50,15 @@ class ProxyController extends Controller
         $newId = $this->database->getReference('clientes')->push()->getKey();
         $status = '';
         $toSaveData = [
-                'hostname'  => strtoupper($request['hostname']),
-                'pop'    => strtoupper($request['pop']),
-                'ipv4'    => $request['ipv4'],
-                'ipv6'    => $request['ipv6'],
-                'portassh'   => $request['ssh'],
-                'portahttp'   => $request['http'],
-                'user'   => $request['user'],
-                'pwd'   => $request['pwd']
-            ];
+            'hostname'  => strtoupper($request['hostname']),
+            'pop'    => strtoupper($request['pop']),
+            'ipv4'    => $request['ipv4'],
+            'ipv6'    => $request['ipv6'],
+            'portassh'   => $request['ssh'],
+            'portahttp'   => $request['http'],
+            'user'   => $request['user'],
+            'pwd'   => $request['pwd']
+        ];
         if(isset($request['hostname'])) {
             try {
                 $this->database->getReference('clientes/' . $clientId .'/sondas/'.$newId )->set($toSaveData);

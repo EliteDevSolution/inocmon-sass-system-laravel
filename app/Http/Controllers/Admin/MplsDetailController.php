@@ -225,10 +225,10 @@ class MplsDetailController extends Controller
         $rrTemplateData = $this->database->getReference('lib/templates/rr')->getSnapshot()->getValue();
         foreach ($buscaRr as $buscaRrIds => $rrVal) {
             if($buscaRrIds != 0) {
-                $rrTemplateVendor = $detailClientData['rr'][$buscaRrIds]['template-vendor'];
-                $rrTemplateFamily = $detailClientData['rr'][$buscaRrIds]['template-family'];
-                // $rrDir = 'lib/templates/rr/'.$rrTemplateVendor.'/'.$rrTemplateFamily.'/rr-novope-config';
-                $getTemplate = $rrTemplateData[$rrTemplateVendor][$rrTemplateFamily]['rr-novope-config'];
+                $rrTemplateVendor = $detailClientData['rr'][$buscaRrIds]['template-vendor'] ?? '';
+                $rrTemplateFamily = $detailClientData['rr'][$buscaRrIds]['template-family'] ?? '';
+                $rrDir = 'lib/templates/rr/'.$rrTemplateVendor.'/'.$rrTemplateFamily.'/rr-novope-config';
+                // $getTemplate = $rrTemplateData[$rrTemplateVendor][$rrTemplateFamily]['rr-novope-config'];
                 $configRr = str_replace("%routerid%",$routerId, $getTemplate);
                 $configRr = str_replace("%asn%",$asn, $configRr);
                 $configRr = str_replace("%hostname%",$hostName, $configRr);

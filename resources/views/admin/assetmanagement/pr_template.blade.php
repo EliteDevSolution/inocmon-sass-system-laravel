@@ -119,7 +119,7 @@
                                             </tr>
                                             <tr>
                                                 <td>Aplicar</td>
-                                                <td><button onclick="" class="btn btn-info waves-effect waves-light">aplicar config base</button></td>
+                                                <td><button onclick="applyBaseConfig()" class="btn btn-info waves-effect waves-light">aplicar config base</button></td>
                                             </tr>
                                             </thead>
                                         </table>
@@ -156,7 +156,7 @@
                                         <tr>
                                             <td>
                                                 <input type="checkbox" class="pe" id="pe" name="equip" value="{{$equipIndex}}">
-                                                <label for="base"> {{$equipVal['hostname']}}</label><br>
+                                                <label for="base"> {{$equipVal['hostname'] ?? ''}}</label><br>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -208,6 +208,7 @@
 @push("js")
 <script>
     let applyBaseConfig = () => {
+        console.log("sdsds");
         var sondaId = $("#sondaid").val();
         $.ajax({
             type: "POST",
@@ -261,7 +262,21 @@
                 _token : '{{ csrf_token() }}'
             }
             }).done(function( msg ) {
-                console.log( msg );
+                if(msg['status'] === 'ok') {
+                    $.NotificationApp.send("Alert!"
+                        ,"Successfull operated!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                } else {
+                    $.NotificationApp.send("Alert!"
+                        ,"Can't connect!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                }
             });
         }
 

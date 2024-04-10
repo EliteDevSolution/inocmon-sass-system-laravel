@@ -24,6 +24,7 @@
                 <h2 class="text-primary my-3 text-center"><span data-plugin="counterup">{{$dashboardData['upstreamCount']}}</span></h2>
                 <p class="text-muted mb-1 text-truncate text-center">UPSTREAMS cadastradoss</p>
                 <p class="text-muted mb-0 text-center">
+                    <a href="{{route("mpls_pe.index", array('client_id' => $clientId))}}">ver detalhes</a>
                     <a href="">ver detalhes</a>
                 </p>
             </div>
@@ -51,8 +52,8 @@
                     </div>
                     <div class="col-6">
                         <div class="text-right">
-                            <h3 class="text-dark my-1"><span data-plugin="counterup">Database em uso</span></h3>
-                            <p class="text-muted mb-1 text-truncate">{{$dashboardData['databaseInuse']}}KBytes</p>
+                            <h3 class="text-dark my-1"><span data-plugin="counterup"></span></h3>
+                            <p class="text-muted mb-1 text-truncate">{{$dashboardData['databaseInuse']}}</p>
                         </div>
                     </div>
                 </div>

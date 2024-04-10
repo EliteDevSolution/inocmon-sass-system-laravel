@@ -194,7 +194,11 @@
                                     </div><!-- /.modal -->
                                 @endforeach
                             @else
-                                <p class="header text-danger">not data</p>
+                                <div class="p-2 card-box m-4" style="text-align: center">
+                                    <p class="header text-danger">
+                                        sem dados
+                                    </p>
+                                </div>
                             @endif
                         </div>
                     </div>
