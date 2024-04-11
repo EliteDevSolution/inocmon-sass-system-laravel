@@ -49,8 +49,20 @@ class PRTemplateController extends Controller
         $configRrFinal = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'];
     	$configRrFinal = str_replace("<br />","",$configRrFinal);
     	$configFileNameRr = 'CONFIG-RR'.$rrId.'-'.$hostName.'-'.$clientId;
-        $uploadFilePath = 'configuracoes/'.$configFileNameRr;
-        Storage::put($uploadFilePath, $configRrFinal);
+        $uploadFilePath = 'public/configuracoes/'.$configFileNameRr;
+
+        try {
+
+            if(!file_exists(public_path() . '/storage/configuracoes'))
+            {
+                @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+            }
+            Storage::disk('local')->put($uploadFilePath , $configRrFinal);
+            $status = "ok";
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+
 	    $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
 
         $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'];
@@ -170,6 +182,7 @@ class PRTemplateController extends Controller
 			$configRr = str_replace("%grupo-ibgp%",$equipgrupoIbgp, $configRr);
 			$configRrFinal .= $configRr;
         }
+
         $routerId = $detailClientData['rr'][$rrId]['routerid'];
         $hostName = $detailClientData['rr'][$rrId]['hostname'];
         $porta = $detailClientData['rr'][$rrId]['porta'];
@@ -182,9 +195,22 @@ class PRTemplateController extends Controller
 	    if (!$pwd) { $pwd = $senhaInocmon; }
 
         $configFileNameRr = 'CONFIG-RR'.$rrId.'-'.$hostName.'-'.$clientId;
-        $uploadFilePath = 'configuracoes/'.$configFileNameRr;
-        Storage::put($uploadFilePath, $configRrFinal);
-	    $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
+        $uploadFilePath = 'public/configuracoes/'.$configFileNameRr;
+
+        try {
+
+            if(!file_exists(public_path() . '/storage/configuracoes'))
+            {
+                @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+            }
+            Storage::disk('local')->put($uploadFilePath , $configRrFinal);
+            $status = "ok";
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+
+
+        $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
 
         $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'];
         $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'];
@@ -296,6 +322,7 @@ class PRTemplateController extends Controller
             'buscaRelatorios' => $buscaRelatorios,
             'configToken' => $configToken
         ];
+
         return view('admin.assetmanagement.pr_template', compact('clientId', 'toSendData'));
     }
 

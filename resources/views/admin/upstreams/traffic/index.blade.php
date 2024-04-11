@@ -225,6 +225,13 @@
                     );
                 }
                 elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             });
         }
         let closeEdit = () => {
@@ -275,6 +282,13 @@
                                             ,"error",
                                         );
                                     }
+                                }).fail(function(xhr, textStatus, errorThrown) {
+                                    $.NotificationApp.send("Alarm!"
+                                        ,"Failed updated!"
+                                        ,"top-right"
+                                        ,"#2ebbdb"
+                                        ,"error",
+                                    );
                                 });
                             }
                         },

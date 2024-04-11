@@ -57,7 +57,7 @@
                     <p class="font-15 text-blue">
                         Chang Log
                     </p>
-                    <a class="m-0 mb-2 btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'store', 'client_id' => $clientId ))}}">
+                    <a class="m-0 mb-2 btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'store'))}}">
                         Add
                     </a>
                 </div>
@@ -75,7 +75,7 @@
                                 <td>{{$valueChangeLog['versao']}}</td>
                                 <td>{{$valueChangeLog['date']}}</td>
                                 <td>
-                                    <a class="btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'update','client_id' => $clientId, 'change_id' => $indexChangeLog))}}">Update</a>
+                                    <a class="btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'update', 'change_id' => $indexChangeLog))}}">Update</a>
                                 </td>
                             </tr>
                         @endforeach

@@ -39,7 +39,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('tempcdn-edit-bgp', 'Admin\TempEditCdnController');
 
-    Route::resource('deny-customer', 'Admin\DenyCustomer');
+    Route::resource('deny-customer', 'Admin\DenyCustomerController');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
     Route::post('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');

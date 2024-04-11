@@ -174,8 +174,8 @@ class DashboardController extends Controller
             $getOspfLsdbData = $client['ospf-lsdb']['data'] ?? '';
             $getOspfLsdbVendor = $client['ospf-lsdb']['vendor'] ?? '';
 
-            if($getOspfLsdbData == null) $getOspfLsdbData = "111";
-            if($getOspfLsdbVendor == null) $getOspfLsdbVendor = "111";
+            if($getOspfLsdbData == null) $getOspfLsdbData = "";
+            if($getOspfLsdbVendor == null) $getOspfLsdbVendor = "";
 
             $toDownloadFileName = 'ospf-lsdb-'.$getOspfLsdbVendor.'-'.$clientId;
 
@@ -187,7 +187,7 @@ class DashboardController extends Controller
                     @mkdir(public_path() . '/storage/' . $targetPath, 0777, true);
                     chmod($directoryPath, 0777); // Set the directory permissions explicitly
                 }
-                Storage::disk('local')->put('configuracoes/'.$toDownloadFileName, $getOspfLsdbData);
+                Storage::disk('local')->put('public/configuracoes/'.$toDownloadFileName, $getOspfLsdbData);
 
             }
             $buscaRr = $client['rr'];

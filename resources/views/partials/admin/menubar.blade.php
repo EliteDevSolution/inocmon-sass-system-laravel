@@ -124,6 +124,8 @@
                 </ul>
             </li>
 
+
+
             <li class="menu-title mt-2">Cadastro</li>
 
             <li>
@@ -170,20 +172,7 @@
                 </ul>
             </li>
 
-            <li class="menu-title mt-2">more</li>
-
-            {{-- <li>
-                <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
-                    <span> Adming Page </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li >
-                        <a href="{{ route('client.index') }}">Admin</a>
-                    </li>
-                </ul>
-            </li> --}}
+            <li class="menu-title mt-2">Sistema</li>
 
             <li>
                 <a href="javascript: void(0);">
@@ -193,22 +182,7 @@
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
                     <li >
-                        <a href="{{ route('changelog.index',$clientIdQueryParam) }}">Change Log</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="menu-title mt-2">admin</li>
-
-            <li>
-                <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
-                    <span> User management </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li >
-                        <a href="{{ route('users.index') }}">Users</a>
+                        <a href="{{ route('changelog.index') }}">Change Log</a>
                     </li>
                 </ul>
             </li>
@@ -262,8 +236,6 @@
                 </ul>
             </li>
 
-
-
             <li class="menu-title">IXBR</li>
 
             <li>
@@ -278,6 +250,37 @@
                     </li>
                 </ul>
             </li>
+
+            <li class="menu-title mt-2">Sistema</li>
+
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-pocket"></i>
+                    <span> ChangeLogs </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('changelog.index') }}">Change Log</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-title mt-2">admin</li>
+
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-pocket"></i>
+                    <span> User management </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('users.index') }}">Users</a>
+                    </li>
+                </ul>
+            </li>
+
         </ul>
 
     @endif

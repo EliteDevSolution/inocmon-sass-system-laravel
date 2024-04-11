@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DenyCustomer extends Controller
+class DenyCustomerController extends Controller
 {
     public function __construct(Request $request)
     {

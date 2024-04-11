@@ -21,9 +21,8 @@ class ChangelogController extends Controller
      */
     public function index(Request $req)
     {
-        $clientId = $req->query()['client_id'];
         $changelogData = $this->database->getReference('lib/changelog')->getSnapshot()->getValue();
-        return view('admin.changelog', compact('clientId', 'changelogData'));
+        return view('admin.changelog', compact('changelogData'));
     }
 
     /**
@@ -33,8 +32,8 @@ class ChangelogController extends Controller
      */
     public function create(Request $request)
     {
-        $clientId = $request->query()['client_id'];
         $changeId = "";
+
         $todo = $request['todo'];
         if(isset($request['change_id'])) {
             $changeId = $request['change_id'];
@@ -42,7 +41,7 @@ class ChangelogController extends Controller
         } else {
             $changelogData = "";
         }
-        return view('admin.log_update_add', compact('clientId', 'todo', 'changelogData', 'changeId'));
+        return view('admin.log_update_add', compact('todo', 'changelogData', 'changeId'));
     }
 
     /**

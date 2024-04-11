@@ -181,6 +181,13 @@
                                             ,"error",
                                         );
                                     }
+                                }).fail(function(xhr, textStatus, errorThrown) {
+                                   $.NotificationApp.send("Alert!"
+                                        ,"Failed updated!"
+                                        ,"top-right"
+                                        ,"#2ebbdb"
+                                        ,"error",
+                                    );
                                 });
                             }
                         },

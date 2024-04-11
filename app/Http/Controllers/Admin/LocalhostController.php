@@ -67,10 +67,15 @@ class LocalhostController extends Controller
             $configBaseFinal = str_replace("<br />","",$configBaseSalva);
 
             $configFileName = 'CONFIG-PROXY'.$proxyId.'-'.$hostName.'-'.$req['clientId'].'.sh';
-            $uploadFilePath = 'configuracoes/'.$configFileName;
+            $uploadFilePath = 'public/configuracoes/'.$configFileName;
+
             try {
-                Storage::put($uploadFilePath, $configBaseFinal);
-                $status = 'ok';
+                if(!file_exists(public_path() . '/storage/configuracoes'))
+                {
+                    @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                }
+                Storage::disk('local')->put($uploadFilePath , $configBaseFinal);
+                $status = "ok";
             } catch (\Throwable $th) {
                 $status = 'failed';
             }
@@ -174,11 +179,17 @@ class LocalhostController extends Controller
         $configUpdateFinal = str_replace("%pwd%",$proxyPwd, $configUpdateFinal);
         $configUpdateFinal = str_replace("%user%",$proxyUser, $configUpdateFinal);
         $configBaseFinal = str_replace("<br />","",$configBaseSalva);
+
         $configFileName = 'CONFIG-PROXY'.$proxyId.'-'.$proxyHostName.'-'.$clientId.'.sh';
-	    $uploadFilePath = 'configuracoes/'.$configFileName;
+	    $uploadFilePath = 'public/configuracoes/'.$configFileName;
+
         try {
-            Storage::put($uploadFilePath, $configBaseFinal);
-            $status = 'ok';
+            if(!file_exists(public_path() . '/storage/configuracoes'))
+            {
+                @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+            }
+            Storage::disk('local')->put($uploadFilePath , $configBaseFinal);
+            $status = "ok";
         } catch (\Throwable $th) {
             $status = 'failed';
         }
@@ -258,9 +269,9 @@ class LocalhostController extends Controller
      */
     public function index(Request $req)
     {
+
         $clientId = $req->query()['client_id'];
         $proxyId = $req->query()['proxy_id'];
-
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
 
         $hostName = $detailClientData['sondas'][$proxyId]['hostname'];

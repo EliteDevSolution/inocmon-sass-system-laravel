@@ -16,6 +16,9 @@
         .select2-selection__rendered{
             /*line-height: 32px !important;*/
         }
+        tr {
+            height: 20px;
+        }
     </style>
 @endsection
 
@@ -227,6 +230,13 @@
                     );
                 }
                 elementUnBlock('div.card-box');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed added!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             });
         }
 

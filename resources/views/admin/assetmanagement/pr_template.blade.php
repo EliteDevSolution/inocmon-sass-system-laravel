@@ -206,37 +206,44 @@
 @push("js")
 <script>
     let applyBaseConfig = () => {
-        console.log("sdsds");
-        var sondaId = $("#sondaid").val();
-        elementBlock('square1', 'body');
-        $.ajax({
-            type: "POST",
-            url: 'proxy-template/applyconfig', // Not sure what to add as URL here
-            data: {
-                rrId : "{{$toSendData['rrId']}}",
-                clientId : "{{ $clientId }}",
-                sondaId : sondaId,
-                _token : '{{ csrf_token() }}'
-            }
-        }).done(function( msg ) {
-            console.log( msg );
-            if(msg['status'] == 'ok') {
-                $.NotificationApp.send("Alarm!"
-                    ,"Successfully updated!"
-                    ,"top-right"
-                    ,"#2ebbdb"
-                    ,"success",
-                );
-            } else {
-                $.NotificationApp.send("Alarm!"
-                    ,"Failed"
-                    ,"top-right"
-                    ,"#2ebbdb"
-                    ,"error",
-                );
-            }
-            elementUnBlock('body');
+        var ref = firebase.database().ref('/clientes/');
+        ref.on("value", function (snapshot) {
+            const data = snapshot.val();
+            console.log(data);
+        }, function (error) {
+            console.log("Error: " + error.code);
         });
+
+        // var sondaId = $("#sondaid").val();
+        // elementBlock('square1', 'body');
+        // $.ajax({
+        //     type: "POST",
+        //     url: 'proxy-template/applyconfig', // Not sure what to add as URL here
+        //     data: {
+        //         rrId : "{{$toSendData['rrId']}}",
+        //         clientId : "{{ $clientId }}",
+        //         sondaId : sondaId,
+        //         _token : '{{ csrf_token() }}'
+        //     }
+        // }).done(function( msg ) {
+        //     console.log( msg );
+        //     if(msg['status'] == 'ok') {
+        //         $.NotificationApp.send("Alarm!"
+        //             ,"Successfully updated!"
+        //             ,"top-right"
+        //             ,"#2ebbdb"
+        //             ,"success",
+        //         );
+        //     } else {
+        //         $.NotificationApp.send("Alarm!"
+        //             ,"Failed"
+        //             ,"top-right"
+        //             ,"#2ebbdb"
+        //             ,"error",
+        //         );
+        //     }
+        //     elementUnBlock('body');
+        // });
     }
 
     function selectAll(){

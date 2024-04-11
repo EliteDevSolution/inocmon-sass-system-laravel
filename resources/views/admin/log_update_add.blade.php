@@ -79,8 +79,8 @@
 
     <script>
         $(document).ready(function(){
-            // $('#product-description').summernote();
             $('#changelog').summernote({
+                minHeight: 220,
             });
         });
     </script>
@@ -95,7 +95,16 @@
         function saveData() {
             var changelog = $('#changelog').summernote('code');
             console.log(changelog);
-            elementBlock('square1', 'body');
+            if($("#version").val() == "" || $("#changelogdata").val() == "") {
+                $.NotificationApp.send("Alarm!"
+                    ,"Required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
+            elementBlock('square1', 'div.card-box');
             $.ajax({
                 type: "POST",
                 url: '{{ route("changelog.$todo") }}',
@@ -104,7 +113,6 @@
                     version : $("#version").val(),
                     changelog : changelog,
                     changeId : '{{$changeId}}',
-                    clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
@@ -136,11 +144,18 @@
                         ,"error",
                     );
                 }
-                elementUnBlock('body');
+                elementUnBlock('div.card-box');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             });
         }
         function goBack() {
-            location.href = "/changelog?client_id={{$clientId}}"
+            location.href = "/changelog"
         }
     </script>
     <!-- third party js ends -->

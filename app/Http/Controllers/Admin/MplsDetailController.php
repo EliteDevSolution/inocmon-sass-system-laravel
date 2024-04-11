@@ -23,8 +23,8 @@ class MplsDetailController extends Controller
         $status = '';
         $clientId = $req['clientId'];
         $equipId = $req['equipId'];
-        $buscaConfigIds = $req['buscaConfigIds'] ?? [];
-        $buscaRrIds = $req['buscaRrIds'] ?? [];
+        $buscaConfigIds = $req['buscaConfigIds'];
+        $buscaRrIds = $req['buscaRrIds'];
         $sondaId = $req['sondaId'];
 
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
@@ -43,23 +43,34 @@ class MplsDetailController extends Controller
 
         $realIndexConfig = "";
         $configFinal = "";
-
         if(is_array($buscaConfigIds)) {
-            for ($i=0; $i > count($buscaConfigIds); $i++) {
+            for ($i=0; $i < count($buscaConfigIds); $i++) {
                 $realIndexConfig = $buscaConfigIds[$i];
-                $getParcialConfig = $detailClientData['equipamentos'][$equipId]['configs'][$buscaConfigIds[$i]];
+                $getParcialConfig = $detailClientData['equipamentos'][$equipId]['configs'][$realIndexConfig];
                 $configFinal .= str_replace("<br />","",$getParcialConfig);
             }
         }
-
         $this->database->getReference($debugDir)->set('preparando:'.$realIndexConfig.'...');
 
         $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
 
         if(count($buscaConfigIds) > 0){
             $configFileNamePe = 'CONFIG-PE-'.$clientId.'-'.$equipId;
-            $uploadFilePe = 'configuracoes/'.$configFileNamePe;
-            Storage::put($uploadFilePe, $configFinal);
+            $uploadFilePe = 'public/configuracoes/'.$configFileNamePe;
+
+
+
+            try {
+                if(!file_exists(public_path() . '/storage/configuracoes'))
+                {
+                    @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                }
+                Storage::disk('local')->put($uploadFilePe , $configFinal);
+                $status = "ok";
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
+
             $this->database->getReference($debugDir)->set('arquivo '.$configFileNamePe.' gerado com sucesso! Iniciando transferência...');
 
             $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
@@ -74,6 +85,7 @@ class MplsDetailController extends Controller
             } catch (\Throwable $th) {
                 $status = 'failed';
             }
+
             $scp = new SCP($ssh);
             $scp->put($configFileNamePe, 'configuracoes/'.$configFileNamePe, 1);
             $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
@@ -81,8 +93,8 @@ class MplsDetailController extends Controller
             $porta = $detailClientData['equipamentos'][$equipId]['porta'];
             $user = $detailClientData['equipamentos'][$equipId]['user'];
             $pwd = $detailClientData['equipamentos'][$equipId]['pwd'];
-            $userInocmon = $detailClientData['equipamentos'][$equipId]['userinocmon'];
-            $senhaInocmon = $detailClientData['equipamentos'][$equipId]['senhainocmon'];
+            $userInocmon = $detailClientData['equipamentos'][$equipId]['userinocmon'] ?? '';
+            $senhaInocmon = $detailClientData['equipamentos'][$equipId]['senhainocmon'] ?? '';
 
             $this->database->getReference($debugDir)->set('usuario carregado: '.$user.' senha: '.base64_encode($pwd));
             if (!$user) { $user = $userInocmon; }
@@ -110,20 +122,16 @@ class MplsDetailController extends Controller
         } else{
 	        $this->database->getReference($debugDir)->set('Nenhuma config selecionada para '.$hostName.'!');
         }
-
         if(is_array($buscaRrIds)) {
-
-            for ($j = 0; $j > $buscaRrIds; $j++) {
-
+            for ($j = 0; $j < count($buscaRrIds); $j++) {
                 $getRrConfig = $detailClientData['equipamentos'][$equipId]['configs']['rr'.$buscaRrIds[$j]];
                 $configRrFinal = str_replace("<br />","",$getRrConfig);
                 $this->database->getReference($debugDir)->set('Iniciando config em : RR'.$buscaRrIds[$j].'...');
-
-                $rrHostName = $detailClientData['equipamentos']['rr'.$buscaRrIds[$j]]['hostname'];
-                $rrRouterId = $detailClientData['equipamentos']['rr'.$buscaRrIds[$j]]['routerid'];
-                $rrPorta = $detailClientData['equipamentos']['rr'.$buscaRrIds[$j]]['porta'];
-                $rrUser = $detailClientData['equipamentos']['rr'.$buscaRrIds[$j]]['user'];
-                $rrPwd = $detailClientData['equipamentos']['rr'.$buscaRrIds[$j]]['pwd'];
+                $rrHostName = $detailClientData['rr'][$buscaRrIds[$j]]['hostname'];
+                $rrRouterId = $detailClientData['rr'][$buscaRrIds[$j]]['routerid'];
+                $rrPorta = $detailClientData['rr'][$buscaRrIds[$j]]['porta'];
+                $rrUser = $detailClientData['rr'][$buscaRrIds[$j]]['user'];
+                $rrPwd = $detailClientData['rr'][$buscaRrIds[$j]]['pwd'];
 
                 $this->database->getReference($debugDir)->set('Iniciando config em : RR'.$buscaRrIds[$j].'-'.$rrHostName.'-'.$rrRouterId.'...');
 
@@ -131,11 +139,15 @@ class MplsDetailController extends Controller
                 if (!$rrPwd) { $pwd = $senhaInocmon;}
 
                 $configFileNameRr = 'CONFIG-RR'.$buscaRrIds[$j].'-'.$clientId.'-'.$equipId;
-                $uploadFileRr = 'configuracoes/'.$configFileNameRr;
+                $uploadFileRr = 'public/configuracoes/'.$configFileNameRr;
 
                 try {
-                    $status = 'ok';
-                    Storage::put($uploadFileRr, $configRrFinal);
+                    if(!file_exists(public_path() . '/storage/configuracoes'))
+                    {
+                        @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                    }
+                    Storage::disk('local')->put($uploadFileRr , $configRrFinal);
+                    $status = "ok";
                 } catch (\Throwable $th) {
                     $status = 'failed';
                 }
@@ -153,7 +165,7 @@ class MplsDetailController extends Controller
                     $status = 'failed';
                 }
 
-                if ($count($buscaConfigIds) == 0) {
+                if (count($buscaConfigIds) == 0) {
                     $rrSsh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                 }
 
@@ -243,7 +255,8 @@ class MplsDetailController extends Controller
         $configGlobal = "";
         $config = "";
         $configs = [];
-
+        $configBgpRrX = "";
+        $configBgpRrFinal = "";
         foreach($buscaConfigs as $indexConfig => &$configVal) {
             $getTemplate = $buscaConfigs[$indexConfig];
             $config = str_replace("%hostname%",$hostName,$getTemplate);
@@ -252,20 +265,21 @@ class MplsDetailController extends Controller
             $config = str_replace("%community0%",$community0, $config);
             $config = str_replace("%routerid%",$routerId, $config);
             $config = str_replace("%asn%",$asn, $config);
+
             if(str_contains($indexConfig, 'rr')) {
-                $configBgpRrX = "";
                 foreach ($buscaRr as $buscaRrIds => $rrVal) {
                     if ($buscaRrIds != 0) {
                         $configBgpRrX = str_replace("%rrip%",$rrVal['routerid'], $getTemplate);
                         $configBgpRrX = str_replace("%asn%",$asn, $configBgpRrX);
                         $configBgpRrX = str_replace("%rrhostname%",$rrVal['hostname'], $configBgpRrX);
-                        $config .= $configBgpRrX;
+                        $configBgpRrFinal .= $configBgpRrX;
                     }
                 }
+                $config = $configBgpRrFinal;
             }
+            $configGlobal .= $config;
             $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipId.'/configs/'.$indexConfig)->set($config);
             $buscaConfigs[$indexConfig] = $config;
-            $configGlobal .= $config;
         }
         $rrTemplateData = $this->database->getReference('lib/templates/rr')->getSnapshot()->getValue();
         foreach ($buscaRr as $buscaRrIds => $rrVal) {

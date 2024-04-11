@@ -58,9 +58,18 @@ class TemplateConfigController extends Controller
             $configFinal = $buscaDadosDaConexao['config'];
             $configFinal = str_replace("<br />","",$configFinal);
             $configFileName = 'CONFIG-BGP-'.$tipoConexao.'-'.$id.'-'.$nomeDoGrupo.'-'.$clientId;
-            $uploadFile = 'configuracoes/'.$configFileName;
+            $uploadFile = 'public/configuracoes/'.$configFileName;
 
-            Storage::put($uploadFile, $configFinal);
+            try {
+                if(!file_exists(public_path() . '/storage/configuracoes'))
+                {
+                    @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                }
+                Storage::disk('local')->put($uploadFile , $configFinal);
+                $status = "ok";
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
 
             $this->database->getReference($debugDir)->set('arquivo '.$configFileName.' gerado com sucesso! preparando transferência...');
             $proxyHostName = $detailClientData['sondas'][$proxyId]['hostname'];

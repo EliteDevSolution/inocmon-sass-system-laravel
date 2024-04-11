@@ -11,13 +11,13 @@
             align-items: center;
             gap : 10px;
         }
-        /* label {
+        label {
             width: 150px;
         }
         select, input {
             float: left;
             width: 400px  !important;
-        } */
+        }
     </style>
 @endsection
 
@@ -151,7 +151,6 @@
             var configSection = $("#configsection").val();
             var textVal = $(`#${todo}`).val();
 
-
             if( todo == "family-update" && novaFamily == "" ) {
                 $.NotificationApp.send("Alarm!"
                     ,"Nova family is required field!"
@@ -208,6 +207,13 @@
                     );
                 }
                 elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
             });
         }
     </script>
