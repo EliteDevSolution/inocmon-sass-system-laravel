@@ -73,6 +73,7 @@ class MplsDetailController extends Controller
 
             $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
 
+
             try {
                 if (!$ssh->login($sondaUser, $sondaPwd)) {
                     $status = 'failed';
@@ -87,7 +88,7 @@ class MplsDetailController extends Controller
 
             $scp = new SCP($ssh);
 
-            $scp->put($configFileNamePe, 'configuracoes/'.$configFileNamePe, 1);
+            $scp->put($configFileNamePe, public_path() . '/storage/configuracoes/'.$configFileNamePe, 1);
             $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
             $routerId = $detailClientData['equipamentos'][$equipId]['routerid'];
             $porta = $detailClientData['equipamentos'][$equipId]['porta'];
@@ -175,7 +176,7 @@ class MplsDetailController extends Controller
                 $rrScp = new SCP($rrSsh);
 
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-                echo $rrScp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
+                echo $rrScp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
 
 
                 $rrLineCount = substr_count($configRrFinal, "\n");
