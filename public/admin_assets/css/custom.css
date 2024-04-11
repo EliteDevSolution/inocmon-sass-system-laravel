@@ -39,5 +39,19 @@
     position: relative;
     -webkit-transition: all .4s;
     transition: all .4s;
-    font-size: .975rem;
+    font-size: .875rem;
 }
+.nav-second-level li.active>a,
+.nav-third-level li.active>a {
+    color : white;
+}
+#sidebar-menu>ul>li>a.active,
+.nav-second-level li.active>a {
+    color: white;
+}
+/*
+#sidebar-menu>ul>li>a.active,
+.nav-second-level li.active>a {
+    background: #1d2531;
+    color: #b7c0cd;
+} */
