@@ -136,9 +136,26 @@
 @endsection
 
 @push("js")
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+<script src="{{ asset('admin_assets/js/firebase_config.js') }}"></script>
+
 <script>
+
+    $(document).ready(function(){
+        firebase.initializeApp(firebaseConfig);
+        var ref = firebase.database().ref("/clientes/{{$clientId}}/sondas/{{$toSendData['proxy_id']}}/debug");
+        ref.on("value", function (snapshot) {
+            const data = snapshot.val();
+            $('#console').find('p').text(data);
+        }, function (error) {
+            console.log("Error: " + error.code);
+        });
+    });
+
     let applyBaseConfig = () => {
-        elementBlock('square1', 'body');
+        elementBlock('square1', '.card-box');
         $.ajax({
             type: "POST",
             url: 'proxy-localhost/applyconfig', // Not sure what to add as URL here
@@ -165,11 +182,11 @@
                     ,"error",
                 );
             }
-            elementUnBlock('body');
+            elementUnBlock('.card-box');
         });
     }
     let updateIncoConfig = () => {
-        elementBlock('square1', 'body');
+        elementBlock('square1', '.card-box');
         $.ajax({
             type: "POST",
             url: 'proxy-localhost/update-inco-config', // Not sure what to add as URL here
@@ -196,7 +213,7 @@
                     ,"error",
                 );
             }
-            elementUnBlock('body');
+            elementUnBlock('.card-box');
         });
     }
 </script>

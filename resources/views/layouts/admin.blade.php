@@ -125,17 +125,6 @@
             let elementUnBlock = (elements) => {
                 $(elements).unblock();
             }
-            // connect to firebase on frontend
-            const firebaseConfig = {
-                apiKey: "",
-                authDomain: "",
-                projectId: "",
-                messagingSenderId: "",
-                appId: "",
-                measurementId: ""
-            };
-            const app = firebase.initializeApp(firebaseConfig);
-            var database = firebase.database();
         </script>
 
     </body>

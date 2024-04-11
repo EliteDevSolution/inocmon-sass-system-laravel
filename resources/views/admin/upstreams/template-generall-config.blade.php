@@ -105,7 +105,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div><!-- /.modal -->
+                                    </div>
                                     <div class="button-list">
                                         <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Visual Config Base</button>
                                     </div>
@@ -210,11 +210,27 @@
 @section('scripts')
     @parent
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+    <script src="{{ asset('admin_assets/js/firebase_config.js') }}"></script>
 
     <script>
+
+        $(document).ready(function(){
+            firebase.initializeApp(firebaseConfig);
+            var ref = firebase.database().ref("/clientes/{{$clientId}}/bgp/interconexoes/{{$toSendData['tipoConexao']}}/{{$toSendData['id']}}/debug");
+            ref.on("value", function (snapshot) {
+                const data = snapshot.val();
+                $('#console').find('p').text(data);
+            }, function (error) {
+                console.log("Error: " + error.code);
+            });
+        });
+
         function applyConfig(){
             var proxyId = $("#proxyid").val();
-            elementBlock('square1', 'body');
+            elementBlock('square1', '.card-box');
             $.ajax({
                 type: "POST",
                 url: "{{route('template-generate-config.applyConfig')}}",
@@ -242,7 +258,7 @@
                         ,"error",
                     );
                 }
-                elementUnBlock('body');
+                elementUnBlock('.card-box');
             });
         }
     </script>

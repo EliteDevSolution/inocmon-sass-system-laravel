@@ -182,8 +182,21 @@
 @endsection
 
 @push("js")
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+<script src="{{ asset('admin_assets/js/firebase_config.js') }}"></script>
 <script>
-
+    $(document).ready(function(){
+        firebase.initializeApp(firebaseConfig);
+        var ref = firebase.database().ref("/clientes/{{$clientId}}/equipamentos/{{$toSendData['equipId']}}/debug");
+        ref.on("value", function (snapshot) {
+            const data = snapshot.val();
+            $('#console').find('p').text(data);
+        }, function (error) {
+            console.log("Error: " + error.code);
+        });
+    });
     let applyConfig = () => {
         var buscaConfigIds = [];
         var buscaRrIds = [];
@@ -209,8 +222,7 @@
             return;
         }
 
-        elementBlock('square1', 'body');
-        console.log(buscaConfigIds, buscaRrIds);
+        elementBlock('square1', 'table');
 
         $.ajax({
             type: "POST",
@@ -224,7 +236,6 @@
                 _token : '{{ csrf_token() }}'
             }
         }).done(function( msg ) {
-            console.log( msg['message'] );
             if(msg['status' == 'ok']) {
                 $.NotificationApp.send("Alarm!"
                     ,"Successfully updated!"
@@ -240,7 +251,14 @@
                     ,"error",
                 );
             }
-            elementUnBlock('body');
+            elementUnBlock('table');
+        }).fail(function(xhr, textStatus, errorThrown) {
+            $.NotificationApp.send("Alarm!"
+                ,"The operation failed!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"error",
+            );
         });
     }
 </script>

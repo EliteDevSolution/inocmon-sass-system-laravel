@@ -204,46 +204,62 @@
 @endsection
 
 @push("js")
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+<script src="{{ asset('admin_assets/js/firebase_config.js') }}"></script>
+
 <script>
-    let applyBaseConfig = () => {
-        var ref = firebase.database().ref('/clientes/');
+    $(document).ready(function(){
+        firebase.initializeApp(firebaseConfig);
+        var ref = firebase.database().ref("/clientes/{{$clientId}}/rr/{{$toSendData['rrId']}}/debug");
         ref.on("value", function (snapshot) {
             const data = snapshot.val();
-            console.log(data);
+            $('#console').find('p').text(data);
         }, function (error) {
             console.log("Error: " + error.code);
         });
+    });
 
-        // var sondaId = $("#sondaid").val();
-        // elementBlock('square1', 'body');
-        // $.ajax({
-        //     type: "POST",
-        //     url: 'proxy-template/applyconfig', // Not sure what to add as URL here
-        //     data: {
-        //         rrId : "{{$toSendData['rrId']}}",
-        //         clientId : "{{ $clientId }}",
-        //         sondaId : sondaId,
-        //         _token : '{{ csrf_token() }}'
-        //     }
-        // }).done(function( msg ) {
-        //     console.log( msg );
-        //     if(msg['status'] == 'ok') {
-        //         $.NotificationApp.send("Alarm!"
-        //             ,"Successfully updated!"
-        //             ,"top-right"
-        //             ,"#2ebbdb"
-        //             ,"success",
-        //         );
-        //     } else {
-        //         $.NotificationApp.send("Alarm!"
-        //             ,"Failed"
-        //             ,"top-right"
-        //             ,"#2ebbdb"
-        //             ,"error",
-        //         );
-        //     }
-        //     elementUnBlock('body');
-        // });
+    let applyBaseConfig = () => {
+
+        var sondaId = $("#sondaid").val();
+        elementBlock('square1', '.card-box');
+        $.ajax({
+            type: "POST",
+            url: 'proxy-template/applyconfig', // Not sure what to add as URL here
+            data: {
+                rrId : "{{$toSendData['rrId']}}",
+                clientId : "{{ $clientId }}",
+                sondaId : sondaId,
+                _token : '{{ csrf_token() }}'
+            }
+        }).done(function( msg ) {
+            console.log( msg );
+            if(msg['status'] == 'ok') {
+                $.NotificationApp.send("Alarm!"
+                    ,"Successfully updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+            } else {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+            }
+            elementUnBlock('.card-box');
+        }).fail(function(xhr, textStatus, errorThrown) {
+            $.NotificationApp.send("Alarm!"
+                ,"Failed updated!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"error",
+            );
+        });
     }
 
     function selectAll(){
@@ -280,7 +296,7 @@
             );
             return;
         }
-        elementBlock('square1', 'body');
+        elementBlock('square1', '.card-box');
         if(checkedEquipArray!=null) {
             $.ajax({
             type: "POST",
@@ -302,14 +318,14 @@
                     );
                 } else {
                     $.NotificationApp.send("Alert!"
-                        ,"Failed!"
+                        ,"The operation failed!"
                         ,"top-right"
                         ,"#2ebbdb"
                         ,"error",
                     );
                 }
 
-                elementUnBlock('body');
+                elementUnBlock('.card-box');
 
             });
         }

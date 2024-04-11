@@ -140,8 +140,6 @@ class LocalhostController extends Controller
 
             $this->database->getReference($debugDir)->set('Configuração concluída!');
             sleep(5);
-            $this->database->getReference($debugDir)->set('idle');
-
             $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
 
             return response()->json([
@@ -250,7 +248,6 @@ class LocalhostController extends Controller
         $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/relatorios/'.$now)->set($relatorio);
 
         $this->database->getReference($debugDir)->set('atualização concluída!');
-        $this->database->getReference($debugDir)->set('idle');
 
         $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
         return response()->json([
@@ -301,6 +298,7 @@ class LocalhostController extends Controller
         $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/configs/baseconfig')->set($configBaseFinal);
 
         $consoleData = $detailClientData['sondas'][$proxyId]['debug'] ?? '';
+
         $toSendData = [
             'console_data' => $consoleData,
             'proxy_id' => $proxyId,
@@ -310,7 +308,6 @@ class LocalhostController extends Controller
             'system' => '',
             'configBase' => $configBaseSalva
         ];
-
         return view('admin.assetmanagement.localhost', compact('clientId', 'toSendData'));
     }
 

@@ -84,7 +84,7 @@ class TemplateConfigController extends Controller
 
             $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
 
-           try {
+            try {
                 if (!$ssh->login($proxyUser, $proxyPwd)) {
                     $this->database->getReference($debugDir)->set('falha de login no proxy...');
                 } else {
