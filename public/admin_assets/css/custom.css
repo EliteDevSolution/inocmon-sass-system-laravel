@@ -1,13 +1,13 @@
 .left-side-menu
 {
-    background-color: #38414a;
+    background-color: #263544;
 }
 .nav-second-level>li>a
 {
-    color: #9097a7;
+    color: #b7c0cd;
 }
 #sidebar-menu>ul>li>a.active, .nav-second-level li.active>a {
-    color: #fff;
+    color: #b7c0cd;
 }
 
 .navbar-custom , .nav-backcolor{
@@ -18,4 +18,26 @@
     top: -10px !important;
     right: -10px !important;
 
+}
+.nav-second-level li a:focus,
+.nav-second-level li a:hover,
+.nav-thrid-level li a:focus,
+.nav-thrid-level li a:hover {
+    color : white;
+}
+
+#sidebar-menu>ul>li>a:active,
+#sidebar-menu>ul>li>a:focus,
+#sidebar-menu>ul>li>a:hover {
+    color: white;
+    text-decoration: none;
+}
+#sidebar-menu>ul>li>a {
+    color: #c9cacc;
+    display: block;
+    padding: 13px 20px;
+    position: relative;
+    -webkit-transition: all .4s;
+    transition: all .4s;
+    font-size: .975rem;
 }
