@@ -237,6 +237,7 @@
                     ,"#2ebbdb"
                     ,"error",
                 );
+                elementUnBlock('div.card-box');
             });
         }
 

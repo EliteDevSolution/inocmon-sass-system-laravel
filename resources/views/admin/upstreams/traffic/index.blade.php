@@ -232,6 +232,7 @@
                     ,"#2ebbdb"
                     ,"error",
                 );
+                elementUnBlock('body');
             });
         }
         let closeEdit = () => {

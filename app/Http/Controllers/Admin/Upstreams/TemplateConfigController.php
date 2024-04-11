@@ -87,11 +87,12 @@ class TemplateConfigController extends Controller
             try {
                 if (!$ssh->login($proxyUser, $proxyPwd)) {
                     $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                    $status = 'failed';
                 } else {
                     $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                     $scp = new SCP($ssh);
                     $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
-                    $scp->put($configFileName, 'configuracoes/'.$configFileName, 1);
+                    $scp->put($configFileName, public_path() . '/storage/configuracoes/'.$configFileName, 1);
                     $lineCount = substr_count($configFinal, "\n");
                     $this->database->getReference($debugDir)->set('iniciando config em PE '.$targetPeName.'... tempo estimado: '.$lineCount.'s');
                     $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileName.' '.$debugFile.' & ');
@@ -119,6 +120,7 @@ class TemplateConfigController extends Controller
                     $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
                     if (!$ssh->login($proxyUser, $proxyPwd)) {
                         $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                        $status = 'failed';
                     } else {
                         $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
                         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
@@ -127,8 +129,8 @@ class TemplateConfigController extends Controller
                         $this->database->getReference($debugDir)->set('Configuração concluída!');
                         $this->database->getReference($debugDir)->set('idle');
                     }
+                    $status = "ok";
                 }
-                $status = "ok";
            } catch (\Throwable $th) {
                 $status = $th->getMessage();
            }

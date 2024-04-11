@@ -144,9 +144,7 @@
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
-                console.log(msg);
                 if(msg['status'] == 'ok') {
-                    console.log(msg);
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully added!"
                         ,"top-right"
@@ -169,6 +167,7 @@
                     ,"#2ebbdb"
                     ,"error",
                 );
+                elementUnBlock('body');
             });
         }
     </script>

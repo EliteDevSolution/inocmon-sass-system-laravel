@@ -259,6 +259,7 @@
                 ,"#2ebbdb"
                 ,"error",
             );
+            elementUnBlock('.card-box');
         });
     }
 

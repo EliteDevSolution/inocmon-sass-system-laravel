@@ -101,7 +101,7 @@ class LocalhostController extends Controller
 
                     $scp = new SCP($ssh);
                     $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
-                    $scp->put($configFileName, 'configuracoes/'.$configFileName, NET_SCP_LOCAL_FILE);
+                    $scp->put($configFileName, public_path() . '/storage/configuracoes/'.$configFileName, NET_SCP_LOCAL_FILE);
 
 
                     $lineCount = substr_count($configBaseFinal, "\n");
@@ -220,9 +220,8 @@ class LocalhostController extends Controller
                     $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$proxyHostName.' tempo estimado: '.$tempoEstimado.'s ');
                     sleep(1);
                 }
-                $status = 'failed';
+                $status = 'ok';
             }
-            $status = 'ok';
         } catch (\Throwable $th) {
             $status = 'failed';
         }

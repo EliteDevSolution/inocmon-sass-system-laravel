@@ -140,7 +140,6 @@
         });
 
         function deleteClient(current, proxyId) {
-            console.log(current);
              $.confirm({
                     title: 'Alert',
                     content: 'Are you sure to delete?',

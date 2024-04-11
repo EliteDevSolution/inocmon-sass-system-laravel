@@ -86,7 +86,7 @@ class PRTemplateController extends Controller
                 $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                 $scp = new SCP($ssh);
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-                $scp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
+                $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
 
                 $lineCount = substr_count($configRrFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
@@ -230,7 +230,7 @@ class PRTemplateController extends Controller
                 $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                 $scp = new SCP($ssh);
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-                $scp->put($configFileNameRr, 'configuracoes/'.$configFileNameRr, 1);
+                $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
                 $lineCount = substr_count($configRrFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');

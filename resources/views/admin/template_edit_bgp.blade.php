@@ -214,6 +214,7 @@
                     ,"#2ebbdb"
                     ,"error",
                 );
+                elementUnBlock('body');
             });
         }
     </script>
