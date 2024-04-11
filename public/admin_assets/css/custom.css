@@ -39,7 +39,7 @@
     position: relative;
     -webkit-transition: all .4s;
     transition: all .4s;
-    font-size: .875rem;
+    font-size: .825rem;
 }
 .nav-second-level li.active>a,
 .nav-third-level li.active>a {

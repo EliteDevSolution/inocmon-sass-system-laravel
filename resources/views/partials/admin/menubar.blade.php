@@ -1,4 +1,4 @@
-<div id="sidebar-menu" style="background-color: #263544">
+<div id="sidebar-menu">
     @php
         if(!isset($clients)) {
             $clients = getClient();
