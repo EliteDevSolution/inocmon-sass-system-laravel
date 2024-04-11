@@ -194,7 +194,6 @@
             const data = snapshot.val();
             $('#console').find('p').text(data);
         }, function (error) {
-            console.log("Error: " + error.code);
         });
     });
     let applyConfig = () => {
@@ -236,7 +235,8 @@
                 _token : '{{ csrf_token() }}'
             }
         }).done(function( msg ) {
-            if(msg['status' == 'ok']) {
+            console.log(msg);
+            if(msg['status'] == 'ok') {
                 $.NotificationApp.send("Alarm!"
                     ,"Successfully updated!"
                     ,"top-right"
@@ -259,6 +259,7 @@
                 ,"#2ebbdb"
                 ,"error",
             );
+            elementUnBlock('table');
         });
     }
 </script>
