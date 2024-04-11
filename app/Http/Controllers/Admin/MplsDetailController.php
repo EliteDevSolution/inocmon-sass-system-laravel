@@ -58,8 +58,6 @@ class MplsDetailController extends Controller
             $configFileNamePe = 'CONFIG-PE-'.$clientId.'-'.$equipId;
             $uploadFilePe = 'public/configuracoes/'.$configFileNamePe;
 
-
-
             try {
                 if(!file_exists(public_path() . '/storage/configuracoes'))
                 {
@@ -76,17 +74,19 @@ class MplsDetailController extends Controller
             $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
 
             try {
-                $status = 'ok';
                 if (!$ssh->login($sondaUser, $sondaPwd)) {
                     $status = 'failed';
                     $this->database->getReference($debugDir)->set('falha de login na sonda...');
                     die('falha de login na sonda...');
+                } else {
+                    $status = 'ok';
                 }
             } catch (\Throwable $th) {
                 $status = 'failed';
             }
 
             $scp = new SCP($ssh);
+
             $scp->put($configFileNamePe, 'configuracoes/'.$configFileNamePe, 1);
             $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
             $routerId = $detailClientData['equipamentos'][$equipId]['routerid'];
@@ -154,12 +154,15 @@ class MplsDetailController extends Controller
 
                 $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! Iniciando transferência...');
                 $this->database->getReference($debugDir)->set('conectando ao proxy: '.$sondaIpv4.' '.$sondaPortaSsh.' '.$sondaUser.' '.base64_encode($sondaPwd));
+
                 $rrSsh = new SSH2($sondaIpv4, $sondaPortaSsh);
 
                 try {
                     if (!$rrSsh->login($sondaUser, $sondaPwd)) {
                         $status = 'failed';
                         $this->database->getReference($debugDir)->set('falha de login no proxy...');
+                    } else {
+                        $status = 'ok';
                     }
                 } catch (\Throwable $th) {
                     $status = 'failed';
@@ -205,6 +208,8 @@ class MplsDetailController extends Controller
            if (!$rrSsh->login($sondaUser, $sondaPwd)) {
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
                 $status ="failed";
+            } else {
+                $status = 'ok';
             }
         } catch (\Throwable $th) {
             $status = 'failed';
@@ -214,7 +219,6 @@ class MplsDetailController extends Controller
         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
         $this->database->getReference($debugDir)->set('Configuração concluída!');
         $this->database->getReference($debugDir)->set('idle');
-        $status = 'ok';
 
         $lunchData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
 
