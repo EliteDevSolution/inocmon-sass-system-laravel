@@ -23,8 +23,8 @@ class MplsDetailController extends Controller
         $status = '';
         $clientId = $req['clientId'];
         $equipId = $req['equipId'];
-        $buscaConfigIds = $req['buscaConfigIds'];
-        $buscaRrIds = $req['buscaRrIds'];
+        $buscaConfigIds = $req['buscaConfigIds'] ?? [];
+        $buscaRrIds = $req['buscaRrIds'] ?? [];
         $sondaId = $req['sondaId'];
 
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
@@ -170,10 +170,12 @@ class MplsDetailController extends Controller
                 } catch (\Throwable $th) {
                     $status = 'failed';
                 }
-
-                if (count($buscaConfigIds) == 0) {
-                    $rrSsh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+                if(is_array($buscaConfigIds)) {
+                    if (count($buscaConfigIds) == 0) {
+                        $rrSsh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+                    }
                 }
+
 
                 $rrScp = new SCP($rrSsh);
 
