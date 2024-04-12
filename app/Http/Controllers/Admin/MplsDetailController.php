@@ -53,76 +53,78 @@ class MplsDetailController extends Controller
         $this->database->getReference($debugDir)->set('preparando:'.$realIndexConfig.'...');
 
         $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
+        if(is_array($buscaConfigIds)) {
+            if(count($buscaConfigIds) > 0){
+                $configFileNamePe = 'CONFIG-PE-'.$clientId.'-'.$equipId;
+                $uploadFilePe = 'public/configuracoes/'.$configFileNamePe;
 
-        if(count($buscaConfigIds) > 0){
-            $configFileNamePe = 'CONFIG-PE-'.$clientId.'-'.$equipId;
-            $uploadFilePe = 'public/configuracoes/'.$configFileNamePe;
-
-            try {
-                if(!file_exists(public_path() . '/storage/configuracoes'))
-                {
-                    @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
-                }
-                Storage::disk('local')->put($uploadFilePe , $configFinal);
-                $status = "ok";
-            } catch (\Throwable $th) {
-                $status = 'failed';
-            }
-
-            $this->database->getReference($debugDir)->set('arquivo '.$configFileNamePe.' gerado com sucesso! Iniciando transferência...');
-
-            $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
-
-
-            try {
-                if (!$ssh->login($sondaUser, $sondaPwd)) {
+                try {
+                    if(!file_exists(public_path() . '/storage/configuracoes'))
+                    {
+                        @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                    }
+                    Storage::disk('local')->put($uploadFilePe , $configFinal);
+                    $status = "ok";
+                } catch (\Throwable $th) {
                     $status = 'failed';
-                    $this->database->getReference($debugDir)->set('falha de login na sonda...');
-                    die('falha de login na sonda...');
-                } else {
-                    $status = 'ok';
                 }
-            } catch (\Throwable $th) {
-                $status = 'failed';
+
+                $this->database->getReference($debugDir)->set('arquivo '.$configFileNamePe.' gerado com sucesso! Iniciando transferência...');
+
+                $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
+
+
+                try {
+                    if (!$ssh->login($sondaUser, $sondaPwd)) {
+                        $status = 'failed';
+                        $this->database->getReference($debugDir)->set('falha de login na sonda...');
+                        die('falha de login na sonda...');
+                    } else {
+                        $status = 'ok';
+                    }
+                } catch (\Throwable $th) {
+                    $status = 'failed';
+                }
+
+                $scp = new SCP($ssh);
+
+                $scp->put($configFileNamePe, public_path() . '/storage/configuracoes/'.$configFileNamePe, 1);
+                $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
+                $routerId = $detailClientData['equipamentos'][$equipId]['routerid'];
+                $porta = $detailClientData['equipamentos'][$equipId]['porta'];
+                $user = $detailClientData['equipamentos'][$equipId]['user'];
+                $pwd = $detailClientData['equipamentos'][$equipId]['pwd'];
+                $userInocmon = $detailClientData['equipamentos'][$equipId]['userinocmon'] ?? '';
+                $senhaInocmon = $detailClientData['equipamentos'][$equipId]['senhainocmon'] ?? '';
+
+                $this->database->getReference($debugDir)->set('usuario carregado: '.$user.' senha: '.base64_encode($pwd));
+                if (!$user) { $user = $userInocmon; }
+                if (!$pwd) { $pwd = $senhaInocmon; }
+
+                $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
+
+                $this->database->getReference($debugDir)->set('assinando token de configuração: '.$configToken);
+                $this->database->getReference($debugDir)->set('aplicando configurações em '.$hostName.'...');
+                $lineCount = substr_count($configFinal, "\n");
+                $this->database->getReference($debugDir)->set('aplicando config em '.$hostName.' tempo estimado: '.$lineCount.'s');
+                $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNamePe.' '.$debugFile.' & ');
+
+                if (str_contains($comandoRemoto, 'Err')) {
+                    $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
+                }else{
+                    for ($i = 0; $i < $lineCount; $i++){
+                        $tempoEstimado = ($lineCount - $i);
+                        $progresso = ($i / $lineCount  * 100);
+                        $progresso = round($progresso, 0);
+                        $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                    }
+                }
+                $this->database->getReference($debugDir)->set('config do PE '.$hostName.' FINALIZADA!');
+            } else{
+                $this->database->getReference($debugDir)->set('Nenhuma config selecionada para '.$hostName.'!');
             }
-
-            $scp = new SCP($ssh);
-
-            $scp->put($configFileNamePe, public_path() . '/storage/configuracoes/'.$configFileNamePe, 1);
-            $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
-            $routerId = $detailClientData['equipamentos'][$equipId]['routerid'];
-            $porta = $detailClientData['equipamentos'][$equipId]['porta'];
-            $user = $detailClientData['equipamentos'][$equipId]['user'];
-            $pwd = $detailClientData['equipamentos'][$equipId]['pwd'];
-            $userInocmon = $detailClientData['equipamentos'][$equipId]['userinocmon'] ?? '';
-            $senhaInocmon = $detailClientData['equipamentos'][$equipId]['senhainocmon'] ?? '';
-
-            $this->database->getReference($debugDir)->set('usuario carregado: '.$user.' senha: '.base64_encode($pwd));
-            if (!$user) { $user = $userInocmon; }
-            if (!$pwd) { $pwd = $senhaInocmon; }
-
-            $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-
-            $this->database->getReference($debugDir)->set('assinando token de configuração: '.$configToken);
-            $this->database->getReference($debugDir)->set('aplicando configurações em '.$hostName.'...');
-            $lineCount = substr_count($configFinal, "\n");
-            $this->database->getReference($debugDir)->set('aplicando config em '.$hostName.' tempo estimado: '.$lineCount.'s');
-            $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNamePe.' '.$debugFile.' & ');
-
-            if (str_contains($comandoRemoto, 'Err')) {
-                $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
-            }else{
-                for ($i = 0; $i < $lineCount; $i++){
-                    $tempoEstimado = ($lineCount - $i);
-                    $progresso = ($i / $lineCount  * 100);
-                    $progresso = round($progresso, 0);
-                    $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
-		        }
-	        }
-	        $this->database->getReference($debugDir)->set('config do PE '.$hostName.' FINALIZADA!');
-        } else{
-	        $this->database->getReference($debugDir)->set('Nenhuma config selecionada para '.$hostName.'!');
         }
+
         if(is_array($buscaRrIds)) {
             for ($j = 0; $j < count($buscaRrIds); $j++) {
                 $getRrConfig = $detailClientData['equipamentos'][$equipId]['configs']['rr'.$buscaRrIds[$j]];
