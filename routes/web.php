@@ -1,14 +1,9 @@
 <?php
-
 Route::get('/', function(){
-    if (\Auth::user())// && \Auth::user()->hasRole("administrator"))
-         return redirect()->to("client");
-    else
-        return redirect()->to("login");
-    //return redirect()->to("/user/corners-methodology");
+    // if (!\Auth::user()) {
+       return redirect()->to("login");
+    // }
 });
-
-
 
 Route::get('lang/{locale}',function ($locale){
     session(['locale' => $locale]);
@@ -23,7 +18,7 @@ Route::get('change_password', 'Auth\ChangePasswordController@showChangePasswordF
 Route::patch('change_password', 'Auth\ChangePasswordController@changePassword')->name('auth.change_password');
 
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'approved']], function () {
 
     Route::resource('client', 'Admin\ClientController');
 

@@ -94,9 +94,11 @@
                     <div class="col-12 m-3">
                         <div style="display: flex; width : max-content ; margin : auto; gap : 10px">
                             <select name="targetproxyid" id="proxy" class="form-control">
-                                @foreach ($dashboardData['sondas'] as $index => $value)
-                                    <option value="{{$index}}">{{$value['hostname']}}</option>
-                                @endforeach
+                                @if(is_array($dashboardData['sondas']))
+                                    @foreach ($dashboardData['sondas'] as $index => $value)
+                                        <option value="{{$index}}">{{$value['hostname']}}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             <select name="targetrr" class="form-control" id="rr">
                                 @foreach ($dashboardData['rr'] as $buscaIndex => $buscarVal)
@@ -151,6 +153,14 @@
                         ,"error",
                     );
                 }
+                elementUnBlock('.ribbon-box');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"The operation failed!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
                 elementUnBlock('.ribbon-box');
             });
         }

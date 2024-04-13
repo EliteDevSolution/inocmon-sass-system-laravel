@@ -57,9 +57,11 @@
                     <p class="font-15 text-blue">
                         Chang Log
                     </p>
-                    <a class="m-0 mb-2 btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'store'))}}">
-                        Add
-                    </a>
+                    @if(auth()->user()->hasRole("administrator"))
+                        <a class="m-0 mb-2 btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'store'))}}">
+                            Add
+                        </a>
+                    @endif
                 </div>
                 <table class="table nowrap">
                     <thead>
@@ -75,7 +77,9 @@
                                 <td>{{$valueChangeLog['versao']}}</td>
                                 <td>{{$valueChangeLog['date']}}</td>
                                 <td>
-                                    <a class="btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'update', 'change_id' => $indexChangeLog))}}">Update</a>
+                                    @if(auth()->user()->hasRole("administrator"))
+                                        <a class="btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'update', 'change_id' => $indexChangeLog))}}">Update</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

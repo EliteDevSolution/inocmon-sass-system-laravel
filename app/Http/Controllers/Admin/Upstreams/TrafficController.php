@@ -27,16 +27,12 @@ class TrafficController extends Controller
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $dataRef = $this->database->getReference('clientes/' .$clientId);
-
-        $buscaEquipamentos = $detailClientData['equipamentos'];
-
-
-        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['transito'];
+        $buscaEquipamentos = $detailClientData['equipamentos'] ?? [];
+        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['transito'] ?? [];
         $toSendData = [
             'buscaBgp' => $buscaBgpConexoes,
             'buscaEquip' => $buscaEquipamentos
         ];
-
         return view('admin.upstreams.traffic.index', compact('clientId', 'toSendData'));
     }
 
@@ -49,8 +45,8 @@ class TrafficController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos= $detailClientData['equipamentos'];
-        $cdns = $detailClientData['bgp']['interconexoes']['transito'];
+        $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
+        $cdns = $detailClientData['bgp']['interconexoes']['transito'] ?? [];
         return view('admin.upstreams.traffic.create', compact('clientId', 'buscaEquipamentos','cdns'));
 
     }
@@ -65,7 +61,7 @@ class TrafficController extends Controller
     {
         $clientId = $request['clientId'];
         $tipoConexao = "transito";
-        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
+        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue() ?? [];
         $lastId = 0;
         foreach ($buscaBgpConexoes as $index => $value) {
             $lastId = $index;

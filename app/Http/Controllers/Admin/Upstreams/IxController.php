@@ -25,8 +25,8 @@ class IxController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos = $detailClientData['equipamentos'];
-        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['ix'];
+        $buscaEquipamentos = $detailClientData['equipamentos'] ?? [];
+        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['ix'] ?? [];
 
         $toSendData = [
             'buscaBgp' => $buscaBgpConexoes,
@@ -41,12 +41,13 @@ class IxController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create(Request $req)
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos= $detailClientData['equipamentos'];
-        $cdns = $detailClientData['bgp']['interconexoes']['ix'];
+        $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
+        $cdns = $detailClientData['bgp']['interconexoes']['ix'] ?? [];
         $buscaBaseDadosIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->GetValue();
 
         return view('admin.upstreams.ix.create', compact('clientId', 'buscaEquipamentos','cdns', 'buscaBaseDadosIxbr'));
@@ -64,7 +65,7 @@ class IxController extends Controller
         $clientId = $request['clientId'];
         $tipoConexao = "ix";
         $communityGroup = 2;
-        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
+        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue() ?? [];
         $lastId = 0;
         foreach ($buscaBgpConexoes as $index => $value) {
             $lastId = $index;

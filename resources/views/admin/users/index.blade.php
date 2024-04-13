@@ -31,8 +31,7 @@
                 <table id="datatable" class="table nowrap">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th width=30>
+                            <th>
                                 {{ trans('cruds.user.fields.id') }}
                             </th>
                             <th>
@@ -40,6 +39,9 @@
                             </th>
                             <th>
                                 {{ trans('cruds.user.fields.email') }}
+                            </th>
+                            <th>
+                                Client
                             </th>
                             <th>
                                 {{ trans('cruds.user.fields.roles') }}
@@ -55,7 +57,6 @@
                     <tbody>
                         @foreach($users as $key => $user)
                             <tr data-entry-id="{{ $user->id }}">
-                                <td></td>
                                 <td>
                                     {{ $user->id ?? '' }}
                                 </td>
@@ -64,6 +65,11 @@
                                 </td>
                                 <td>
                                     {{ $user->email ?? '' }}
+                                </td>
+                                <td>
+                                    @if($user->client_id != "")
+                                        {{ $clients[$user->client_id]['nome'] . ' (' . $clients[$user->client_id]['email'] . ')' }}
+                                    @endif
                                 </td>
                                 <td>
                                     @foreach($user->roles()->pluck('name') as $role)

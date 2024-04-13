@@ -22,7 +22,7 @@ class ClientsController extends Controller
 
         $clientId = $req->query()['client_id'];
         $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
-        $buscaBgpClientesTransito = $clientDetailData['bgp']['interconexoes']['clientesbgp'];
+        $buscaBgpClientesTransito = $clientDetailData['bgp']['interconexoes']['clientesbgp'] ?? [];
         $clientName = $clientDetailData['nome'];
         $senhainocmon = $clientDetailData['seguranca']['senhainocmon'];
         $asn = $clientDetailData['bgp']['asn'];

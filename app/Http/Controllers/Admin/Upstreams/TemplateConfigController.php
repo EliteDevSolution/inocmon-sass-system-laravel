@@ -168,7 +168,7 @@ class TemplateConfigController extends Controller
 		$_SESSION['token_config_rr'] = $configToken;
         $diretorioConexaoBgp = 'clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao.'/'.$id;
 		$buscaDadosDaConexao = $detailClientData['bgp']['interconexoes'][$tipoConexao][$id];
-        $buscaProxy = $detailClientData['sondas'];
+        $buscaProxy = $detailClientData['sondas'] ?? [];
 		$buscaEquipamentos = $detailClientData['equipamentos'];
         $community0 = $detailClientData['bgp']['community0'];
         $asn = $detailClientData['bgp']['asn'];
@@ -184,10 +184,10 @@ class TemplateConfigController extends Controller
 		$this->database->getReference($debugDir)->set('idle');
 
         if($targetPeId){
-            $templateVendor = $detailClientData['equipamentos'][$targetPeId]['template-vendor'];
-            $templateFamily = $detailClientData['equipamentos'][$targetPeId]['template-family'];
-            $targetPeName = $detailClientData['equipamentos'][$targetPeId]['hostname'];
-            $targetPeRouterId = $detailClientData['equipamentos'][$targetPeId]['routerid'];
+            $templateVendor = $detailClientData['equipamentos'][$targetPeId]['template-vendor'] ?? '';
+            $templateFamily = $detailClientData['equipamentos'][$targetPeId]['template-family'] ?? '';
+            $targetPeName = $detailClientData['equipamentos'][$targetPeId]['hostname'] ?? '';
+            $targetPeRouterId = $detailClientData['equipamentos'][$targetPeId]['routerid'] ?? '';
             $buscaTemplate = $this->database->getReference('lib/templates/bgp/'.$tipoConexao.'/'.$templateVendor.'/'.$templateFamily)->getSnapshot();
 		}else{
             $buscaTemplate = '';
@@ -204,9 +204,14 @@ class TemplateConfigController extends Controller
             $ipv602 = $buscaDadosDaConexao['rs2v6'];
             $lgv4 = $buscaDadosDaConexao['lgv4'];
             $lgv6 = $buscaDadosDaConexao['lgv6'];
-            $localPref = $buscaDadosDaConexao['localpref']; if(!$localPref){$localPref = 110;}
-            $medIn = $buscaDadosDaConexao['medin'];
-            if( !$medIn ) $medIn = 0;
+            $localPref = $buscaDadosDaConexao['localpref'] ?? '';
+            if(!$localPref){
+                $localPref = 110;
+            }
+            $medIn = $buscaDadosDaConexao['medin'] ?? '';
+            if( !$medIn ) {
+                $medIn = 0;
+            }
             $localpref = 110;
             $medIn = 0;
             $denyCustomerIn = 'yes';
@@ -252,26 +257,27 @@ class TemplateConfigController extends Controller
 			}
 
 			foreach ($buscaTemplate->getValue() as $index => $x) {
-				$configFinal .= str_replace("%community0%",$community0,$x);
-				$configFinal = str_replace("%tipoconexao%",$tipoConexao, $configFinal);
-				$configFinal = str_replace("%communitygroup%",$communityGroup, $configFinal);
-				$configFinal = str_replace("%nomedogrupo%",$nomeDoGrupo, $configFinal);
-				$configFinal = str_replace("%id%",$id, $configFinal);
-				$configFinal = str_replace("%asn%",$asn, $configFinal);
-				$configFinal = str_replace("%ipv4-01%",$ipv401, $configFinal);
-				$configFinal = str_replace("%ipv4-02%",$ipv402, $configFinal);
-				$configFinal = str_replace("%ipv6-01%",$ipv601, $configFinal);
-				$configFinal = str_replace("%ipv6-02%",$ipv602, $configFinal);
-                if($tipoConexao == 'ix') {
-                    $configFinal = str_replace("%lgv4%",$lgv4, $configFinal);
-                    $configFinal = str_replace("%lgv6%",$lgv4, $configFinal);
+                if(is_string($x)) {
+                    $configFinal .= str_replace("%community0%",$community0,$x);
+                    $configFinal = str_replace("%tipoconexao%",$tipoConexao, $configFinal);
+                    $configFinal = str_replace("%communitygroup%",$communityGroup, $configFinal);
+                    $configFinal = str_replace("%nomedogrupo%",$nomeDoGrupo, $configFinal);
+                    $configFinal = str_replace("%id%",$id, $configFinal);
+                    $configFinal = str_replace("%asn%",$asn, $configFinal);
+                    $configFinal = str_replace("%ipv4-01%",$ipv401, $configFinal);
+                    $configFinal = str_replace("%ipv4-02%",$ipv402, $configFinal);
+                    $configFinal = str_replace("%ipv6-01%",$ipv601, $configFinal);
+                    $configFinal = str_replace("%ipv6-02%",$ipv602, $configFinal);
+                    if($tipoConexao == 'ix') {
+                        $configFinal = str_replace("%lgv4%",$lgv4, $configFinal);
+                        $configFinal = str_replace("%lgv6%",$lgv4, $configFinal);
+                    }
+                    $configFinal = str_replace("%remoteas%",$remoteAs, $configFinal);
+                    $configFinal = str_replace("%medin%",$medIn, $configFinal);
+                    $localPref = 110;
+                    $configFinal = str_replace("%localpref%",(string)$localPref, $configFinal);
                 }
-				$configFinal = str_replace("%remoteas%",$remoteAs, $configFinal);
-				$configFinal = str_replace("%medin%",$medIn, $configFinal);
-                $localPref = 110;
-				$configFinal = str_replace("%localpref%",(string)$localPref, $configFinal);
 			}
-
 		} else {
 			$configFinal = '#não foram encontradas templates para '.$templateVendor.' '.$templateFamily;
 		}

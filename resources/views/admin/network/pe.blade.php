@@ -194,6 +194,14 @@
                     );
                 }
                 elementUnBlock('div.card-box');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                elementUnBlock('div.card-box'');
             });
         }
     </script>

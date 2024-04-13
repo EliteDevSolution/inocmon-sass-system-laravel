@@ -5,9 +5,14 @@
         }
     @endphp
 
-    @if(isset(request()->query()['client_id']))
+    @if(isset(request()->query()['client_id']) || !auth()->user()->hasRole("administrator"))
         @php
-            $clientId = request()->query()['client_id'];
+            $clientId;
+            if(isset(request()->query()['client_id'])) {
+                $clientId = request()->query()['client_id'];
+            } else {
+                $clientId = auth()->user()->client_id;
+            }
             $clientIdQueryParam = array("client_id" => $clientId);
         @endphp
 
@@ -42,8 +47,8 @@
                         </a>
                         <ul class="nav-third-level nav" aria-expanded="false">
                             @foreach ($clients as $index => $buscaRrs)
-                                @if ($index == request()->query()['client_id'])
-                                    @foreach ($buscaRrs['rr'] as $buscaIndex => $buscaRr )
+                                @if ($index == $clientIdQueryParam)
+                                    @foreach ($buscaRrs['rr'] ?? [] as $buscaIndex => $buscaRr )
                                         @if($buscaIndex != null)
                                             <li>
                                                 <a href="{{ route('proxy-template.index', array('client_id' => request()->query()['client_id'], 'rr_id' =>$buscaIndex))}}"> {{$buscaRr['hostname']}} </a>
@@ -63,13 +68,15 @@
                         </a>
                         <ul class="nav-third-level nav" aria-expanded="false">
                             @foreach ($clients as $index => $proxys)
-                                @if ($index == request()->query()['client_id'])
+                                @if ($index == $clientIdQueryParam)
                                     @if(array_key_exists('sondas', $proxys))
-                                        @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
-                                            <li>
-                                                <a href="{{ route('proxy-localhost.index', array('client_id' => request()->query()['client_id'], 'proxy_id' => $proxyIndex))}}"> {{$proxy['hostname']}} </a>
-                                            </li>
-                                        @endforeach
+                                        @if(is_array($proxys['sondas']))
+                                            @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
+                                                <li>
+                                                    <a href="{{ route('proxy-localhost.index', array('client_id' => request()->query()['client_id'], 'proxy_id' => $proxyIndex))}}"> {{$proxy['hostname']}} </a>
+                                                </li>
+                                            @endforeach
+                                        @endif
                                     @endif
                                 @endif
                             @endforeach

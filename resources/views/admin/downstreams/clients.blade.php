@@ -275,6 +275,14 @@
                     );
                 }
                 elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                elementUnBlock('body');
             });
         }
         function deleteClent(current, cdnId) {

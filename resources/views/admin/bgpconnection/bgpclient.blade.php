@@ -43,8 +43,8 @@
                     <h2 class="header-title text-blue text-center">Novo cdn</h2>
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">Nome do Client</label>
-                            <input type="text" name="nome" id="nome" class="form-control mb-1" />
+                            <label class="mb-1 font-weight-bold text-muted" >Nome do Client</label>
+                            <input type="text" name="nome" id="nome" class="form-control mb-1" maxlength="14"/>
                             <label class="mb-1 font-weight-bold text-muted">ASN do cliente</label>
                             <input type="text" name="asn" id="asn" class="form-control mb-1" />
                             <label class="mb-1 font-weight-bold text-muted">POP DO ACESSO</label>

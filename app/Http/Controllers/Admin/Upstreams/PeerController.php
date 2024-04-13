@@ -27,8 +27,8 @@ class PeerController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos = $detailClientData['equipamentos'];
-        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['peering'];
+        $buscaEquipamentos = $detailClientData['equipamentos'] ?? [];
+        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['peering'] ?? [];
 
         $toSendData = [
             'buscaBgp' => $buscaBgpConexoes,
@@ -47,8 +47,8 @@ class PeerController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos= $detailClientData['equipamentos'];
-        $cdns = $detailClientData['bgp']['interconexoes']['peering'];
+        $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
+        $cdns = $detailClientData['bgp']['interconexoes']['peering'] ?? [];
         $buscaBaseDadosIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->GetValue();
 
         return view('admin.upstreams.peering.create', compact('clientId', 'buscaEquipamentos','cdns', 'buscaBaseDadosIxbr'));
@@ -65,7 +65,7 @@ class PeerController extends Controller
         $clientId = $request['clientId'];
         $tipoConexao = "peering";
         $communityGroup = 3;
-        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
+        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue() ?? [];
         $lastId = 0;
         foreach ($buscaBgpConexoes as $index => $value) {
             $lastId = $index;

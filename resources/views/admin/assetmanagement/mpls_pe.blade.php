@@ -63,7 +63,6 @@
                         <tbody>
                             @foreach ($toSendData['equipments'] as $index => $value)
                                 <tr id="equipId{{$index}}">
-
                                     <td>{{$index}}</td>
                                     <td>{{$value['hostname'] ?? ""}}</td>
                                     <td>{{$value['routerid'] ?? ""}}</td>

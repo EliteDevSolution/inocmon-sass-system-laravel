@@ -19,6 +19,11 @@
                                 @endforeach
                             </div>
                         @endif
+                        @if(session('error'))
+                            <div class="alert alert-danger" id="alertMessage" role="alert">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                         <h2 class="">iNOCmon</h2>
                         <div class="form-group">
                             <input type="email" class="form-control" id="email" name="email" placeholder="Email">
@@ -39,4 +44,5 @@
             $(".alert").slideUp(500);
         });
     </script>
+
 </html>

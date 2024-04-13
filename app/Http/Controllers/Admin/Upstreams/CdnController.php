@@ -27,7 +27,7 @@ class CdnController extends Controller
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos = $detailClientData['equipamentos'];
-        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['cdn'];
+        $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['cdn'] ?? [];
 
         $toSendData = [
             'buscaBgp' => $buscaBgpConexoes,
@@ -46,8 +46,8 @@ class CdnController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos= $detailClientData['equipamentos'];
-        $cdns = $detailClientData['bgp']['interconexoes']['cdn'];
+        $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
+        $cdns = $detailClientData['bgp']['interconexoes']['cdn'] ?? [];
         $buscaBaseDadosIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->GetValue();
 
         return view('admin.upstreams.cdn.create', compact('clientId', 'buscaEquipamentos','cdns', 'buscaBaseDadosIxbr'));
@@ -64,7 +64,7 @@ class CdnController extends Controller
         $clientId = $request['clientId'];
         $tipoConexao = "cdn";
         $communityGroup = 4;
-        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue();
+        $buscaBgpConexoes = $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao)->getSnapshot()->getValue() ?? [];
         $lastId = 0;
         foreach ($buscaBgpConexoes as $index => $value) {
             $lastId = $index;

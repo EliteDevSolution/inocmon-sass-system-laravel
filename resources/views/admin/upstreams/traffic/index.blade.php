@@ -70,7 +70,7 @@
                                     </td>
                                     <td>{{$value['remoteas']}}</td>
                                     <td>{{$value['pop']}}</td>
-                                    <td>{{$toSendData['buscaEquip'][$value['peid']]['hostname']}}</td>
+                                    <td>{{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}</td>
                                     <td>
                                         <a href="{{ route('template-generate-config.index',
                                         array('client_id'=>$clientId, 'indexId' => $index, 'key' => "transito", 'groupKey' => '01')) }}">

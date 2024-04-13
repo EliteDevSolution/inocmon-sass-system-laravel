@@ -118,7 +118,7 @@
                 );
                 return;
             }
-            elementBlock('square1', 'body');
+            elementBlock('square1', '.p-1');
             $.ajax({
                 type: "POST",
                 url: '{{ route("upstreams-ix.store") }}',
@@ -165,7 +165,15 @@
                         ,"error",
                     );
                 }
-                elementUnBlock('body');
+                elementUnBlock('.p-1');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"The operation failed!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                elementUnBlock('.p-1');
             });
         }
     </script>

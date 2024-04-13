@@ -22,9 +22,13 @@ class ClientController extends Controller
 
     public function index()
     {
-        $status = session('success');
-        $clients = $this->database->getReference('clientes')->getValue();
-        return view('admin.client_home', compact('clients', 'status'));
+        if(auth()->user()->hasRole("administrator")) {
+            $status = session('success');
+            $clients = $this->database->getReference('clientes')->getValue();
+            return view('admin.client_home', compact('clients', 'status'));
+        } else {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -56,7 +60,7 @@ class ClientController extends Controller
                 'bgp' => [
                     'asn' => $request->all()['asn'],
                     'community0' => $request->all()['community0'],
-                    'interconexoes' => '',
+                    'interconexoes' => [],
                     'ipv4bgpmultihop' => $request->all()['ipv4bgpmultihop'],
                     'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
                 ],
@@ -70,18 +74,18 @@ class ClientController extends Controller
                     'snmpcommunity' => $request->all()['snmpcommunity'],
                     'userinocmon' => $request->all()['userinocmon']
                 ],
-                'sondas' => '',
+                'sondas' => [],
                 'status' => $request->all()['status']
             ];
 
             $this->database->getReference('clientes/' . $key)->set($data);
 
             $status = "success";
-            return redirect()->back()->with('success', $status);;
+            return redirect()->back()->with('success', $status);
 
         } catch(Exception  $err) {
             $status = 'failed';
-            return redirect()->back()->with('failed', $status);;
+            return redirect()->back()->with('failed', $status);
         }
 
     }

@@ -35,7 +35,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label class="mb-1 font-weight-bold text-muted">Nome do Client</label>
-                                <input type="text" id ="nome" name="nome" value="{{$client['nome']}}" required class="form-control mb-1" style=" z-index: 2; background: transparent;"/>
+                                <input type="text" id ="nome" name="nome" value="{{$client['nome']}}" required class="form-control mb-1" maxlength="14"/>
                                 <label class="mb-1 font-weight-bold text-muted">ASN</label>
                                 <input type="text" id="asn" name="asn" value="{{$client['bgp']['asn']}}" class="form-control mb-1" required placeholder="Asn" style=" z-index: 2; background: transparent;"/>
                                 <label class="mb-1 font-weisght-bold text-muted">Email</label>

@@ -22,19 +22,17 @@ class MplsController extends Controller
         $clientId = $req->query()['client_id'];
 
         $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
-        $buscaEquipment = $clientDetailData['equipamentos'];
-        $buscaBgpTransito = $clientDetailData['bgp']['interconexoes']['transito'];
-        $buscaBgpIx = $clientDetailData['bgp']['interconexoes']['ix'];
-        $buscaBgpClientes = $clientDetailData['bgp']['interconexoes']['clientesbgp'];
-        $nomeClient = $clientDetailData['nome'];
-        $senhaInocmon = $clientDetailData['seguranca']['senhainocmon'];
-        $asn = $clientDetailData['bgp']['asn'];
-        $community = $clientDetailData['bgp']['community0'];
-
+        $buscaEquipment = $clientDetailData['equipamentos'] ?? [];
+        $buscaBgpTransito = $clientDetailData['bgp']['interconexoes']['transito'] ?? '';
+        $buscaBgpIx = $clientDetailData['bgp']['interconexoes']['ix'] ?? '';
+        $buscaBgpClientes = $clientDetailData['bgp']['interconexoes']['clientesbgp'] ?? '';
+        $nomeClient = $clientDetailData['nome'] ?? '';
+        $senhaInocmon = $clientDetailData['seguranca']['senhainocmon'] ?? '';
+        $asn = $clientDetailData['bgp']['asn'] ?? '';
+        $community = $clientDetailData['bgp']['community0'] ?? '';
         $toSendData = [
             'equipments' => $buscaEquipment
         ];
-
         return view('admin.assetmanagement.mpls_pe', compact('toSendData', 'clientId'));
     }
 

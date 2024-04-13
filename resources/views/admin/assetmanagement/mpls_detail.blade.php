@@ -55,86 +55,92 @@
                                     <div class="d-flex">
                                         <h4 class="text-success">Proxy: &nbsp</h4>
                                         <select class="form-control" id="sondaId" name="sondaId"  data-toggle="select2">
-                                            @foreach ($toSendData['buscaSondas'] as $sondaIndex => $sondaVal)
-                                                <option value="{{$sondaIndex}}">{{$sondaVal['hostname']}}</option>
-                                            @endforeach
+                                            @if(is_array($toSendData['buscaSondas']))
+                                                @foreach ($toSendData['buscaSondas'] as $sondaIndex => $sondaVal)
+                                                    <option value="{{$sondaIndex}}">{{$sondaVal['hostname']}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                 </td>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($toSendData['buscaConfigs'] as $indexConfig => $configVal)
-                                <tr>
-                                    <td>
-                                        <div id="accordion">
-                                            <div class="card mb-1">
-                                                <div class="card-header" id="headingOne{{$indexConfig}}">
-                                                    <h5 class="m-0">
-                                                        <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexConfig}}" aria-expanded="true">
-                                                            <i class="mdi mdi-help-circle mr-1 text-primary"></i>
-                                                            Mostrar/ocultar config {{$indexConfig}}
-                                                        </a>
-                                                    </h5>
-                                                </div>
-
-                                                <div id="collapseOne{{$indexConfig}}" class="collapse hide" aria-labelledby="headingOne{{$indexConfig}}" data-parent="#accordion">
-                                                    <div class="card-body">
-                                                        {!! nl2br($configVal) !!}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td style="text-align : center">
-                                        <input class="mt-1" type="checkbox" id="" name="buscaConfig" value="{{$indexConfig}}">
-                                        <label for="base"> selecionar config</label>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            <tr>
-                                <td>
-                                    <h4 class="text-success">Route reflectors</h4>
-                                </td>
-                            </tr>
-                            @foreach ($toSendData['buscaRr'] as $indexRr => $rrVal)
-                                @if($rrVal != null)
+                            @if($toSendData['buscaConfigs'])
+                                @foreach ($toSendData['buscaConfigs'] as $indexConfig => $configVal)
                                     <tr>
                                         <td>
-                                            <div class="row">
-                                                <div class="col-xl-12">
-                                                    <div id="accordion">
-                                                        <div class="card mb-1">
-                                                            <div class="card-header" id="headingOne{{$indexRr}}">
-                                                                <h5 class="m-0">
-                                                                    <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexRr}}" aria-expanded="true">
-                                                                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
-                                                                        Mostrar/ocultar config RR {{$indexRr}}
-                                                                    </a>
-                                                                </h5>
-                                                            </div>
+                                            <div id="accordion">
+                                                <div class="card mb-1">
+                                                    <div class="card-header" id="headingOne{{$indexConfig}}">
+                                                        <h5 class="m-0">
+                                                            <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexConfig}}" aria-expanded="true">
+                                                                <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                                Mostrar/ocultar config {{$indexConfig}}
+                                                            </a>
+                                                        </h5>
+                                                    </div>
 
-                                                            <div id="collapseOne{{$indexRr}}" class="collapse hide" aria-labelledby="headingOne{{$indexRr}}" data-parent="#accordion">
-                                                                <div class="card-body">
-                                                                    @if(isset($rrVal['toLunchConfig']))
-                                                                        {!! nl2br($rrVal['toLunchConfig']) !!}
-                                                                    @endif
-                                                                </div>
-                                                            </div>
+                                                    <div id="collapseOne{{$indexConfig}}" class="collapse hide" aria-labelledby="headingOne{{$indexConfig}}" data-parent="#accordion">
+                                                        <div class="card-body">
+                                                            {!! nl2br($configVal) !!}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td style="text-align : center">
-                                            <input class="mt-1" type="checkbox" id="" name="buscaRr" value="{{$indexRr}}">
-                                            <label for="base"> selecionar RR </label>
+                                            <input class="mt-1" type="checkbox" id="" name="buscaConfig" value="{{$indexConfig}}">
+                                            <label for="base"> selecionar config</label>
                                         </td>
                                     </tr>
-                                @endif
-                            @endforeach
+                                @endforeach
+                            @endif
                             <tr>
-                                <td> <label for="id">Token: {{$toSendData['configToken']}}</label></td>
+                                <td>
+                                    <h4 class="text-success">Route reflectors</h4>
+                                </td>
+                            </tr>
+                            @if(is_array($toSendData['buscaRr']))
+                                @foreach ($toSendData['buscaRr'] as $indexRr => $rrVal)
+                                    @if($rrVal != null)
+                                        <tr>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+                                                        <div id="accordion">
+                                                            <div class="card mb-1">
+                                                                <div class="card-header" id="headingOne{{$indexRr}}">
+                                                                    <h5 class="m-0">
+                                                                        <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexRr}}" aria-expanded="true">
+                                                                            <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                                            Mostrar/ocultar config RR {{$indexRr}}
+                                                                        </a>
+                                                                    </h5>
+                                                                </div>
+
+                                                                <div id="collapseOne{{$indexRr}}" class="collapse hide" aria-labelledby="headingOne{{$indexRr}}" data-parent="#accordion">
+                                                                    <div class="card-body">
+                                                                        @if(isset($rrVal['toLunchConfig']))
+                                                                            {!! nl2br($rrVal['toLunchConfig']) !!}
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align : center">
+                                                <input class="mt-1" type="checkbox" id="" name="buscaRr" value="{{$indexRr}}">
+                                                <label for="base"> selecionar RR </label>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            @endif
+                            <tr>
+                                <td> <label for="id">Token: {{$toSendData['configToken'] ?? ''}}</label></td>
                                 <td><input class="form-control" type="text" name="configtoken" id="configtoken" /></td>
                             </tr>
                             <tr>
@@ -163,7 +169,7 @@
                                 <div class="modal-body p-3">
                                     <div class="col">
                                         <p class="header-title mb-2">Config global</p>
-                                        <p>{!! nl2br($toSendData['configGlobal']) !!}</p>
+                                        <p id="modal-value">{!! nl2br($toSendData['configGlobal']) !!}</p>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -200,6 +206,8 @@
         var buscaConfigIds = [];
         var buscaRrIds = [];
         var sondaId = $("#sondaId").val();
+        var inputConfigToken = $("#configtoken").val();
+
         $('input:checkbox[name=buscaRr]').each(function()
         {
             if($(this).is(':checked'))
@@ -211,7 +219,7 @@
                 buscaConfigIds.push($(this).val());
         });
 
-        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0) {
+        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0 && inputConfigToken == '') {
             $.NotificationApp.send("Alarm!"
                 ,"Plese click checkbox!"
                 ,"top-right"
@@ -231,6 +239,7 @@
                 buscaConfigIds : buscaConfigIds,
                 buscaRrIds : buscaRrIds,
                 sondaId : sondaId,
+                inputConfigToken : inputConfigToken,
                 clientId : "{{ $clientId }}",
                 _token : '{{ csrf_token() }}'
             }
@@ -252,6 +261,7 @@
                 );
             }
             elementUnBlock('table');
+            $("#modal-value").text(msg['relatorio']);
         }).fail(function(xhr, textStatus, errorThrown) {
             $.NotificationApp.send("Alarm!"
                 ,"The operation failed!"

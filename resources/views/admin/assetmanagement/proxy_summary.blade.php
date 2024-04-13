@@ -84,33 +84,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($buscarSondas as $index => $buscarSonda )
-                                <tr id="buscarSondaId{{$index}}">
-                                    <td id='index'> {{$index}} </td>
-                                    <td id='hostname'> {{$buscarSonda['hostname'] ?? ''}} </td>
-                                    <td id='router'> {{$buscarSonda['ipv4'] ?? ''}} </td>
-                                    <td id='pltaforma'> pltaforma </td>
-                                    <td id='so'> so </td>
-                                    <td id='portassh'> {{$buscarSonda['portassh'] ?? ''}} </td>
-                                    <td id='portahttp'> {{$buscarSonda['portahttp'] ?? ''}} </td>
-                                    <td id='user'> {{$buscarSonda['user'] ?? ''}} </td>
-                                    <td id='pwd'> {{$buscarSonda['pwd'] ?? ''}} </td>
-                                    <td>
-                                        <a href="{{ route("proxy-localhost.index",array('client_id' =>
-                                        request()->query()['client_id'], 'proxy_id' => $index ) ) }}">
-                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a onclick="showEdit('buscarSondaId{{$index}}')" class="getRow">
-                                            <i class="fe-edit"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <i class="fe-trash" onclick="deletePR(this, '{{$index}}')"></i>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if(is_array($buscarSondas))
+                                @foreach ($buscarSondas as $index => $buscarSonda )
+                                    <tr id="buscarSondaId{{$index}}">
+                                        <td id='index'> {{$index}} </td>
+                                        <td id='hostname'> {{$buscarSonda['hostname'] ?? ''}} </td>
+                                        <td id='router'> {{$buscarSonda['ipv4'] ?? ''}} </td>
+                                        <td id='pltaforma'> pltaforma </td>
+                                        <td id='so'> so </td>
+                                        <td id='portassh'> {{$buscarSonda['portassh'] ?? ''}} </td>
+                                        <td id='portahttp'> {{$buscarSonda['portahttp'] ?? ''}} </td>
+                                        <td id='user'> {{$buscarSonda['user'] ?? ''}} </td>
+                                        <td id='pwd'> {{$buscarSonda['pwd'] ?? ''}} </td>
+                                        <td>
+                                            <a href="{{ route("proxy-localhost.index",array('client_id' =>
+                                            request()->query()['client_id'], 'proxy_id' => $index ) ) }}">
+                                                <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a onclick="showEdit('buscarSondaId{{$index}}')" class="getRow">
+                                                <i class="fe-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <i class="fe-trash" onclick="deletePR(this, '{{$index}}')"></i>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -288,6 +290,14 @@
                     );
                 }
                 elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"The operation failed!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                elementUnBlock('.ribbon-box');
             });
         }
 

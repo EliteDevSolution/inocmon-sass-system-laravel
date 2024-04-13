@@ -26,6 +26,7 @@ class MplsDetailController extends Controller
         $buscaConfigIds = $req['buscaConfigIds'] ?? [];
         $buscaRrIds = $req['buscaRrIds'] ?? [];
         $sondaId = $req['sondaId'];
+        $inputConfigToken = $req['inputConfigToken'];
 
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
 
@@ -180,7 +181,7 @@ class MplsDetailController extends Controller
                 $rrScp = new SCP($rrSsh);
 
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-                echo $rrScp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
+                $rrScp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
 
 
                 $rrLineCount = substr_count($configRrFinal, "\n");
@@ -220,18 +221,18 @@ class MplsDetailController extends Controller
             $status = 'failed';
         }
 
-        $relatorio = $rrSsh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+        $relatorio = $rrSsh->exec('awk \'/config begin -> '.$inputConfigToken.'/ { f = 1 } f\' '.$debugFile.'.log');
         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
         $this->database->getReference($debugDir)->set('Configuração concluída!');
         $this->database->getReference($debugDir)->set('idle');
 
         $lunchData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
-
         return response()->json(
             [
                 'message' => 'Custom function called successfully',
                 'status' => $status,
-                'debugData' => $lunchData
+                'debugData' => $lunchData,
+                'relatorio' => $relatorio
             ]
         );
     }
@@ -254,7 +255,7 @@ class MplsDetailController extends Controller
         $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
         $community0 = $detailClientData['bgp']['community0'];
         $asn = $detailClientData['bgp']['asn'];
-        $buscaRr = $detailClientData['rr'];
+        $buscaRr = $detailClientData['rr'] ?? [];
         $templateVendor = $detailClientData['equipamentos'][$equipId]['template-vendor'];
         $templateFamily = $detailClientData['equipamentos'][$equipId]['template-family'];
         $grupoIbgp = $detailClientData['equipamentos'][$equipId]['grupo-ibgp'];
@@ -266,29 +267,31 @@ class MplsDetailController extends Controller
         $configs = [];
         $configBgpRrX = "";
         $configBgpRrFinal = "";
-        foreach($buscaConfigs as $indexConfig => &$configVal) {
-            $getTemplate = $buscaConfigs[$indexConfig];
-            $config = str_replace("%hostname%",$hostName,$getTemplate);
-            $config = str_replace("%senhainocmoncifrada%",$senhaInocmonCifrada, $config);
-            $config = str_replace("%snmpcommunity%",$snmpCommunity, $config);
-            $config = str_replace("%community0%",$community0, $config);
-            $config = str_replace("%routerid%",$routerId, $config);
-            $config = str_replace("%asn%",$asn, $config);
+        if(is_array($buscaConfigs)) {
+            foreach($buscaConfigs as $indexConfig => &$configVal) {
+                $getTemplate = $buscaConfigs[$indexConfig];
+                $config = str_replace("%hostname%",$hostName,$getTemplate);
+                $config = str_replace("%senhainocmoncifrada%",$senhaInocmonCifrada, $config);
+                $config = str_replace("%snmpcommunity%",$snmpCommunity, $config);
+                $config = str_replace("%community0%",$community0, $config);
+                $config = str_replace("%routerid%",$routerId, $config);
+                $config = str_replace("%asn%",$asn, $config);
 
-            if(str_contains($indexConfig, 'rr')) {
-                foreach ($buscaRr as $buscaRrIds => $rrVal) {
-                    if ($buscaRrIds != 0) {
-                        $configBgpRrX = str_replace("%rrip%",$rrVal['routerid'], $getTemplate);
-                        $configBgpRrX = str_replace("%asn%",$asn, $configBgpRrX);
-                        $configBgpRrX = str_replace("%rrhostname%",$rrVal['hostname'], $configBgpRrX);
-                        $configBgpRrFinal .= $configBgpRrX;
+                if(str_contains($indexConfig, 'rr')) {
+                    foreach ($buscaRr as $buscaRrIds => $rrVal) {
+                        if ($buscaRrIds != 0) {
+                            $configBgpRrX = str_replace("%rrip%",$rrVal['routerid'], $getTemplate);
+                            $configBgpRrX = str_replace("%asn%",$asn, $configBgpRrX);
+                            $configBgpRrX = str_replace("%rrhostname%",$rrVal['hostname'], $configBgpRrX);
+                            $configBgpRrFinal .= $configBgpRrX;
+                        }
                     }
+                    $config = $configBgpRrFinal;
                 }
-                $config = $configBgpRrFinal;
+                $configGlobal .= $config;
+                $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipId.'/configs/'.$indexConfig)->set($config);
+                $buscaConfigs[$indexConfig] = $config;
             }
-            $configGlobal .= $config;
-            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipId.'/configs/'.$indexConfig)->set($config);
-            $buscaConfigs[$indexConfig] = $config;
         }
         $rrTemplateData = $this->database->getReference('lib/templates/rr')->getSnapshot()->getValue();
         foreach ($buscaRr as $buscaRrIds => $rrVal) {

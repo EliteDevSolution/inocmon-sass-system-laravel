@@ -47,6 +47,7 @@
                                 <th>RouterId</th>
                                 <th>Vendor</th>
                                 <th>Family</th>
+                                <th>Porta</th>
                                 <th>Protocolo</th>
                                 <th>User</th>
                                 <th>Senha</th>
@@ -64,14 +65,15 @@
                                         <td>{{$value['routerid']}}</td>
                                         <td>{{$value['template-vendor']}}</td>
                                         <td>{{$value['template-family']}}</td>
-                                        <td>{{$value['protocolo']}}</td>
                                         <td>{{$value['porta']}}</td>
+                                        <td>{{$value['protocolo']}}</td>
                                         <td>{{$value['user']}}</td>
+                                        <td>{{$value['pwd']}}</td>
                                         <td>
                                             <a href={{ route("proxy-template.index",array('client_id' =>
                                                 request()->query()['client_id'], 'rr_id' => $index ) ) }}>
                                                 <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
-                                        </a>
+                                            </a>
                                         </td>
                                         <td>
                                             <a onclick="showEdit('prSummaryId{{$index}}')" class="getRow">
@@ -115,6 +117,8 @@
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">Senha</label>
                             <input type="text" id="senhaVal" required class="form-control mb-1"  placeholder="Community SNMP:	" style=" z-index: 2; background: transparent;"/>
+                            <label class="mb-1 font-weight-bold text-muted">Porta</label>
+                            <input type="text" id="porta" required class="form-control mb-1"  placeholder="Community SNMP:	" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                         <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
@@ -174,9 +178,10 @@
             var routerId = row.querySelector('td:nth-child(3)').innerText;
             var vendor = row.querySelector('td:nth-child(4)').innerText;
             var family = row.querySelector('td:nth-child(5)').innerText;
-            var protocol = row.querySelector('td:nth-child(6)').innerText;
-            var user = row.querySelector('td:nth-child(7)').innerText;
-            var pwd = row.querySelector('td:nth-child(8)').innerText;
+            var porta = row.querySelector('td:nth-child(6)').innerText;
+            var protocol = row.querySelector('td:nth-child(7)').innerText;
+            var user = row.querySelector('td:nth-child(8)').innerText;
+            var pwd = row.querySelector('td:nth-child(9)').innerText;
 
             $('#hostVal').val(hostName);
             $('#routerVal').val(routerId);
@@ -185,7 +190,7 @@
             $('#protocoloVal').val(protocol);
             $('#userVal').val(user);
             $('#senhaVal').val(pwd);
-
+            $("#porta").val(porta);
         }
         let closeEdit = () => {
             var editPage = document.getElementById("edit");
@@ -200,8 +205,9 @@
             var protocol = $('#protocoloVal').val();
             var user = $('#userVal').val();
             var pwd = $('#senhaVal').val();
+            var porta = $('#porta').val();
 
-            if(hostName == "" || routerId == "" || family == "" || vendor == "" || protocol == "" || user == "" || pwd == "") {
+            if(hostName == "" || routerId == "" || family == "" || vendor == "" || porta == "" || protocol == "" || user == "" || pwd == "") {
                 $.NotificationApp.send("Alarm!"
                     ,"This is required field!"
                     ,"top-right"
@@ -222,6 +228,7 @@
                     routerId : routerId,
                     family : family,
                     vendor : vendor,
+                    porta : porta,
                     protocol : protocol,
                     user : user,
                     pwd : pwd,
@@ -235,9 +242,10 @@
                     row.querySelector('td:nth-child(3)').innerText = routerId;
                     row.querySelector('td:nth-child(4)').innerText = vendor;
                     row.querySelector('td:nth-child(5)').innerText = family;
-                    row.querySelector('td:nth-child(6)').innerText = protocol;
-                    row.querySelector('td:nth-child(7)').innerText = user;
-                    row.querySelector('td:nth-child(8)').innerText = pwd;
+                    row.querySelector('td:nth-child(6)').innerText = porta;
+                    row.querySelector('td:nth-child(7)').innerText = protocol;
+                    row.querySelector('td:nth-child(8)').innerText = user;
+                    row.querySelector('td:nth-child(9)').innerText = pwd;
                     $.NotificationApp.send("Alert!"
                         ,"Successfully updated!"
                         ,"top-right"

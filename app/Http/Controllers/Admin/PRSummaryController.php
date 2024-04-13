@@ -38,7 +38,8 @@ class PRSummaryController extends Controller
             'template-vendor' => $request['vendor'],
             'protocolo' => $request['protocol'],
             'user' => $request['user'],
-            'pwd' => $request['pwd']
+            'pwd' => $request['pwd'],
+            'porta' => $request['porta']
         ];
 
         $rrId = $request['rrId'];

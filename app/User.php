@@ -20,9 +20,9 @@ class User extends Authenticatable
     use Notifiable;
     use HasRoles;
 
-    protected $fillable = ['name', 'email', 'password', 'remember_token', 'status'];
-    
-    
+    protected $fillable = ['name', 'client_id', 'email', 'password', 'remember_token', 'status'];
+
+
     /**
      * Hash password
      * @param $input
@@ -32,13 +32,13 @@ class User extends Authenticatable
         if ($input)
             $this->attributes['password'] = app('hash')->needsRehash($input) ? Hash::make($input) : $input;
     }
-    
-    
+
+
     public function role()
     {
         return $this->belongsToMany(Role::class, 'role_user');
     }
-    
-    
-    
+
+
+
 }

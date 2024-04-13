@@ -117,9 +117,11 @@
                                             <th>Proxy</th>
                                             <th>
                                                  <select name="proxyid" id="proxyid" required class="form-control">
-                                                    @foreach ($toSendData['buscaProxy'] as $index => $y)
-                                                        <option value="{{$index}}">{{$y['hostname']}}</option>
-                                                    @endforeach
+                                                    @if(is_array($toSendData['buscaProxy']))
+                                                        @foreach ($toSendData['buscaProxy'] as $index => $y)
+                                                            <option value="{{$index}}">{{$y['hostname']}}</option>
+                                                        @endforeach
+                                                    @endif
                                                 </select>
                                             </th>
                                         </tr>
@@ -230,6 +232,16 @@
 
         function applyConfig(){
             var proxyId = $("#proxyid").val();
+            console.log(proxyId);
+            if(proxyId == null) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Plese select the proxy!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"success",
+                );
+                return;
+            }
             elementBlock('square1', '.card-box');
             $.ajax({
                 type: "POST",
@@ -259,6 +271,14 @@
                     );
                 }
                 elementUnBlock('.card-box');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                elementUnBlock('card-box');
             });
         }
     </script>

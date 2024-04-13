@@ -6,6 +6,10 @@ use Closure;
 
 class CheckApproved
 {
+    public function __construct()
+    {
+
+    }
     /**
      * Handle an incoming request.
      *
@@ -16,8 +20,28 @@ class CheckApproved
     public function handle($request, Closure $next)
     {
         if (auth()->user()->status != "Approve") {
-            return redirect()->route('approval');
+            return redirect()->back()->with('error', "Você ainda não está aprovado!");
         }
-        return $next($request);
+        $clientId = auth()->user()->client_id ?? '';
+        if (!auth()->user()->hasRole("administrator")) {
+            $database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+            $clients = $database->getReference('clientes')->getValue();
+            if($clientId === '') {
+                return redirect()->back()->with('error', "Isso não tem cliente!");
+            } else {
+                foreach ($clients as $index => $value) {
+                    $flag = false;
+                    if($index == $clientId) {
+                        $flag = true;
+                        return $next($request);
+                    }
+                }
+                if($flag == false) {
+                    return redirect()->back()->with('error', "Desculpe, mas seu cliente não existe!");
+                }
+            }
+        } else {
+            return $next($request);
+        }
     }
 }

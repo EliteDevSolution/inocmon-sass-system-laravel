@@ -47,7 +47,7 @@ class DashboardController extends Controller
         $proxyData = $this->database->getReference('clientes/' . $clientId . '/sondas/'.$proxyId)->getSnapshot()->getValue();
         $targetData = $this->database->getReference('clientes/' . $clientId . '/rr/'.$targetRrId)->getSnapshot()->getValue();
 
-        $ssh = new SSH2($proxyData['ipv4'], $proxyData['portassh']);
+        $ssh = new SSH2($proxyData['ipv4'] ?? '', $proxyData['portassh'] ?? '');
 
         $proxyUser = $proxyData['user'] ?? '';
         $proxyPwd = $proxyData['pwd'] ?? '';
@@ -70,18 +70,24 @@ class DashboardController extends Controller
             $status = 'failed';
         }
 
-        $targetRrIp = $targetData['routerid'];
-        $targetRrPort = $targetData['porta'];
-        $targetRrUser = $targetData['user'];
-        $targetRrPwd = $targetData['pwd'];
-        $targetRrVendor = $targetData['template-vendor'];
-        $targetRrFamily = $targetData['template-family'];
+        $targetRrIp = $targetData['routerid'] ?? '';
+        $targetRrPort = $targetData['porta'] ?? '';
+        $targetRrUser = $targetData['user'] ?? '';
+        $targetRrPwd = $targetData['pwd'] ?? '';
+        $targetRrVendor = $targetData['template-vendor'] ?? '';
+        $targetRrFamily = $targetData['template-family'] ?? '';
 
         if (!$targetRrUser) { $targetRrUser = $userInocmon; }
         if (!$targetRrPwd) { $targetRrPwd = $senhaInocmon; }
 
         $finalCommand = $this->database->getReference('lib/commands/getospflsdb/'.$targetRrVendor.'/'.$targetRrFamily)->getSnapshot()->getValue();
-        $getOspfLsdb = $ssh->exec('inoc-command '.$targetRrIp.' '. $targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' \''.$finalCommand.'\' &');
+        try {
+            $getOspfLsdb = $ssh->exec('inoc-command '.$targetRrIp.' '. $targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' \''.$finalCommand.'\' &');
+            $status = 'ok';
+        } catch (\Throwable $th) {
+            $getOspfLsdb = [];
+            $status = 'failed';
+        }
         $this->database->getReference('clientes/'.$clientId.'/ospf-lsdb/vendor')->set($targetRrVendor);
         $this->database->getReference('clientes/'.$clientId.'/ospf-lsdb/data')->set($getOspfLsdb);
         $layout = true;
@@ -138,8 +144,8 @@ class DashboardController extends Controller
 
             $upstreamsCount = ($countBgpTransito + $countBgpIx + $countBgpPeering + $countBgpCdn);
             $equipmentCount = 0;
-            if(is_array($client['equipamentos'])) {
-                $equipmentCount = count($client['equipamentos']);
+            if(is_array($client['equipamentos'] ?? [])) {
+                $equipmentCount = count($client['equipamentos'] ?? []);
             }
             $sondas = $client['sondas'] ?? [];
 
@@ -188,9 +194,8 @@ class DashboardController extends Controller
                     chmod($directoryPath, 0777); // Set the directory permissions explicitly
                 }
                 Storage::disk('local')->put('public/configuracoes/'.$toDownloadFileName, $getOspfLsdbData);
-
             }
-            $buscaRr = $client['rr'];
+            $buscaRr = $client['rr'] ?? [];
             $dashboardData = [
                 'upstreamCount' => $upstreamsCount,
                 'clientsCount' => $clientsCount,

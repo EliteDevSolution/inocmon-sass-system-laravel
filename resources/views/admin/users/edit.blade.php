@@ -59,6 +59,17 @@
                     </div>
                 @endif
             </div>
+            <div class="form-group">
+                {!! Form::label('selectClients', trans('clients')) !!}
+                <div>
+                    {!! Form::select('client_id', $selectClients, old('client_id') ? old('client_id') : $user->client_id, ['class' => 'form-control', 'data-toggle'=>'select2']) !!}
+                </div>
+                @if($errors->has('client_id'))
+                    <div class="mt-1" style="color: #e6334d; font-weight: 500;">
+                        {{ $errors->first('selectClients') }}
+                    </div>
+                @endif
+            </div>
             <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                 <label for="password">{{ trans('cruds.user.fields.password') }}</label>
                 <input type="password" id="password" name="password" class="form-control">

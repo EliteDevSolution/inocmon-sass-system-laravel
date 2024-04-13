@@ -12,6 +12,11 @@ use App\Http\Requests\Admin\UpdateUsersRequest;
 
 class UsersController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+        $this->database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+    }
     /**
      * Display a listing of User.
      *
@@ -22,10 +27,9 @@ class UsersController extends Controller
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }
-
+        $clients = $this->database->getReference('clientes')->getSnapshot()->getValue();
         $users = User::all();
-
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users', 'clients'));
     }
 
     /**
@@ -35,15 +39,33 @@ class UsersController extends Controller
      */
     public function create()
     {
+        $clients = $this->database->getReference('clientes')->getSnapshot()->getValue();
+        $users = User::all();
+        $selectClients = [];
+        foreach ($clients as $clientIndex => $client) {
+            $flag = true;
+            foreach ($users as $userIndex => $user) {
+                if($user['client_id'] != $clientIndex) {
+                    $flag = true;
+                } else {
+                    $flag = false;
+                    break;
+                }
+            }
+            $clientForArray = [];
+            if($flag) {
+                $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
+                $selectClients = array_merge($selectClients, $clientForArray);
+            }
+        }
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }
         $roles = Role::get()->pluck('name', 'name');
-//        dd($roles);
         $status = array("Pending"=>"Pending", "Approve"=>"Approve", "Reject"=>"Reject");
         $trial_types = array("0"=>"Basic", "1"=>"Pro");
 
-        return view('admin.users.create', compact('roles', 'status', 'trial_types'));
+        return view('admin.users.create', compact('roles', 'status', 'trial_types', 'selectClients'));
     }
 
     /**
@@ -63,16 +85,16 @@ class UsersController extends Controller
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->assignRole($roles);
         $user->save();
-        if (isset($request->trial_start) && isset($request->trial_end))
-        {
-            $user->trial_start = $request->trial_start;
-            $user->trial_end = $request->trial_end;
-            
-        }
-        if (isset($request->trial_type)) {
-            $user->trial_type = $request->trial_type;
-            $user->save();
-        }
+        // if (isset($request->trial_start) && isset($request->trial_end))
+        // {
+        //     $user->trial_start = $request->trial_start;
+        //     $user->trial_end = $request->trial_end;
+
+        // }
+        // if (isset($request->trial_type)) {
+        //     $user->trial_type = $request->trial_type;
+        //     $user->save();
+        // }
         return redirect()->route('users.index');
     }
 
@@ -85,6 +107,29 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
+        $clients = $this->database->getReference('clientes')->getSnapshot()->getValue();
+        $users = User::all();
+        $selectClients = [];
+        foreach ($clients as $clientIndex => $client) {
+            $flag = true;
+            foreach ($users as $userIndex => $userData) {
+                if($userData['client_id'] != $clientIndex) {
+                    $flag = true;
+                } else if ($user['client_id'] == $clientIndex ) {
+                    $flag = true;
+                    break;
+                }
+                else {
+                    $flag = false;
+                    break;
+                }
+            }
+            $clientForArray = [];
+            if($flag) {
+                $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
+                $selectClients = array_merge($selectClients, $clientForArray);
+            }
+        }
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }
@@ -92,7 +137,7 @@ class UsersController extends Controller
 
         $status = array("Pending"=>"Pending", "Approve"=>"Approve", "Reject"=>"Reject");
         $trial_types = array("0"=>"Basic", "1"=>"Pro");
-        return view('admin.users.edit', compact('user', 'roles', 'status', 'trial_types'));
+        return view('admin.users.edit', compact('user', 'selectClients', 'roles', 'status', 'trial_types'));
     }
 
     /**
