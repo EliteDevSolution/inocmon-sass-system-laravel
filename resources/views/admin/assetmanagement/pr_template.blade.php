@@ -90,7 +90,7 @@
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Config global</p>
-                                                            <p>{!! $toSendData['configBaseRr'] !!}</p>
+                                                            <p class="modal-text">{!! $toSendData['configBaseRr'] !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -177,14 +177,14 @@
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title">Host : {{$toSendData['hostName']}}</h4>
-                                                    <h4 class="modal-title">Token : {{$toSendData['configToken']}}</h4>
+                                                    <p class="modal-title font-16">Host : {{$toSendData['hostName']}}</p>
+                                                    <p class="modal-title font-16">Token : {{$toSendData['configToken']}}</p>
                                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                 </div>
                                                 <div class="modal-body p-3">
                                                     <div class="col">
                                                         <p class="header-title mb-2">Relatório de configuração:</p>
-                                                        <p>{{$relatorVal}}</p>
+                                                        <p>{!! colorReport($relatorVal) !!}</p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -282,7 +282,6 @@
     function applyConfigPes() {
         var sondaId = $("#sondaid").val();
         var checkedEquipArray =[];
-
         $('input:checkbox[name=equip]').each(function()
         {
             if($(this).is(':checked'))
@@ -299,38 +298,46 @@
         }
         elementBlock('square1', '.card-box');
         if(checkedEquipArray!=null) {
-            $.ajax({
-            type: "POST",
-            url: 'proxy-template/applyconfigPes', // Not sure what to add as URL here
-            data: {
-                rrId : "{{$toSendData['rrId']}}",
-                clientId : "{{ $clientId }}",
-                sondaId : sondaId,
-                checkedEquipArray : checkedEquipArray,
-                _token : '{{ csrf_token() }}'
-            }
-            }).done(function( msg ) {
-                if(msg['status'] === 'ok') {
-                    $.NotificationApp.send("Alert!"
-                        ,"Successfull operated!"
-                        ,"top-right"
-                        ,"#2ebbdb"
-                        ,"success",
-                    );
-                } else {
-                    $.NotificationApp.send("Alert!"
-                        ,"The operation failed!"
+                $.ajax({
+                type: "POST",
+                url: 'proxy-template/applyconfigPes', // Not sure what to add as URL here
+                data: {
+                    rrId : "{{$toSendData['rrId']}}",
+                    clientId : "{{ $clientId }}",
+                    sondaId : sondaId,
+                    checkedEquipArray : checkedEquipArray,
+                    _token : '{{ csrf_token() }}'
+                }
+                }).done(function( msg ) {
+                    console.log(msg);
+                    $(".modal-text").text(msg['relatorio']);
+                    if(msg['status'] === 'ok') {
+                        $.NotificationApp.send("Alert!"
+                            ,"Successfull operated!"
+                            ,"top-right"
+                            ,"#2ebbdb"
+                            ,"success",
+                        );
+                    } else {
+                        $.NotificationApp.send("Alert!"
+                            ,"The operation failed!"
+                            ,"top-right"
+                            ,"#2ebbdb"
+                            ,"error",
+                        );
+                    }
+                    elementUnBlock('.card-box');
+                }).fail(function(xhr, textStatus, errorThrown) {
+                    console.log('dfdf');
+                    $.NotificationApp.send("Alarm!"
+                        ,"Failed updated!"
                         ,"top-right"
                         ,"#2ebbdb"
                         ,"error",
                     );
-                }
-
                 elementUnBlock('.card-box');
-
             });
         }
-
     }
 </script>
 @endpush

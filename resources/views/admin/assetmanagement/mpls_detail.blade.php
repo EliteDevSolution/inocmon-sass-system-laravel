@@ -219,7 +219,7 @@
                 buscaConfigIds.push($(this).val());
         });
 
-        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0 && inputConfigToken == '') {
+        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0 || inputConfigToken == '') {
             $.NotificationApp.send("Alarm!"
                 ,"Plese click checkbox!"
                 ,"top-right"

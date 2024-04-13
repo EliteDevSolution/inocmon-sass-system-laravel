@@ -137,11 +137,8 @@ class PRTemplateController extends Controller
             $status = "failed";
         }
 
-        $lunchDebugData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
-
         return response()->json([
-            'status' => $status,
-            'debugData' => $lunchDebugData
+            'status' => $status
         ]);
     }
 
@@ -170,7 +167,6 @@ class PRTemplateController extends Controller
         } else {
             return;
         }
-
         $configRrFinal = "";
         for ($i = 0; $i < count($equipIds); $i++) {
             $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'];
@@ -182,7 +178,6 @@ class PRTemplateController extends Controller
 			$configRr = str_replace("%grupo-ibgp%",$equipgrupoIbgp, $configRr);
 			$configRrFinal .= $configRr;
         }
-
         $routerId = $detailClientData['rr'][$rrId]['routerid'];
         $hostName = $detailClientData['rr'][$rrId]['hostname'];
         $porta = $detailClientData['rr'][$rrId]['porta'];
@@ -261,6 +256,7 @@ class PRTemplateController extends Controller
             $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
         }
     	$ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
+        $relatorio = 'New report';
         try {
             if (!$ssh->login($sondaUser, $sondaPwd))
             {
@@ -280,10 +276,9 @@ class PRTemplateController extends Controller
         } catch (\Throwable $th) {
             $status = 'failed';
         }
-        $lunchDebugData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
         return response()->json([
             'status' => $status,
-            'debugData' => $lunchDebugData
+            'relatorio' => $relatorio
         ]);
     }
 
