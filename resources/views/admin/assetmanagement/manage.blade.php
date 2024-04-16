@@ -104,9 +104,27 @@
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">Vendar</label>
-                            <input type="text"  id="vendarVal"  required class="form-control mb-1"  placeholder="Community" style=" z-index: 2; background: transparent;"/>
+                            <select class="form-control mb-1" id="vendarVal">
+                               @if(is_array($buscaTemplates))
+                                    @foreach ( $buscaTemplates as $index => $value)
+                                        <option value="{{$index}}">
+                                            {{$index}}
+                                        </option>
+                                    @endforeach
+                                @endif
+                                </select>
                             <label class="mb-1 font-weight-bold text-muted">Family</label>
-                            <input type="text"  id="familyVal" required  class="form-control mb-1"  placeholder="Ipv4 remoto bgp 01" required style=" z-index: 2; background: transparent;"/>
+                            <select class="form-control mb-1" id="familyVal">
+                                @if(is_array($buscaTemplates))
+                                    @foreach ( $buscaTemplates as $index => $value)
+                                            @foreach ( $value ?? [] as $valueIndex => $endVal )
+                                                <option value="{{$valueIndex}}">
+                                                    {{$valueIndex}}
+                                                </option>
+                                            @endforeach
+                                    @endforeach
+                                @endif
+                            <select class="form-control mb-1" id="vendarVal">
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">Protocolo</label>

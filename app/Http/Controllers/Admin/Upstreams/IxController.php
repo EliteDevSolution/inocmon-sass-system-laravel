@@ -27,10 +27,12 @@ class IxController extends Controller
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos = $detailClientData['equipamentos'] ?? [];
         $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['ix'] ?? [];
+        $buscaBaseDadosIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->getValue();
 
         $toSendData = [
             'buscaBgp' => $buscaBgpConexoes,
-            'buscaEquip' => $buscaEquipamentos
+            'buscaEquip' => $buscaEquipamentos,
+            'optionVal' => $buscaBaseDadosIxbr
         ];
 
         return view('admin.upstreams.ix.index', compact('clientId', 'toSendData'));
@@ -47,10 +49,10 @@ class IxController extends Controller
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
-        $cdns = $detailClientData['bgp']['interconexoes']['ix'] ?? [];
+        $ixbrData = $detailClientData['bgp']['interconexoes']['ix'] ?? [];
         $buscaBaseDadosIxbr = $this->database->getReference('lib/ixbr')->getSnapshot()->GetValue();
 
-        return view('admin.upstreams.ix.create', compact('clientId', 'buscaEquipamentos','cdns', 'buscaBaseDadosIxbr'));
+        return view('admin.upstreams.ix.create', compact('clientId', 'buscaEquipamentos','ixbrData', 'buscaBaseDadosIxbr'));
 
     }
 
@@ -158,25 +160,59 @@ class IxController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $toSaveData = [
-            'remoteas' => $request['asnVal'],
-            'pop' => $request['popVal']
-        ];
-
         $ixId = $request['ixId'];
         $clientId = $request['clientId'];
+        $tipoConexao = "ix";
+        $communityGroup = 2;
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $equipPeidPath = $detailClientData['bgp']['interconexoes']['ix'][$ixId]['peid'];
 
-        $toSaveAnotherData = [
-            'hostname' => $request['peVal']
-        ];
+        $nomeDoGrupo = 'IX-'.$ixId.'-'.strtoupper($request['sigla']).'-'.strtoupper($request['popVal']);
+        $ixBrData = $this->database->getReference('lib/ixbr/'.$request['sigla'])->getSnapshot()->getValue();
+        $remoteas = $ixBrData['remoteas'] ?? '';
+        $lgremoteas = $ixBrData['lgremoteas'] ?? '';
+        $rs1v4 = $ixBrData['rs1v4'] ?? '';
+        $rs2v4 = $ixBrData['rs2v4'] ?? '';
+        $lgv4 = $ixBrData['lgv4'] ?? '';
+        $rs1v6 = $ixBrData['rs1v6'] ?? '';
+        $rs2v6 = $ixBrData['rs2v6'] ?? '';
+        $lgv6 = $ixBrData['lgv6'] ?? '';
+        $community0 = $this->database->getReference('clientes/'.$clientId.'/bgp/community0')->getSnapshot()->GetValue();
+
+        // $toSaveAnotherData = [
+        //     'hostname' => $request['peVal']
+        // ];
+        $toSaveData = [
+                        'sigla'  => strtoupper($request['sigla']),
+                        'pop'    => strtoupper($request['popVal']),
+                        'remoteas'    => $remoteas,
+                        'rs1v4'    => $rs1v4,
+                        'rs2v4'    => $rs2v4,
+                        'lgv4'    => $lgv4,
+                        'rs1v6'    => $rs1v6,
+                        'rs2v6'    => $rs2v6,
+                        'lgv6'    => $lgv6,
+                        'peid'   => $request['peVal'],
+                        'localpref'   => $request['localpref'],
+                        'medin'   => $request['medin'],
+                        'denycustomerin'   => 'yes',
+                        'nomedogrupo' => $nomeDoGrupo,
+                        'communities' => [
+                            'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$ixId.'0',
+                            'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$ixId.'1',
+                            'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$ixId.'2',
+                            'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$ixId.'3',
+                            'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$ixId.'4',
+                            'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$ixId.'5',
+                            'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$ixId.'6'
+                        ],
+                ];
 
         try {
             $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/ix/'.$ixId.'/')->update($toSaveData);
-            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
+            // $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
             return response()->json([
                 'status' => 'ok'
             ]);

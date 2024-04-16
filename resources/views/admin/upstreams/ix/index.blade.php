@@ -55,7 +55,7 @@
                         </thead>
                         <tbody>
                             @foreach ($toSendData['buscaBgp'] as $index => $value )
-                                <tr id="ix{{$index}}">
+                                <tr id="{{$index}}" localpref="{{ $value['localpref'] ?? "" }}" medin="{{ $value['medin'] ?? "" }}">
                                     <td style="text-align: left">
                                         @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
                                             <div>
@@ -71,15 +71,15 @@
                                     </td>
                                     <td>{{$value['remoteas']}}</td>
                                     <td>{{$value['pop']}}</td>
-                                    <td>{{$toSendData['buscaEquip'][$value['peid']]['hostname']}}</td>
+                                    <td id="{{$value['peid']}}">{{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}</td>
                                     <td>
                                         <a href="{{ route('template-generate-config.index',
                                         array('client_id'=>$clientId, 'indexId' => $index, 'key' => "ix", 'groupKey' => '02')) }}">
-                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                            <i class="fe-user"></i>
                                         </a>
                                     </td>
                                     <td>
-                                        <a onclick="showEdit('ix{{$index}}')" class="getRow">
+                                        <a onclick="showEdit('{{$index}}')" class="getRow">
                                             <i class="fe-edit"></i>
                                         </a>
                                     </td>
@@ -99,16 +99,34 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">ASN</label>
-                            <input type="text" id ="asnVal" required class="form-control mb-1"/>
-                        </div>
-                        <div class="col-md-4">
+                            <label class="mb-1 font-weight-bold text-muted">Nome do IXBR</label>
+                            <select class="mb-1 form-control" id="nome">
+                                <option id="ownVal" selected="selected">
+                                </option>
+                                @foreach ( $toSendData['optionVal'] as $index => $value )
+                                    <option value="{{$index}}">
+                                        {{$value['cidade']}}
+                                    </option>
+                                @endforeach
+                            </select>
                             <label class="mb-1 font-weight-bold text-muted">POP</label>
                             <input type="text"  id="popVal"  required class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">PE</label>
-                            <input type="text" id="peVal" required class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">Local Pref</label>
+                            <input type="text"  id="localpref"  required class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">Med IN</label>
+                            <input type="text"  id="medin"  required class="form-control mb-1"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="mb-1 font-weight-bold text-muted">Equipmento PE</label>
+                            <select class="form-control" id="peVal">
+                                @foreach ( $toSendData['buscaEquip'] as $equipIndex => $equipVal )
+                                    <option value="{{$equipIndex}}">
+                                        {{$equipVal['hostname']}}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                         <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
@@ -131,6 +149,7 @@
     <!-- Datatables init -->
     <script>
         let datatable;
+        let buscaBgp = @json($toSendData['buscaBgp']);
         $(document).ready(function(){
             datatable = $('#datatable').DataTable({
                 responsive: false,
@@ -162,28 +181,43 @@
         });
 
         var row;
+
         function showEdit(buscarSondaId) {
             var editPage = document.getElementById("edit");
             editPage.style.display ="block";
-
+            // row = $(`#${buscarSondaId}`);
             row = document.getElementById(buscarSondaId);
 
-            var asn = row.querySelector('td:nth-child(2)').textContent;
-            var pop = row.querySelector('td:nth-child(3)').textContent;
-            var pe = row.querySelector('td:nth-child(4)').textContent;
+            var ixId  =row.id;
+            console.log(ixId);
+            $("#ownVal").val(buscaBgp[ixId]['sigla']);
+            $("#ownVal").text(buscaBgp[ixId]['sigla']);
 
-            $('#asnVal').val(asn);
+            var pop = row.querySelector('td:nth-child(3)').innerText;
+            console.log(pop);
+            var pe = row.querySelector('td:nth-child(4)').id;
+            var localpref = $(row).attr('localpref');
+            var medin = $(row).attr('medin');
+
+            console.log(row);
+            console.log(localpref);
+
             $('#popVal').val(pop);
             $('#peVal').val(pe);
+            $('#localpref').val(localpref);
+            $('#medin').val(medin);
+
         }
 
         let saveData = () => {
 
-            var asnVal  = $('#asnVal').val();
             var popVal  = $('#popVal').val();
             var peVal  = $('#peVal').val();
+            var localpref = $('#localpref').val();
+            var medin = $('#medin').val();
+            var sigla = $('#nome').val();
 
-            if(asnVal == "" || popVal == "" || peVal == "") {
+            if(localpref == "" || popVal == "" || peVal == "" || medin == "" || sigla == "") {
                 $.NotificationApp.send("Alarm!"
                     ,"This is required field!"
                     ,"top-right"
@@ -192,25 +226,27 @@
                 );
                 return;
             }
+
             elementBlock('square1', 'body');
             var ixId  = $(row).prop('id');
-            console.log(ixId.substring(2, ixId.lenght));
             $.ajax({
                 type: "PUT",
                 url: '{{ route("upstreams-ix.update", 1) }}',
                 data: {
-                    asnVal : asnVal,
+                    sigla : sigla,
+                    localpref : localpref,
+                    medin : medin,
                     popVal : popVal,
                     peVal : peVal,
-                    ixId : ixId.substring(2, ixId.lenght),
+                    ixId : ixId,
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
-                    row.querySelector('td:nth-child(2)').textContent = asnVal;
+                    row.querySelector('td:nth-child(1)').textContent = $("#ownVal option:selected").text();
                     row.querySelector('td:nth-child(3)').textContent = popVal;
-                    row.querySelector('td:nth-child(4)').textContent = peVal;
+                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text();
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"
@@ -219,12 +255,20 @@
                     );
                 } else {
                     $.NotificationApp.send("Alarm!"
-                        ,msg['status'],
+                        ,msg['status']
                         ,"top-right"
                         ,"#2ebbdb"
                         ,"error",
                     );
                 }
+                elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
                 elementUnBlock('body');
             });
         }

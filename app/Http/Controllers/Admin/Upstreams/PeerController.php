@@ -155,11 +155,6 @@ class PeerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $toSaveData = [
-            'remoteas' => $request['asnVal'],
-            'pop' => $request['popVal']
-        ];
-
         $peerId = $request['peerId'];
         $clientId = $request['clientId'];
 
@@ -167,14 +162,38 @@ class PeerController extends Controller
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $equipPeidPath = $detailClientData['bgp']['interconexoes']['peering'][$peerId]['peid'];
+        $nomeDoGrupo = 'PEERING-'.$peerId.'-'.strtoupper($request['provedor']).'-'.strtoupper($request['popVal']);
+        $community0 = $this->database->getReference('clientes/'.$clientId.'/bgp/community0')->getSnapshot()->GetValue();
 
-        $toSaveAnotherData = [
-            'hostname' => $request['peVal']
+        $toSaveData = [
+            'provedor'  => strtoupper($request['provedor']),
+            'pop'    => strtoupper($request['popVal']),
+            'remoteas'    => $request['asnVal'],
+            'ipv4-01'    => $request['ipv401'],
+            'ipv4-02'   => $request['ipv402'],
+            'ipv6-01'    => $request['ipv601'],
+            'ipv6-02'   => $request['ipv602'],
+            'localpref'   => $request['localpref'],
+            'medin'   => $request['medin'],
+            'peid'   => $request['peVal'],
+            'nomedogrupo' => $nomeDoGrupo,
+            'communities' => [
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$peerId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$peerId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$peerId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$peerId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$peerId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$peerId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$peerId.'6'
+            ],
         ];
+        // $toSaveAnotherData = [
+        //     'hostname' => $request['peVal']
+        // ];
 
         try {
             $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/peering/'.$peerId.'/')->update($toSaveData);
-            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
+            // $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
             return response()->json([
                 'status' => 'ok'
             ]);

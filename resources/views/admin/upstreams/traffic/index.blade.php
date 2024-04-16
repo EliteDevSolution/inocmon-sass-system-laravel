@@ -12,6 +12,9 @@
         th, td {
             text-align : center;
         }
+        /* .th_td_hide {
+            display: none;
+        } */
     </style>
 @endsection
 
@@ -50,6 +53,11 @@
                                 <th>GERENCIAR CONFIG</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
+                                <th class="th_td_hide">provedor</th>
+                                <th class="th_td_hide">ipv4 da sessao 01</th>
+                                <th class="th_td_hide">ipv4 da sessao 02</th>
+                                <th class="th_td_hide">ipv6 da sessao 01</th>
+                                <th class="th_td_hide">ipv6 da sessao 02</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,7 +78,7 @@
                                     </td>
                                     <td>{{$value['remoteas']}}</td>
                                     <td>{{$value['pop']}}</td>
-                                    <td>{{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}</td>
+                                    <td id="{{$value['peid']}}">{{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}</td>
                                     <td>
                                         <a href="{{ route('template-generate-config.index',
                                         array('client_id'=>$clientId, 'indexId' => $index, 'key' => "transito", 'groupKey' => '01')) }}">
@@ -85,6 +93,11 @@
                                     <td>
                                         <i class="fe-trash" onclick="deleteTraffic(this, '{{$index}}')"></i>
                                     </td>
+                                    <td class="th_td_hide">{{$value['provedor']}}</td>
+                                    <td class="th_td_hide">{{$value['ipv4-01']}}</td>
+                                    <td class="th_td_hide">{{$value['ipv4-02']}}</td>
+                                    <td class="th_td_hide">{{$value['ipv6-01']}}</td>
+                                    <td class="th_td_hide">{{$value['ipv6-02']}}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -97,17 +110,36 @@
                 <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Edit</label>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">ASN</label>
-                            <input type="text" id ="asnVal" name=""  required class="form-control mb-1" style=" z-index: 2; background: transparent;"/>
-                        </div>
-                        <div class="col-md-4">
+                            <input type="text" id ="asnVal" name=""  required class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">POP</label>
-                            <input type="text"  id="popVal"  required class="form-control mb-1"  placeholder="Community" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="popVal" required class="form-control mb-1"/>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">PE</label>
-                            <input type="text" id="peVal" required class="form-control mb-1"  placeholder="Userinocmon" style=" z-index: 2; background: transparent;"/>
+                            <select class="form-control mb-1" id="peVal">
+                                @foreach ( $toSendData['buscaEquip'] as $index => $value )
+                                    <option value="{{$index}}">
+                                        {{$value['hostname']}}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <label class="mb-1 font-weight-bold text-muted">PROVEDPR</label>
+                            <input type="text" id="provedor" required class="form-control mb-1"/>
+
+                        </div>
+                        <div class="col-md-3">
+                            <label class="mb-1 font-weight-bold text-muted">IPV4 DA SESSA 01</label>
+                            <input type="text" id="ipv401" required class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV4 DA SESSA 02</label>
+                            <input type="text" id="ipv402" required class="form-control mb-1"/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="mb-1 font-weight-bold text-muted">IPV6 DA SESSA 01</label>
+                            <input type="text" id="ipv601" required class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">IPV6 DA SESSA 02</label>
+                            <input type="text" id="ipv602" required class="form-control mb-1"/>
                         </div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                         <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
@@ -171,11 +203,21 @@
 
             var asn = row.querySelector('td:nth-child(2)').innerText;
             var pop = row.querySelector('td:nth-child(3)').innerText;
-            var pe = row.querySelector('td:nth-child(4)').innerText;
+            var pe = row.querySelector('td:nth-child(4)').id;
+            var provedor = row.querySelector('td:nth-child(8)').innerText;
+            var ipv401 = row.querySelector('td:nth-child(9)').innerText;
+            var ipv402 = row.querySelector('td:nth-child(10)').innerText;
+            var ipv601 = row.querySelector('td:nth-child(11)').innerText;
+            var ipv602 = row.querySelector('td:nth-child(12)').innerText;
 
             $('#asnVal').val(asn);
             $('#popVal').val(pop);
             $('#peVal').val(pe);
+            $('#provedor').val(provedor);
+            $('#ipv401').val(ipv401);
+            $('#ipv402').val(ipv402);
+            $('#ipv601').val(ipv601);
+            $('#ipv602').val(ipv602);
         }
 
         let saveData = () => {
@@ -183,7 +225,14 @@
             var asnVal  = $('#asnVal').val();
             var popVal  = $('#popVal').val();
             var peVal  = $('#peVal').val();
+            var provedor = $('#provedor').val();
+            var ipv401 = $('#ipv401').val();
+            var ipv402 = $('#provedor').val();
+            var ipv601 = $('#ipv601').val();
+            var ipv602 = $('#ipv602').val();
+
             var trafficId  = $(row).prop('id');
+
             if( asnVal == "" || popVal == "" || peVal == "" ) {
                 $.NotificationApp.send("Alarm!"
                     ,"This is required field!"
@@ -198,9 +247,14 @@
                 type: "PUT",
                 url: '{{ route("upstreams.update", 1) }}',
                 data: {
-                    asnVal : asnVal,
-                    popVal : popVal,
-                    peVal : peVal,
+                    asn : asnVal,
+                    pop : popVal,
+                    pe : peVal,
+                    provedor : provedor,
+                    ipv401 : ipv401,
+                    ipv402 : ipv402,
+                    ipv601 : ipv601,
+                    ipv602 : ipv602,
                     trafficId : trafficId.substring(8, trafficId.lenght),
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
@@ -209,7 +263,7 @@
                 if(msg['status'] == 'ok') {
                     row.querySelector('td:nth-child(2)').innerText = asnVal;
                     row.querySelector('td:nth-child(3)').innerText = popVal;
-                    row.querySelector('td:nth-child(4)').innerText = peVal;
+                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text();
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"

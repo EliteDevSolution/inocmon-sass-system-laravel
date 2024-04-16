@@ -49,6 +49,9 @@
 .nav-second-level li.active>a {
     color: white;
 }
+i {
+    cursor: pointer;
+}
 /*
 #sidebar-menu>ul>li>a.active,
 .nav-second-level li.active>a {

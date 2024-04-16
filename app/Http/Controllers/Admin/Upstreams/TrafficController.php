@@ -48,7 +48,6 @@ class TrafficController extends Controller
         $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
         $cdns = $detailClientData['bgp']['interconexoes']['transito'] ?? [];
         return view('admin.upstreams.traffic.create', compact('clientId', 'buscaEquipamentos','cdns'));
-
     }
 
     /**
@@ -98,13 +97,13 @@ class TrafficController extends Controller
 	    $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/'.$tipoConexao.'/'.$nextId)->set($novoBgp);
 
         return response()->json([
-                    'status' => 'ok',
-                    'addedData' => [
-                        'id' => $nextId,
-                        'remoteas' => $request['asnVal'],
-                        'nomedogrupo' => $nomeDoGrupo
-                    ]
-                ]);
+            'status' => 'ok',
+            'addedData' => [
+                'id' => $nextId,
+                'remoteas' => $request['asnVal'],
+                'nomedogrupo' => $nomeDoGrupo
+            ]
+        ]);
     }
 
     /**
@@ -138,24 +137,40 @@ class TrafficController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $toSaveData = [
-            'remoteas' => $request['asnVal'],
-            'pop' => $request['popVal']
-        ];
-
+        $communityGroup = 1;
         $transitoId = $request['trafficId'];
         $clientId = $request['clientId'];
+        $tipoConexao = "transito";
+        $community0 = $this->database->getReference('clientes/'.$clientId.'/bgp/community0')->getSnapshot()->GetValue();
+        $nomeDoGrupo = strtoupper($tipoConexao).'-'.$transitoId.'-'.$request['provedor'].'-'.$request['pop'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $equipPeidPath = $detailClientData['bgp']['interconexoes']['transito'][$transitoId]['peid'];
-        $toSaveAnotherData = [
-            'hostname' => $request['peVal']
-        ];
 
+        $toSaveData = [
+            'provedor'  => strtoupper($request['provedor']),
+            'pop'    => strtoupper($request['pop']),
+            'remoteas'    => $request['asn'],
+            'ipv4-01'    => $request['ipv401'],
+            'ipv4-02'   => $request['ipv402'],
+            'ipv6-01'    => $request['ipv401'],
+            'ipv6-02'   => $request['ipv401'],
+            'peid'   => $request['pe'],
+            'denycustomerin'   => $request['checkVal'] ?? true,
+            'nomedogrupo' => $nomeDoGrupo,
+            'communities' => [
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.':'.$communityGroup.$transitoId.'6'
+			]
+        ];
         try {
             $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/transito/'.$transitoId.'/')->update($toSaveData);
-            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
             return response()->json([
                 'status' => 'ok'
             ]);

@@ -20,7 +20,7 @@ class MplsController extends Controller
     public function index(Request $req)
     {
         $clientId = $req->query()['client_id'];
-
+        $buscaTemplateVendor = $this->database->getReference('lib/templates/pe')->getSnapshot()->getValue() ?? [];
         $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         $buscaEquipment = $clientDetailData['equipamentos'] ?? [];
         $buscaBgpTransito = $clientDetailData['bgp']['interconexoes']['transito'] ?? '';
@@ -33,7 +33,7 @@ class MplsController extends Controller
         $toSendData = [
             'equipments' => $buscaEquipment
         ];
-        return view('admin.assetmanagement.mpls_pe', compact('toSendData', 'clientId'));
+        return view('admin.assetmanagement.mpls_pe', compact('toSendData', 'clientId', 'buscaTemplateVendor'));
     }
 
     /**

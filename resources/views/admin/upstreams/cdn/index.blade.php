@@ -55,7 +55,8 @@
                         </thead>
                         <tbody>
                             @foreach ($toSendData['buscaBgp'] as $index => $value )
-                                <tr id="cdn{{$index}}">
+                                <tr id="cdn{{$index}}" provedor="{{ $value['provedor'] ?? "" }}" ipv401="{{ $value['ipv4-01'] ?? "" }}"
+                                    ipv402="{{ $value['ipv4-02'] ?? "" }}" ipv601="{{ $value['ipv6-01'] ?? "" }}" ipv602="{{ $value['ipv6-02'] ?? "" }}" >
                                     <td style="text-align: left">
                                         @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
                                             <div>
@@ -71,7 +72,7 @@
                                     </td>
                                     <td>{{$value['remoteas'] ?? ''}}</td>
                                     <td>{{$value['pop'] ?? ''}}</td>
-                                    <td>{{$toSendData['buscaEquip'][$value['peid']]['hostname']}}</td>
+                                    <td id="{{$value['peid']}}">{{$toSendData['buscaEquip'][$value['peid']]['hostname']}}</td>
                                     <td>
                                         <a href="{{ route('template-generate-config.index',
                                         array('client_id'=>$clientId, 'indexId' => $index, 'key' => "cdn", 'groupKey' => '4')) }}">
@@ -97,17 +98,35 @@
                     <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Edit</label>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <label class="mb-1 font-weight-bold text-muted">Nome Cdn</label>
+                                <input type="text" id ="provedor"   required class="form-control mb-1" />
                                 <label class="mb-1 font-weight-bold text-muted">ASN</label>
                                 <input type="text" id ="asnVal"   required class="form-control mb-1" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="mb-1 font-weight-bold text-muted">POP</label>
                                 <input type="text"  id="popVal"  required class="form-control mb-1"/>
+                                <label class="mb-1 font-weight-bold text-muted">Ipv4 da sessao 01</label>
+                                <input type="text" id ="ipv401"   required class="form-control mb-1" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <label class="mb-1 font-weight-bold text-muted">Ipv4 da sessao 02</label>
+                                <input type="text" id ="ipv402"   required class="form-control mb-1" />
+                                <label class="mb-1 font-weight-bold text-muted">Ipv6 da sessao 01</label>
+                                <input type="text" id ="ipv601"   required class="form-control mb-1" />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="mb-1 font-weight-bold text-muted">Ipv6 da sessao 02</label>
+                                <input type="text" id ="ipv602"   required class="form-control mb-1" />
                                 <label class="mb-1 font-weight-bold text-muted">PE</label>
-                                <input type="text" id="peVal" required class="form-control mb-1"/>
+                                <select class="form-control" id="peVal">
+                                    @foreach ( $toSendData['buscaEquip'] as $index => $value )
+                                        <option value="{{$index}}">
+                                            {{$value['hostname']}}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                             <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                             <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
@@ -173,11 +192,23 @@
 
             var asn = row.querySelector('td:nth-child(2)').innerText;
             var pop = row.querySelector('td:nth-child(3)').innerText;
-            var pe = row.querySelector('td:nth-child(4)').innerText;
+            var pe = row.querySelector('td:nth-child(4)').id;
+            var provedor = $(row).attr('provedor');
+            var ipv401 = $(row).attr('ipv401');
+            var ipv402 = $(row).attr('ipv402');
+            var ipv601 = $(row).attr('ipv601');
+            var ipv602 = $(row).attr('ipv602');
+
 
             $('#asnVal').val(asn);
             $('#popVal').val(pop);
             $('#peVal').val(pe);
+            $('#provedor').val(provedor);
+            $('#ipv401').val(ipv401);
+            $('#ipv402').val(ipv402);
+            $('#ipv601').val(ipv601);
+            $('#ipv602').val(ipv402);
+
         }
 
         let saveData = () => {
@@ -186,7 +217,15 @@
             var popVal  = $('#popVal').val();
             var peVal  = $('#peVal').val();
             var cdnId  = $(row).prop('id');
-            if(asnVal == "" || peVal == "" || popVal == "") {
+            var provedor = $('#provedor').val();
+            var ipv401 = $('#ipv401').val();
+            var ipv402 = $('#ipv402').val();
+            var ipv601 = $('#ipv601').val();
+            var ipv602 = $('#ipv602').val();
+
+
+            if( asnVal == "" || peVal == "" || popVal == "" || provedor == "" || ipv401 == "" || ipv402 == ""
+                || ipv601 == "" || ipv602 == "" ) {
                 $.NotificationApp.send("Alarm!"
                     ,"This is required field!"
                     ,"top-right"
@@ -202,6 +241,11 @@
                 data: {
                     asnVal : asnVal,
                     popVal : popVal,
+                    provedor : provedor,
+                    ipv401 : ipv401,
+                    ipv402 : ipv402,
+                    ipv601 : ipv601,
+                    ipv602 : ipv602,
                     peVal : peVal,
                     cdnId : cdnId.substring(3, cdnId.lenght),
                     clientId : '{{$clientId}}',
@@ -211,7 +255,7 @@
                 if(msg['status'] == 'ok') {
                     row.querySelector('td:nth-child(2)').innerText = asnVal;
                     row.querySelector('td:nth-child(3)').innerText = popVal;
-                    row.querySelector('td:nth-child(4)').innerText = peVal;
+                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text();
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"
@@ -226,6 +270,14 @@
                         ,"error",
                     );
                 }
+                elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
                 elementUnBlock('body');
             });
         }

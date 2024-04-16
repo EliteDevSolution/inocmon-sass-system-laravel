@@ -99,6 +99,10 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
 
     Route::resource('downstreams-clients', 'Admin\Downstreams\ClientsController');
 
+    Route::resource('downstreams-client_bgp_detail', 'Admin\Downstreams\ClientBgpDetailController');
+
+    Route::post('aplicar-config-bgp-client', 'Admin\Downstreams\ClientBgpDetailController@aplicarConfig')->name('aplicar-config-bgp-client.aplicarConfig');
+
     // Route::resource('bgpconnection-transit', 'Admin\BgpConnection\NovoTransitController');
     // Route::resource('bgpconnection-ix', 'Admin\BgpConnection\NovoIxController');
     // Route::resource('bgpconnection-peer', 'Admin\BgpConnection\NovoPeerController');

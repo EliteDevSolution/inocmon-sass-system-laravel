@@ -25,8 +25,9 @@ class PRSummaryController extends Controller
         $clientId =  $request->query()['client_id'];
 
         $buscarRr = $this->database->getReference('clientes/' . $clientId . '/rr')->getSnapshot()->getValue();
+        $buscaTemplates = $this->database->getReference('lib/templates/rr')->getSnapshot()->getValue() ?? [];
         if($buscarRr == null ) $buscarRr = [];
-        return view('admin.assetmanagement.manage', compact('clientId', 'buscarRr'));
+        return view('admin.assetmanagement.manage', compact('clientId', 'buscarRr', 'buscaTemplates'));
     }
 
     public function update(Request $request) {

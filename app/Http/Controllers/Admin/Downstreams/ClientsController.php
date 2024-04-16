@@ -27,7 +27,10 @@ class ClientsController extends Controller
         $senhainocmon = $clientDetailData['seguranca']['senhainocmon'];
         $asn = $clientDetailData['bgp']['asn'];
         $community = $clientDetailData['bgp']['community0'];
-        $equipments = $clientDetailData['equipamentos'];
+        $equipments = $clientDetailData['equipamentos'] ?? [];
+        $buscaCommunitiesTransito = $clientDetailData['bgp']['interconexoes']['transito'];
+        $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['transito'];
+        $community = $clientDetailData['bgp']['community0'];
 
         $toSendData = [
             'clientId' => $clientId,
@@ -38,7 +41,8 @@ class ClientsController extends Controller
             'community' => $community,
             'equipment' => $equipments
         ];
-        return view('admin.downstreams.clients', compact('toSendData', 'clientId'));
+
+        return view('admin.downstreams.clients', compact('toSendData', 'clientId', 'buscaCommunitiesTransito' , 'buscaCommunitiesIx', 'community'));
     }
 
     /**
@@ -96,21 +100,31 @@ class ClientsController extends Controller
         $toStatus = '';
         $updateId = $request['dataId'];
         $clientId = $request['clientId'];
+        $communitySet = "";
+        if(is_array($request['community'])) {
+            $communitySet = implode(', ', $request['community']);
+        }
         $toSaveData = [
-            'nomedoclientebgp' => $request['clientName'],
+            'nomedoclientebgp' => strtoupper($request['clientName']),
             'remoteas' => $request['asn'],
-            'pop' => $request['pop'],
+            'pop' => strtoupper($request['pop']),
             'ipv4-01' => $request['ipv4Local'],
             'ipv4-02' => $request['ipv4Remote'],
             'ipv6-01' => $request['ipv6Local'],
             'ipv6-02' => $request['ipv6Remote'],
+            'blocosipv4'   => $request['block4'],
+            'blocosipv6'   => $request['block6'],
+            'peid'   => $request['pe'],
+            'recursive-asn' => $request['clientasn'],
+            'communityset'   =>  $request['global']
+                                .$request['transito']
+                                .$request['ix']
+                                .$request['peering']
+                                .$request['noexporter'].$communitySet,
         ];
         $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
-        $equipId = $clientDetailData['bgp']['interconexoes']['clientesbgp'][$updateId]['idperemoto'];
-        $equipHostName = $request['pe'];
         try {
             $this->database->getReference('clientes/' . $clientId .'/bgp/interconexoes/clientesbgp/'.$updateId)->update($toSaveData);
-            $this->database->getReference('clientes/' . $clientId . '/equipamentos/' . $equipId . '/hostname')->set($equipHostName);
             $status = 'ok';
         } catch (\Throwable $th) {
             $status = 'failed';

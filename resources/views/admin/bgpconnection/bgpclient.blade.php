@@ -111,19 +111,19 @@
                                                             <input type="checkbox" checked id="global" value="{{$community}}:999"/> EXPORT-GLOBAL ({{$community}}:999)
                                                         </div>
                                                         <div class="p-1">
-                                                            <input type="checkbox" id="transito" value="{{$community}}910"/> NO-EXPORT-ALL-TRANSIT ({{$community}}:910)
+                                                            <input type="checkbox" id="transito" value="{{$community}}:910"/> NO-EXPORT-ALL-TRANSIT ({{$community}}:910)
                                                         </div>
                                                         <div class="p-1">
-                                                            <input type="checkbox" id="ix" value="{{$community}}920"/> NO-EXPORT-ALL-IX ({{$community}}:920)
+                                                            <input type="checkbox" id="ix" value="{{$community}}:920"/> NO-EXPORT-ALL-IX ({{$community}}:920)
                                                         </div>
                                                         <div class="p-1">
-                                                            <input type="checkbox" id="peering" value="{{$community}}930"/> NO-EXPORT-ALL-PEERING ({{$community}}:930)
+                                                            <input type="checkbox" id="peering" value="{{$community}}:930"/> NO-EXPORT-ALL-PEERING ({{$community}}:930)
                                                         </div>
                                                         <div class="p-1">
-                                                            <input type="checkbox" id="cdn" value="{{$community}}940"/> NO-EXPORT-ALL-CDN ({{$community}}:940)
+                                                            <input type="checkbox" id="cdn" value="{{$community}}:940"/> NO-EXPORT-ALL-CDN ({{$community}}:940)
                                                         </div>
                                                         <div class="p-1">
-                                                            <input type="checkbox" value="no-export"/> NO-EXPORT-GLOBAL (no-export)
+                                                            <input type="checkbox" id = "no-export" value="no-export"/> NO-EXPORT-GLOBAL (no-export)
                                                         </div>
                                                     </ul>
                                                 </div>
@@ -285,6 +285,8 @@
                 ix : $("#ix").val(),
                 peering : $("#peering").val(),
                 cdn : $("#cdn").val(),
+                transito : $("#transito").val(),
+                noexporter : $("#no-export").val(),
                 community : communityArray,
                 clientId : '{{$clientId}}',
                 _token : '{{ csrf_token() }}'
@@ -322,6 +324,14 @@
                     ,"error",
                 );
             }
+            elementUnBlock('body');
+        }).fail(function(xhr, textStatus, errorThrown) {
+            $.NotificationApp.send("Alarm!"
+                ,"Failed updated!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"error",
+            );
             elementUnBlock('body');
         });
     }

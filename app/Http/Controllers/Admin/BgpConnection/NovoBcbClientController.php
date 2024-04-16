@@ -75,17 +75,19 @@ class NovoBcbClientController extends Controller
         $cdn = $request['cdn'];
 	    $newId = $this->database->getReference('clientes/'. $clientId .'/interconexoes/clientesbgp')->push()->getKey();
         $communitySet = "";
-        if(is_array($community)) {
-            $communitySet = implode(', ', $community);
+
+        if(is_array($request['community'])) {
+            $communitySet = implode(', ', $request['community']);
         }
+
         $toSaveData = [
             'nomedoclientebgp' => $nome,
             'remoteas' => $asn,
             'pop' => $pop,
-            'ipv4-local-01' => $ipv4pro,
-            'ipv4-remoto-01' => $ipv4client,
-            'ipv6-local-01' => $ipv6pro,
-            'ipv6-remoto-01' => $ipv6client,
+            'ipv4-01' => $ipv4pro,
+            'ipv4-02' => $ipv4client,
+            'ipv6-01' => $ipv6pro,
+            'ipv6-02' => $ipv6client,
             'blocosipv4' => $blocosipv4,
             'blocosipv6' => $ipv6client,
             'peid' => $equip,

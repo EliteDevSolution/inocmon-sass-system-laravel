@@ -107,9 +107,21 @@
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">Vendor</label>
-                            <input type="text"  id="vendorVal"  required class="form-control mb-1"  placeholder="Community" style=" z-index: 2; background: transparent;"/>
+                            <select class="form-control mb-1" id="vendorVal">
+                                @foreach ( $buscaTemplateVendor as $index => $value )
+                                    <option value="{{$index}}">
+                                        {{$index}}
+                                    </option>
+                                @endforeach
+                            </select>
                             <label class="mb-1 font-weight-bold text-muted">Family</label>
-                            <input type="text"  id="familyVal" required  class="form-control mb-1"  placeholder="Ipv4 remoto bgp 01" required style=" z-index: 2; background: transparent;"/>
+                            <select class="form-control mb-1" id="familyVal">
+                                @foreach ( $buscaTemplateVendor as $indexFamily => $valueFamily )
+                                    @foreach ( $valueFamily as $index => $value )
+                                        <option value="{{$index}}">{{$index}}</option>
+                                    @endforeach
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">Protocolo</label>

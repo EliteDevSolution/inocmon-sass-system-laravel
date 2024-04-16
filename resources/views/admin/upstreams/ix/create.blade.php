@@ -75,7 +75,7 @@
                 <div class="card-body">
                     <h3 class="header-title text-success">Ixs em banco</h3>
                     <ul id="cdn">
-                        @foreach ($cdns as $index => $value)
+                        @foreach ($ixbrData as $index => $value)
                             @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
                                 <li>
                                     <div class="p-md-2">

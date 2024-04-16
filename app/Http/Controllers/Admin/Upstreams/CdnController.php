@@ -153,26 +153,46 @@ class CdnController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $toSaveData = [
-            'remoteas' => $request['asnVal'],
-            'pop' => $request['popVal']
-        ];
 
         $cdnId = $request['cdnId'];
         $clientId = $request['clientId'];
-
+        $tipoConexao = "cdn";
+        $communityGroup = 4;
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $buscaEquipamentos = $detailClientData['equipamentos'];
         $equipPeidPath = $detailClientData['bgp']['interconexoes']['cdn'][$cdnId]['peid'];
+        $community0 = $this->database->getReference('clientes/'.$clientId.'/bgp/community0')->getSnapshot()->GetValue();
+	    $nomeDoGrupo = strtoupper($tipoConexao).'-'.$cdnId.'-'.$request['provedor'].'-'.strtoupper($request['popVal']);
 
-        $toSaveAnotherData = [
-            'hostname' => $request['peVal']
-        ];
+        // $toSaveAnotherData = [
+        //     'hostname' => $request['peVal']
+        // ];
+
+        $toSaveData = [
+            'provedor'  => strtoupper($request['provedor']),
+            'pop'    => strtoupper($request['popVal']),
+            'remoteas'    => $request['asnVal'],
+            'ipv4-01'    => $request['ipv401'],
+            'ipv4-02'   => $request['ipv402'],
+            'ipv6-01'    => $request['ipv601'],
+            'ipv6-02'   => $request['ipv602'],
+            'peid'   => $request['peVal'],
+            'nomedogrupo' => $nomeDoGrupo,
+            'communities' => [
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$cdnId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'6'
+            ],
+	    ];
 
         try {
             $this->database->getReference('clientes/'.$clientId.'/bgp/interconexoes/cdn/'.$cdnId.'/')->update($toSaveData);
-            $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
+            // $this->database->getReference('clientes/'.$clientId.'/equipamentos/'.$equipPeidPath.'/')->update($toSaveAnotherData);
             return response()->json([
                 'status' => 'ok'
             ]);
