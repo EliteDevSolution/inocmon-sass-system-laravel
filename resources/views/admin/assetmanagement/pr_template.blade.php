@@ -237,7 +237,7 @@
         }).done(function( msg ) {
             console.log( msg );
             if(msg['status'] == 'ok') {
-                $("#report").text(msg['relatorio']);
+                $("#report").html(msg['relatorio']);
                 $.NotificationApp.send("Alarm!"
                     ,"Successfully updated!"
                     ,"top-right"
@@ -311,7 +311,7 @@
                 }
                 }).done(function( msg ) {
                     console.log(msg);
-                    $(".modal-text").text(msg['relatorio']);
+                    $(".modal-text").html(msg['relatorio']);
                     if(msg['status'] === 'ok') {
                         $.NotificationApp.send("Alert!"
                             ,"Successfull operated!"

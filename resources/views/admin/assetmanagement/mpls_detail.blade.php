@@ -271,7 +271,7 @@
                 );
             }
             elementUnBlock('table');
-            $("#modal-value").text(msg['relatorio']);
+            $("#modal-value").html(msg['relatorio']);
         }).fail(function(xhr, textStatus, errorThrown) {
             $.NotificationApp.send("Alarm!"
                 ,"The operation failed!"
