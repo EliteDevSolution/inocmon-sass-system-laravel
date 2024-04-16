@@ -38,7 +38,7 @@
         <div class="card-body">
             <div class="card-box">
                 <p class="font-17 text-md-center text-danger">
-                    Cliente BGP : {{$toSendData['nomeDoClienteBgp']}} | ASN : {{$toSendData['remoteAs']}} $remoteAs
+                    Cliente BGP : {{$toSendData['nomeDoClienteBgp']}} | ASN : {{$toSendData['remoteAs']}} remoteAs
                 </p>
                 <p class="font-14 mt-2 text-blue">Blocos Ipv4 : {{$toSendData['blocosIpv4']}}</p>
                 <p class="font-14 text-blue">Blocos Ipv6 : {{$toSendData['blocosIpv6']}}</p>
@@ -113,8 +113,8 @@
                 @foreach ( $toSendData['buscaRr'] as $rrIndex => $rrValue )
                     @if(isset($rrIndex) && $rrIndex != 0)
                         <div>
-                            <input type="checkbox" id="rr.{{$rrIndex}}" value="true">
-                            <lable For="rr.{{$rrIndex}}">Aplicar em RR {{$rrIndex ?? ''}} : {{$rrValue['hostname'] ?? ''}}</lable>
+                            <input type="checkbox" id="rr{{$rrIndex}}" name = "rr{{$rrIndex}}" value="true">
+                            <lable For="rr{{$rrIndex}}">Aplicar em RR {{$rrIndex ?? ''}} : {{$rrValue['hostname'] ?? ''}}</lable>
                         </div>
                     @endif
                 @endforeach
@@ -148,7 +148,7 @@
                             . '&ipv6bgpmultihop='. $toSendData['ipv6bgpmultihop'] }}"
                             title="Email Preview" width="1100" height="600" >
                     </iframe>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" onclick="sendData()">
                         enviar config para cliente
                     </button>
                 </div>
@@ -198,10 +198,65 @@
             });
         });
 
-        function aplicar() {
-
+        function sendData() {
+             $.confirm({
+                    title: 'Alert',
+                    content: 'Are you sure to send that file?',
+                    draggable: true,
+                    type: 'red',
+                    closeIcon: false,
+                    icon: 'fa fa-exclamation-triangle',
+                    closeAnimation: 'top',
+                    buttons: {
+                        somethingElse: {
+                            text: "Ok",
+                            btnClass: 'btn-danger',
+                            keys: ['shift'],
+                            action: function()
+                            {
+                                $.ajax({
+                                    type: "POST",
+                                    url: '{{ route("send-guider.sendData", 1) }}',
+                                    data: {
+                                        nomeClient : "{{$toSendData['nomeCliente']}}",
+                                        asnlocal : "{{$toSendData['asn']}}",
+                                        ipv4local : "{{$toSendData['ipv4remoto01']}}",
+                                        ipv6local : "{{$toSendData['ipv6remoto01']}}",
+                                        asnremoto : "{{$toSendData['remoteAs']}}",
+                                        nomebgpcliente : "{{$toSendData['nomeDoClienteBgp']}}",
+                                        ipv4remoto : "{{$toSendData['ipv4remoto02']}}",
+                                        ipv6remoto : "{{$toSendData['ipv6remoto02']}}",
+                                        ipv4bgpmultihop : "{{$toSendData['ipv4bgpmultihop']}}",
+                                        ipv6bgpmultihop : "{{$toSendData['ipv6bgpmultihop']}}",
+                                        clientId : '{{$clientId}}',
+                                        _token : '{{ csrf_token() }}'
+                                    }
+                                }).done(function( msg ) {
+                                    if(msg?.status === 'success')
+                                    {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Successfully sended!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"success",
+                                        );
+                                    } else {
+                                        $.NotificationApp.send("Alert!"
+                                            ,"Failed sended!"
+                                            ,"top-right"
+                                            ,"#2ebbdb"
+                                            ,"error",
+                                        );
+                                    }
+                                });
+                            }
+                        },
+                    cancel: function () {
+                        return true;
+                    },
+                }
+            });
         }
-
     </script>
 
 @endsection

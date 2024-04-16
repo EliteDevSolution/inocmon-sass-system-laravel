@@ -30,7 +30,7 @@
                 <h4 class="page-title">Aplicar Config Bgp</h4>
             </div>
         </div>
-        <div class="col-6 p-2 card-box">
+        <div class="col-6 card-box">
             <p>degub : {{$firstPanelData['debug']}}</p>
             <p>o token é : {{$firstPanelData['token']}}</p>
             <p id="configbgp">o status do teste : {{$firstPanelData['statusConfigBgpClientePe']}}</p>
@@ -41,7 +41,7 @@
             <p>ip da sonda : {{$firstPanelData['sondaIpv4']}}</p>
         </div>
 
-        <div class="col-6 p-2 card-box">
+        <div class="col-6 card-box">
             <p class="text-center font-15 text-danger">Aplicando conifog para</p>
             <p>ID : {{$clientId}}</p>
             <p>Nome : {{$secondPanelData['nomeClient']}}</p>
@@ -94,8 +94,7 @@
             var ref = firebase.database().ref("/clientes/{{$clientId}}/bgp/interconexoes/clientesbgp/{{$bgpclienteId}}/configs/peconfigstatus");
             ref.on("value", function (snapshot) {
                 const data = snapshot.val();
-                console.log(data);
-                $('#configbgp').text('o status do teste :' data);
+                $('#configbgp').text('o status do teste:' + data);
             }, function (error) {
                 console.log("Error: " + error.code);
             });

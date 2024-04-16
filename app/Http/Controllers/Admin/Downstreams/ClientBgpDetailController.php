@@ -185,14 +185,7 @@ class ClientBgpDetailController extends Controller
             $this->database->getReference($diretorioBgpath.'/interconexoes/clientesbgp/'.$bgpclienteId.'/configs/peconfigstatus')->set($statusConfig);
         }
 
-        $firstPanelData = [
-            'debug' => $debug,
-            'token' => $tokenPeConfig,
-            'statusConfigBgpClientePe' => $statusConfigBgpClientePe,
-            'sondaIpv4' => $sondaIpv4,
-            'sondaId' => $sondaId,
-            'sondaPortaSsh' => $sondaPortaSsh
-        ];
+
 
         $nomeCliente = $clientDetailData['nome'];
 
@@ -203,7 +196,102 @@ class ClientBgpDetailController extends Controller
         $nomeDoClienteBgp = $clientDetailData['bgp']['interconexoes']['clientesbgp'][$bgpclienteId]['nomedoclientebgp'];
         $configFileNamePe = 'CONFIG-PE-BGP-'.$nomeDoClienteBgp.'-'.$bgpclienteId.'.cfg';
         $configFileNameRr = 'CONFIG-RR-BGP-CLIENTE-'.$nomeDoClienteBgp.'-'.$bgpclienteId.'.cfg';
+	    $debugRemoteFile = 'DEBUG-'.$clientId;
 
+        $this->database->getReference($diretorioStatusConfig)->set('iniciando conexao SSH...');
+
+        $ssh1 = new SSH2($sondaIpv4, $sondaPortaSsh);
+        $status = "";
+        try {
+            if (!$ssh1->login($sondaUser, $sondaPwd)) {
+                $status = 'failed';
+                exit('Falha de login na sonda');
+            } else {
+                $status = 'ok';
+            }
+        } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+
+        $this->database->getReference($diretorioStatusConfig)->set('conexao SSH bem sucedida');
+        $scp = new SCP($ssh1);
+	    $configBgpPeNuvem = $clientDetailData['bgp']['interconexoes']['clientesbgp'][$bgpclienteId]['configs']['pe'];
+        $configBgpPeNuvemFinal = "";
+
+        if(isset($targetpeid) || $targetpeid != null) {
+            $configBgpPeNuvemFinal = str_replace("<br />","",$configBgpPeNuvem);
+            $configBgpPeNuvemFinal .= $tokenPeConfig;
+            $uploadFilePath = 'public/configuracoes/'.$configFileNamePe;
+            try {
+                if(!file_exists(public_path() . '/storage/configuracoes'))
+                {
+                    @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                }
+                Storage::disk('local')->put($uploadFilePath, $configBgpPeNuvemFinal);
+                $status = "ok";
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
+        }
+        $comandoPe = 'python3 comando_remoto.py '.$targetPeIpv4.' inocmon \''.$senhaInocmon.'\' '.$targetPePort.' ';
+        $scp->put($configFileNamePe, 'public/configuracoes/'.$configFileNamePe, 1);
+        $this->database->getReference($diretorioStatusConfig)->set('arquivo enviado com sucesso!');
+        $this->database->getReference($diretorioStatusConfig)->set('aplicando comando: '.$comandoPe.$configFileNamePe.$debugRemoteFile);
+        $checkConfigSucess = $ssh1->exec($comandoPe.$configFileNamePe.' '.$debugRemoteFile.' 2>&1 &');
+        $tokenPeConfig = substr($tokenPeConfig, 2, -1);
+        $checkConfigSucess = $ssh1->exec('cat '.$debugRemoteFile.'.log | grep '.$tokenPeConfig);
+        /*I should display this data named checkConfigSucess. remember this variable*/
+        $toDsiplay =  "comando  ficou: ".'cat '.$debugRemoteFile.'.log | grep '.$tokenPeConfig;
+
+        $rRIds = [];
+        $buscaRr = $clientDetailData['rr'];
+        $configBgpRrNuvem = $clientDetailData['bgp']['interconexoes']['clientesbgp'][$bgpclienteId]['configs']['rr'];
+
+        foreach ( $buscaRr as $indexRr => $valueRr ) {
+            if( $indexRr != null || isset($buscaRr) ) {
+                if(isset($reqies['rr'.$indexRr])) {
+                    array_push($rRIds, $indexRr);
+                    $targetRrPort = $clientDetailData['rr'][$indexRr]['porta'];
+                    $targetRrIpv4 = $clientDetailData['rr'][$indexRr]['routerid'];
+                    $targetRrUser = $clientDetailData['rr'][$indexRr]['user'];
+                    $targetRrPwd = $clientDetailData['rr'][$indexRr]['pwd'];
+                    /*also it is displayed to firstPanel*/
+                    $configFileNameRr = 'CONFIG-RR-BGP-CLIENTE-'.$nomeDoClienteBgp.'-'.$bgpclienteId.'.cfg';
+                    $configBgpRrNuvemFinal = str_replace("<br />","",$configBgpRrNuvem);
+	                $uploadFileRr = 'public/configuracoes/'.$configFileNameRr;
+                    try {
+                        if(!file_exists(public_path() . '/storage/configuracoes'))
+                        {
+                            @mkdir(public_path() . '/storage/configuracoes' , 0777, true);
+                        }
+                        Storage::disk('local')->put($uploadFileRr, $configBgpRrNuvemFinal);
+                        $status = "ok";
+                    } catch (\Throwable $th) {
+                        $status = 'failed';
+                    }
+                    $scp->put($configFileNameRr, 'public/configuracoes/'.$configFileNameRr, 1);
+                    $debug = 'arquivo copiado! iniciando comandos...';
+                    $comandoRr = 'inoc-config '.$targetRrIpv4.' '.$targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' ';
+                    $debug = $ssh1->exec($comandoRr.$configFileNameRr.' '.$debugRemoteFile.' | at -b now + 1 minute');
+                    $rrResult = $comandoRr.$configFileNameRr.' '.$debugRemoteFile.' &';
+                    /* this is also data to echo*/
+
+                }
+            } else {
+                $rrResult = 'Config para RR.'.$indexRr.' não selecionada <p>';
+            }
+        }
+
+
+
+        $firstPanelData = [
+            'debug' => $debug,
+            'token' => $tokenPeConfig,
+            'statusConfigBgpClientePe' => $statusConfigBgpClientePe,
+            'sondaIpv4' => $sondaIpv4,
+            'sondaId' => $sondaId,
+            'sondaPortaSsh' => $sondaPortaSsh
+        ];
 
         $secondPanelData = [
             'nomeClient' => $nomeCliente,
@@ -217,8 +305,31 @@ class ClientBgpDetailController extends Controller
             'configFileNameRr' => $configFileNameRr
         ];
 
-
         return view('admin.downstreams.aplicar_config_bgp', compact('clientId', 'bgpclienteId', 'firstPanelData', 'secondPanelData'));
+    }
+
+    public function  sendData(Request $request) {
+        $status = '';
+        try {
+            $debugUltradox = shell_exec('curl "https://www.ultradox.com/run/eHzcIGzIhTR3UojE5b1R8FBE54aSPp?iid=Y1akxSmc3nPT7JeuxmHW36323677&nomecliente='
+                .$request['nomeCliente']
+                .'&asnlocal='.$request['asn']
+                .'&ipv4local='.$request['ipv4Local01']
+                .'&ipv6local='.$request['ipv6Local01']
+                .'&asnremoto='.$request['remoteAs']
+                .'&nomebgpcliente='.$request['nomeDoClienteBgp']
+                .'&ipv4remoto='.$request['ipv4remoto01']
+                .'&ipv6remoto='.$request['ipv6remoto01']
+                .'&ipv4bgpmultihop='.$request['ipv4BgpMultihop']
+                .'&ipv6bgpmultihop='.$request['ipv6BgpMultihop'].'" > configuracoes/debug.log');
+                $status = 'ok';
+            } catch (\Throwable $th) {
+            $status = 'failed';
+        }
+        /*here will be more code including ssh2*/
+        return response()->json([
+        'status' => $status
+    ]);
     }
     /**
      * Show the form for creating a new resource.

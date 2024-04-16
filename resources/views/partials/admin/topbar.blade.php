@@ -40,7 +40,11 @@
 
 <!-- LOGO -->
 <div class="logo-box">
-    <a href="/" class="logo text-center">
+    @if(Auth::user()->hasRole("administrator"))
+        <a href="/client" class="logo text-center">
+    @else
+        <a href="/dashboard" class="logo text-center">
+    @endif
         <span class="logo-lg">
             <h2 class="text-white mt-sm-3">@lang('iNOCmon')</h2>
             {{-- <img src="{{ asset('admin_assets/images/logo-light.png') }}" alt="" height="50" style="display: flex;height: 65px;width: 239px;margin-top: 2px;margin-left: 2px;"> --}}

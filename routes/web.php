@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
         'index' => 'proxy-summary.index',
         'update' => 'proxy-summary.update'
     ]);
+
     Route::get('pr-summary', 'Admin\PRSummaryController@index')->name('asset_manage.pr_summary');
     Route::post('pr-summary/update', 'Admin\PRSummaryController@update')->name('pr-summary.update');
     Route::post('pr-summary/delete/{id}', 'Admin\PRSummaryController@delete')->name('pr-summary.delete');
@@ -102,6 +103,8 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
     Route::resource('downstreams-client_bgp_detail', 'Admin\Downstreams\ClientBgpDetailController');
 
     Route::post('aplicar-config-bgp-client', 'Admin\Downstreams\ClientBgpDetailController@aplicarConfig')->name('aplicar-config-bgp-client.aplicarConfig');
+    Route::post('send-guider', 'Admin\Downstreams\ClientBgpDetailController@sendData')->name('send-guider.sendData');
+
 
     // Route::resource('bgpconnection-transit', 'Admin\BgpConnection\NovoTransitController');
     // Route::resource('bgpconnection-ix', 'Admin\BgpConnection\NovoIxController');
