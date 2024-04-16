@@ -219,17 +219,17 @@
                 buscaConfigIds.push($(this).val());
         });
 
-        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0 || inputConfigToken == '') {
-            if(inputConfigToken == '') {
-                $.NotificationApp.send("Alarm!"
-                    ,"Plese type token information!"
-                    ,"top-right"
-                    ,"#2ebbdb"
-                    ,"success",
-                );
-                $("#configtoken").focus();
-                return;
-            }
+        if( buscaConfigIds?.length == 0 && buscaRrIds?.length == 0 ) {
+            // if(inputConfigToken == '') {
+            //     $.NotificationApp.send("Alarm!"
+            //         ,"Plese type token information!"
+            //         ,"top-right"
+            //         ,"#2ebbdb"
+            //         ,"success",
+            //     );
+            //     $("#configtoken").focus();
+            //     return;
+            // }
             $.NotificationApp.send("Alarm!"
                 ,"Plese click checkbox!"
                 ,"top-right"
