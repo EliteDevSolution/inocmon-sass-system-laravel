@@ -232,7 +232,7 @@ class MplsDetailController extends Controller
                 'message' => 'Custom function called successfully',
                 'status' => $status,
                 'debugData' => $lunchData,
-                'relatorio' => $relatorio
+                'relatorio' => nl2br($relatorio)
             ]
         );
     }

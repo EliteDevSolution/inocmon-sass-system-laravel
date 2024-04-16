@@ -126,8 +126,11 @@
                             </h4>
                             <div class="card-box col-6">
                                 @if(is_array($toSendData['buscarRelators']))
-                                    @foreach ( $toSendData['buscarRelators']  as $indexRe => $valueRe )
-                                        <div id="con-close-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                    @foreach ( array_reverse($toSendData['buscarRelators']) as $indexRe => $valueRe )
+                                        <div class="button-list mb-1">
+                                            <button type="button" class="btn btn-primary waves-effect" data-toggle="modal" data-target="#relators-modal-{{$indexRe}}">{{ $indexRe }}</button>
+                                        </div>
+                                        <div id="relators-modal-{{ $indexRe }}" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -140,7 +143,7 @@
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Relatório de configuração:</p>
-                                                            <p>{!! colorReport($valueRe) !!}</p>
+                                                            <p>{!! colorReport(nl2br($valueRe)) !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -210,6 +213,14 @@
                 );
             }
             elementUnBlock('.card-box');
+        }).fail(function(xhr, textStatus, errorThrown) {
+            $.NotificationApp.send("Alarm!"
+                ,"Failed updated!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"error",
+            );
+            elementUnBlock('.card-box');
         });
     }
     let updateIncoConfig = () => {
@@ -240,6 +251,14 @@
                     ,"error",
                 );
             }
+            elementUnBlock('.card-box');
+        }).fail(function(xhr, textStatus, errorThrown) {
+            $.NotificationApp.send("Alarm!"
+                ,"Failed updated!"
+                ,"top-right"
+                ,"#2ebbdb"
+                ,"error",
+            );
             elementUnBlock('.card-box');
         });
     }

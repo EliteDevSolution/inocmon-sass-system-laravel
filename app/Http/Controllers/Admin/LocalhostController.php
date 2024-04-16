@@ -145,7 +145,7 @@ class LocalhostController extends Controller
             return response()->json([
                 'status' => $status,
                 'console_data' => $consoleData,
-                'relatorio' => $relatorio,
+                'relatorio' => nl2br($relatorio),
             ]);
         }
     }
@@ -253,7 +253,7 @@ class LocalhostController extends Controller
         return response()->json([
             'status' => $status,
             'console_data' => $consoleData,
-            'relatorio' => $relatorio
+            'relatorio' => nl2br($relatorio)
         ]);
     }
 
