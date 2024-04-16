@@ -87,7 +87,7 @@
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Config global</p>
-                                                            <p>{!! $toSendData['configBase'] !!}</p>
+                                                            <p id="report">{!! $toSendData['configBase'] !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -125,7 +125,34 @@
                                 Registro das últimas configurações aplicadas em :{{$toSendData['hostname']}}
                             </h4>
                             <div class="card-box col-6">
-                                {{-- there is no data I could not work it anymore --}}
+                                @if(is_array($toSendData['buscarRelators']))
+                                    @foreach ( $toSendData['buscarRelators']  as $indexRe => $valueRe )
+                                        <div id="con-close-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">
+                                                            PR Hostname : {{$toSendData['hostname']}}
+                                                            Config Token : {{$toSendData['configToken']}}
+                                                        </h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                    </div>
+                                                    <div class="modal-body p-3">
+                                                        <div class="col">
+                                                            <p class="header-title mb-2">Relatório de configuração:</p>
+                                                            <p>{!! colorReport($valueRe) !!}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    sem dados
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -167,7 +194,7 @@
         }).done(function( msg ) {
             if(msg['status'] == 'ok') {
                 console.log( msg );
-                document.getElementById('console_data').innerHTML = msg['console_data'];
+                $("#report").text(msg['relatorio']);
                 $.NotificationApp.send("Alarm!"
                     ,"Successfully updated!"
                     ,"top-right"
@@ -198,13 +225,13 @@
         }).done(function( msg ) {
             if(msg['status'] == 'ok') {
                 console.log( msg );
+                $("#report").text(msg['relatorio']);
                 $.NotificationApp.send("Alarm!"
                     ,"Successfully updated!"
                     ,"top-right"
                     ,"#2ebbdb"
                     ,"success",
                 );
-                document.getElementById('console_data').innerHTML = msg['console_data'];
             } else {
                 $.NotificationApp.send("Alarm!"
                     ,'The operation failed!'

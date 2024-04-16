@@ -143,8 +143,6 @@ class ClientBgpDetailController extends Controller
 
     public function aplicarConfig(Request $request) {
 
-
-
         $clientId = $request['clientid'];
         $bgpclienteId = $request['bgpclienteid'];
 

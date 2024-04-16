@@ -90,7 +90,7 @@
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Config global</p>
-                                                            <p class="modal-text">{!! $toSendData['configBaseRr'] !!}</p>
+                                                            <p class="modal-text" id="report">{!! $toSendData['configBaseRr'] !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -237,6 +237,7 @@
         }).done(function( msg ) {
             console.log( msg );
             if(msg['status'] == 'ok') {
+                $("#report").text(msg['relatorio']);
                 $.NotificationApp.send("Alarm!"
                     ,"Successfully updated!"
                     ,"top-right"

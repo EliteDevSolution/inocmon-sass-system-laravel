@@ -91,7 +91,7 @@
         </div>
     </div>
     <div class="card-body">
-        <form action="{{ route('aplicar-config-bgp-client.aplicarConfig') }}" method="post">
+        <form action="{{ route('aplicar-config-bgp-client.aplicarConfig', array('client_id' => $toSendData['clientId'])) }}" method="post">
             @csrf
             @method('POST')
             <label class="font-weight-bold text-muted">Proxy</label>
@@ -122,41 +122,41 @@
             <input class="btn btn-blue mt-2" type="submit" value="aplicar config"></input>
         </form>
     </div>
-    <div class="card-body">
-        </p class='font-17 text-md-center text-danger'> Email de ativação para o cliente  {{$toSendData['nomeDoClienteBgp']}} </p>
-        <div id="accordion2" class="m-1">
-            <div class="card mb-1">
-                <div class="card-header" id="headingThree">
-                    <h5 class="m-0">
-                        <a class="text-dark" data-toggle="collapse" href="#collapseThree" aria-expanded="true">
-                            <i class="mdi mdi-help-circle mr-1 text-primary"></i>
-                            Mostrar/ocultar email para cliente
-                        </a>
-                    </h5>
-                </div>
-                <div id="collapseThree" class="collapse hide p-2" aria-labelledby="headingThree" data-parent="#accordion2">
-                    <iframe src="{{ 'https://www.ultradox.com/preview?id=eHzcIGzIhTR3UojE5b1R8FBE54aSPp&actor=rinaldopvaz@gmail.com&iid=IxXkuoxiSngM3A1l1rGR53744727&nomecliente='
-                            . $toSendData['nomeCliente']
-                            . '&asnlocal='. $toSendData['asn']
-                            . '&ipv4local='. $toSendData['ipv4remoto01']
-                            . '&ipv6local=' . $toSendData['ipv6remoto01']
-                            . '&asnremoto='. $toSendData['remoteAs']
-                            . '&nomebgpcliente=' . $toSendData['nomeDoClienteBgp']
-                            . '&ipv4remoto='. $toSendData['ipv4remoto02']
-                            . '&ipv6remoto='. $toSendData['ipv6remoto02']
-                            . '&ipv4bgpmultihop='. $toSendData['ipv4bgpmultihop']
-                            . '&ipv6bgpmultihop='. $toSendData['ipv6bgpmultihop'] }}"
-                            title="Email Preview" width="1100" height="600" >
-                    </iframe>
-                    <button class="btn btn-primary" onclick="sendData()">
-                        enviar config para cliente
-                    </button>
-                </div>
+
+</div>
+ <div>
+    </p class='font-17 text-md-center text-danger'> Email de ativação para o cliente  {{$toSendData['nomeDoClienteBgp']}} </p>
+    <div id="accordion2">
+        <div class="card mb-1">
+            <div class="card-header" id="headingThree">
+                <h5 class="m-0">
+                    <a class="text-dark" data-toggle="collapse" href="#collapseThree" aria-expanded="true">
+                        <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                        Mostrar/ocultar email para cliente
+                    </a>
+                </h5>
+            </div>
+            <div id="collapseThree" class="collapse hide p-2" aria-labelledby="headingThree" data-parent="#accordion2">
+                <iframe src="{{ 'https://www.ultradox.com/preview?id=eHzcIGzIhTR3UojE5b1R8FBE54aSPp&actor=rinaldopvaz@gmail.com&iid=IxXkuoxiSngM3A1l1rGR53744727&nomecliente='
+                        . $toSendData['nomeCliente']
+                        . '&asnlocal='. $toSendData['asn']
+                        . '&ipv4local='. $toSendData['ipv4remoto01']
+                        . '&ipv6local=' . $toSendData['ipv6remoto01']
+                        . '&asnremoto='. $toSendData['remoteAs']
+                        . '&nomebgpcliente=' . $toSendData['nomeDoClienteBgp']
+                        . '&ipv4remoto='. $toSendData['ipv4remoto02']
+                        . '&ipv6remoto='. $toSendData['ipv6remoto02']
+                        . '&ipv4bgpmultihop='. $toSendData['ipv4bgpmultihop']
+                        . '&ipv6bgpmultihop='. $toSendData['ipv6bgpmultihop'] }}"
+                        title="Email Preview" width="1100" height="600" >
+                </iframe>
+                <button class="btn btn-primary" onclick="sendData()">
+                    enviar config para cliente
+                </button>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 

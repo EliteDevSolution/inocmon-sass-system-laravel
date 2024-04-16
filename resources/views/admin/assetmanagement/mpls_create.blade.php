@@ -55,6 +55,11 @@
                                 <input type="text" name="user" id="user" required value="{{old('user')}}" class="form-control mb-1"  placeholder="Community SNMP:	" style=" z-index: 2; background: transparent;"/>
                                 <label class="mb-1 font-weight-bold text-muted">Senha</label>
                                 <input type="text" name="senha" id="senha" required value="{{old('senha')}}" class="form-control mb-1"  placeholder="Nome do group" style=" z-index: 2; background: transparent;"/>
+                                <label class="mb-1 font-weight-bold text-muted">Grupo IBGP</label>
+                                <select class="form-control mb-1">
+                                    <option value="IBGP-PARCIAL">IBGP-PARCIAL</option>
+                                    <option value="IBGP-FULL">IBGP-FULL</option>
+                                </select>
                             </div>
                             <button class="btn btn-primary ml-2 mt-1" type="submit">atualizar</button>
                             <a class="btn btn-primary ml-2 mt-1" href="{{route("mpls_pe.index", array('client_id' => $clientId))}}" style="color : white" type="submit">go back</a>

@@ -44,8 +44,9 @@ class MplsController extends Controller
     public function create(Request $request)
     {
         $clientId = $request->query()['client_id'];
-
-        return view('admin.assetmanagement.mpls_create', compact('clientId'));
+        $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+        $buscaTemplates = $this->database->getReference('lib/templates/pe')->getSnapshot()->getValue();
+        return view('admin.network.pe', compact('clientId' ,'buscaTemplates'));
     }
 
     /**

@@ -83,7 +83,7 @@
                             <input type="text" name="senha" id="senha" class="form-control mb-1" placeholder="Senha" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <div class="row ml-2 mt-2">
-                            <button class="btn btn-primary ml-2" onclick="saveData()" type="submit">Cadastrar</button>
+                            <button class="btn btn-primary ml-2" onclick="saveData()">Cadastrar</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -201,7 +201,7 @@
                     ,"#2ebbdb"
                     ,"error",
                 );
-                elementUnBlock('div.card-box'');
+                elementUnBlock('div.card-box');
             });
         }
     </script>

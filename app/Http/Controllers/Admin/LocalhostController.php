@@ -144,7 +144,8 @@ class LocalhostController extends Controller
 
             return response()->json([
                 'status' => $status,
-                'console_data' => $consoleData
+                'console_data' => $consoleData,
+                'relatorio' => $relatorio,
             ]);
         }
     }
@@ -251,7 +252,8 @@ class LocalhostController extends Controller
         $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
         return response()->json([
             'status' => $status,
-            'console_data' => $consoleData
+            'console_data' => $consoleData,
+            'relatorio' => $relatorio
         ]);
     }
 
@@ -277,7 +279,7 @@ class LocalhostController extends Controller
         $so = $detailClientData['sondas'][$proxyId]['so'] ?? '';
         $community0 = $detailClientData['bgp']['community0'];
         $asn = $detailClientData['bgp']['asn'];
-        $buscarRelators = $detailClientData['sondas'][$proxyId]['relatorios'] ?? '';
+        $buscarRelators = $detailClientData['sondas'][$proxyId]['relatorios'] ?? [];
         $buscaSondas = $detailClientData['sondas'];
         $buscaEquipmet = $detailClientData['equipamentos'];
 
@@ -297,6 +299,8 @@ class LocalhostController extends Controller
         $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/configs/baseconfig')->set($configBaseFinal);
 
         $consoleData = $detailClientData['sondas'][$proxyId]['debug'] ?? '';
+        $configToken = bin2hex(random_bytes(64));
+        $configToken = substr($configToken,0, -85);
 
         $toSendData = [
             'console_data' => $consoleData,
@@ -305,8 +309,11 @@ class LocalhostController extends Controller
             'proxyip4' => $proxyIp4,
             'platform' => $platform,
             'system' => '',
-            'configBase' => $configBaseSalva
+            'configBase' => $configBaseSalva,
+            'buscarRelators' => $buscarRelators,
+            'configToken' => $configToken
         ];
+
         return view('admin.assetmanagement.localhost', compact('clientId', 'toSendData'));
     }
 

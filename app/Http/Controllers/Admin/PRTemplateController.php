@@ -46,7 +46,13 @@ class PRTemplateController extends Controller
         if (!$pwd) {
             $pwd = $senhaInocmon;
         }
-        $configRrFinal = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'];
+        $configRrFinal = '';
+        if( array_key_exists('configs', $detailClientData['rr'][$rrId])) {
+            $configRrFinal = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'] ?? '';
+        } else {
+            $configRrFinal = '';
+        }
+
     	$configRrFinal = str_replace("<br />","",$configRrFinal);
     	$configFileNameRr = 'CONFIG-RR'.$rrId.'-'.$hostName.'-'.$clientId;
         $uploadFilePath = 'public/configuracoes/'.$configFileNameRr;
@@ -65,12 +71,12 @@ class PRTemplateController extends Controller
 
 	    $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
 
-        $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'];
-        $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'];
-        $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'];
-        $sondaUser = $detailClientData['sondas'][$sondaId]['user'];
-        $sondaPwd = $detailClientData['sondas'][$sondaId]['pwd'];
-        $routerId = $detailClientData['rr'][$rrId]['routerid'];
+        $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'] ?? '';
+        $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'] ?? '';
+        $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'] ?? '';
+        $sondaUser = $detailClientData['sondas'][$sondaId]['user'] ?? '';
+        $sondaPwd = $detailClientData['sondas'][$sondaId]['pwd'] ?? '';
+        $routerId = $detailClientData['rr'][$rrId]['routerid'] ?? '';
 
         $this ->database->getReference($debugDir)->set('conectando ao proxy: '.$sondaHostName.' '.$sondaIpv4.' '.$sondaPortaSsh.' '.$sondaUser.' '.base64_encode($sondaPwd));
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
@@ -118,7 +124,7 @@ class PRTemplateController extends Controller
         }
 
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
-
+        $relatorio = '';
         try {
             if (!$ssh->login($sondaUser, $sondaPwd))
             {
@@ -138,7 +144,8 @@ class PRTemplateController extends Controller
         }
 
         return response()->json([
-            'status' => $status
+            'status' => $status,
+            'relatorio' => $relatorio,
         ]);
     }
 
@@ -169,9 +176,9 @@ class PRTemplateController extends Controller
         }
         $configRrFinal = "";
         for ($i = 0; $i < count($equipIds); $i++) {
-            $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'];
-            $equiphostName = $detailClientData['equipamentos'][$equipIds[$i]]['hostname'];
-            $equipgrupoIbgp = $detailClientData['equipamentos'][$equipIds[$i]]['grupo-ibgp'];
+            $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'] ?? '';
+            $equiphostName = $detailClientData['equipamentos'][$equipIds[$i]]['hostname'] ?? '';
+            $equipgrupoIbgp = $detailClientData['equipamentos'][$equipIds[$i]]['grupo-ibgp'] ?? '';
             $configRr = str_replace("%asn%",$asn, $getTemplate);
 			$configRr = str_replace("%routerid%",$equipRouterId, $configRr);
 			$configRr = str_replace("%hostname%",$equiphostName, $configRr);
@@ -207,11 +214,11 @@ class PRTemplateController extends Controller
 
         $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
 
-        $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'];
-        $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'];
-        $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'];
-        $sondaUser = $detailClientData['sondas'][$sondaId]['user'];
-        $sondaPwd = $detailClientData['sondas'][$sondaId]['pwd'];
+        $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'] ?? '';
+        $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'] ?? '';
+        $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'] ?? '';
+        $sondaUser = $detailClientData['sondas'][$sondaId]['user'] ?? '';
+        $sondaPwd = $detailClientData['sondas'][$sondaId]['pwd'] ?? '';
 
 	    $this->database->getReference($debugDir)->set('conectando ao proxy: '.$sondaHostName.' '.$sondaIpv4.' '.$sondaPortaSsh.' '.$sondaUser.' '.base64_encode($sondaPwd));
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);

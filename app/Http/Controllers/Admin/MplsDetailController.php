@@ -221,7 +221,7 @@ class MplsDetailController extends Controller
             $status = 'failed';
         }
 
-        $relatorio = $rrSsh->exec('awk \'/config begin -> '.$inputConfigToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+        $relatorio = $rrSsh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
         $this->database->getReference($debugDir)->set('Configuração concluída!');
         $this->database->getReference($debugDir)->set('idle');

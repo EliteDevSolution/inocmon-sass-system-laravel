@@ -63,12 +63,12 @@
                                         <td>{{$index}}</td>
                                         <td>{{$value['hostname']}}</td>
                                         <td>{{$value['routerid']}}</td>
-                                        <td>{{$value['template-vendor']}}</td>
-                                        <td>{{$value['template-family']}}</td>
-                                        <td>{{$value['porta']}}</td>
-                                        <td>{{$value['protocolo']}}</td>
-                                        <td>{{$value['user']}}</td>
-                                        <td>{{$value['pwd']}}</td>
+                                        <td>{{$value['template-vendor'] ?? ''}}</td>
+                                        <td>{{$value['template-family'] ?? ''}}</td>
+                                        <td>{{$value['porta'] ?? ''}}</td>
+                                        <td>{{$value['protocolo'] ?? ''}}</td>
+                                        <td>{{$value['user'] ?? ''}}</td>
+                                        <td>{{$value['pwd'] ?? ''}}</td>
                                         <td>
                                             <a href={{ route("proxy-template.index",array('client_id' =>
                                                 request()->query()['client_id'], 'rr_id' => $index ) ) }}>
