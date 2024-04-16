@@ -232,7 +232,7 @@
                                         _token : '{{ csrf_token() }}'
                                     }
                                 }).done(function( msg ) {
-                                    if(msg?.status === 'success')
+                                    if(msg?.status === 'ok')
                                     {
                                         $.NotificationApp.send("Alert!"
                                             ,"Successfully sended!"
@@ -248,6 +248,14 @@
                                             ,"error",
                                         );
                                     }
+                                }).fail(function(xhr, textStatus, errorThrown) {
+                                    $.NotificationApp.send("Alarm!"
+                                        ,"Failed sended !"
+                                        ,"top-right"
+                                        ,"#2ebbdb"
+                                        ,"error",
+                                    );
+                                    elementUnBlock('div.card-box'');
                                 });
                             }
                         },

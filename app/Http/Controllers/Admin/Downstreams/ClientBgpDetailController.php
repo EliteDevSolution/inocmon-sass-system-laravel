@@ -234,7 +234,7 @@ class ClientBgpDetailController extends Controller
             }
         }
         $comandoPe = 'python3 comando_remoto.py '.$targetPeIpv4.' inocmon \''.$senhaInocmon.'\' '.$targetPePort.' ';
-        $scp->put($configFileNamePe, 'public/configuracoes/'.$configFileNamePe, 1);
+        $scp->put($configFileNamePe, public_path() . '/storage/configuracoes/'.$configFileNamePe, 1);
         $this->database->getReference($diretorioStatusConfig)->set('arquivo enviado com sucesso!');
         $this->database->getReference($diretorioStatusConfig)->set('aplicando comando: '.$comandoPe.$configFileNamePe.$debugRemoteFile);
         $checkConfigSucess = $ssh1->exec($comandoPe.$configFileNamePe.' '.$debugRemoteFile.' 2>&1 &');
@@ -269,7 +269,7 @@ class ClientBgpDetailController extends Controller
                     } catch (\Throwable $th) {
                         $status = 'failed';
                     }
-                    $scp->put($configFileNameRr, 'public/configuracoes/'.$configFileNameRr, 1);
+                    $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
                     $debug = 'arquivo copiado! iniciando comandos...';
                     $comandoRr = 'inoc-config '.$targetRrIpv4.' '.$targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' ';
                     $debug = $ssh1->exec($comandoRr.$configFileNameRr.' '.$debugRemoteFile.' | at -b now + 1 minute');
