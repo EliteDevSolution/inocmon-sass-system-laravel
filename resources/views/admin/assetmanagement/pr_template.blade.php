@@ -134,7 +134,7 @@
                                                 <div class="modal-body p-3">
                                                     <div class="col">
                                                         <p class="header-title mb-2">Config global</p>
-                                                        <p class="modal-text" id="report">no result</p>
+                                                        <p class="modal-text" id="report">nenhum resultado</p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -185,6 +185,30 @@
                                     @endforeach
                                 </tbody>
                             </table>
+
+                            <div id="new-modal1" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">PR hostName : {{$toSendData['hostName']}}</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body p-3">
+                                            <div class="col">
+                                                <p class="header-title mb-2">Config aplicada</p>
+                                                <p class="modal-text" id="report1">nenhum resultado</p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="button-list" id="newreport">
+                                <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#new-modal1">Visualizar relatório</button>
+                            </div>
+
                         </div>
                         <div class="tab-pane" id="relator">
                             <h4 class="header-title mb-2">
@@ -330,12 +354,12 @@
                     rrId : "{{$toSendData['rrId']}}",
                     clientId : "{{ $clientId }}",
                     sondaId : sondaId,
-                    checkedEquipArray : checkedEquipArray,
+                    checkedEquipArray : JSON.stringify(checkedEquipArray),
                     _token : '{{ csrf_token() }}'
                 }
                 }).done(function( msg ) {
                     console.log(msg);
-                    // $(".modal-text").html(msg['relatorio']);
+                    $("#report1").html(msg['relatorio']);
                     if(msg['status'] === 'ok') {
                         $.NotificationApp.send("Alert!"
                             ,"Successfull operated!"

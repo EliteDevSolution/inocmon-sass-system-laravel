@@ -219,7 +219,7 @@ class LocalhostController extends Controller
                 sleep(3);
                 $lineCount = substr_count($configUpdateFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$proxyHostName.'... tempo estimado: '.$lineCount.'s');
-                $output = $ssh->exec('inoc-config '.$proxyIpv4.' '.$proxyUser.' \''.$proxyPwd.'\' '.$proxyPortaSsh.' configuracoes/'.$configFileName.' configuracoes/'.$debugFile.' &');
+                $output = $ssh->exec('inoc-config '.$proxyIpv4.' '.$proxyUser.' \''.$proxyPwd.'\' '.$proxyPortaSsh.' '. public_path().'/storage/configuracoes/'.$configFileName.' configuracoes/'.$debugFile.' &');
 
                 sleep(5);
 
