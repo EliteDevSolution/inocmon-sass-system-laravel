@@ -93,11 +93,10 @@ class PRTemplateController extends Controller
                 $scp = new SCP($ssh);
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
                 $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
-
                 $lineCount = substr_count($configRrFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
-
+                sleep(5);
                 if (str_contains($comandoRemoto, 'Err')) {
                     $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
                 }else{
@@ -106,6 +105,7 @@ class PRTemplateController extends Controller
                         $progresso = ($i / $lineCount  * 100);
                         $progresso = round($progresso, 0);
                         $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                        sleep(1);
                     }
                 }
             }
@@ -124,6 +124,7 @@ class PRTemplateController extends Controller
         }
 
 	    $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
+
         $relatorio = '';
         try {
             if (!$ssh->login($sondaUser, $sondaPwd))
@@ -132,20 +133,22 @@ class PRTemplateController extends Controller
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
             } else {
                 $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+                sleep(3);
+                //dd($relatorio);
                 $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
                 $now = date("h-i-sa").'-'.date("Y-M-d");
                 $this->database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);
                 $this->database->getReference($debugDir)->set('Configuração concluída!');
+                sleep(5);
                 $this->database->getReference($debugDir)->set('idle');
                 $status = "ok";
             }
         } catch (\Throwable $th) {
             $status = "failed";
         }
-
         return response()->json([
             'status' => $status,
-            'relatorio' => $relatorio,
+            'relatorio' => nl2br($relatorio),
         ]);
     }
 
@@ -213,6 +216,7 @@ class PRTemplateController extends Controller
 
 
         $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
+	    sleep(3);
 
         $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'] ?? '';
         $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'] ?? '';
@@ -236,6 +240,8 @@ class PRTemplateController extends Controller
                 $lineCount = substr_count($configRrFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
+				sleep(5);
+
                 if (str_contains($comandoRemoto, 'Err')) {
                     $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
                 } else {
@@ -271,7 +277,9 @@ class PRTemplateController extends Controller
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
             } else {
                 $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+                sleep(3);
                 $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
+
                 /*gravar relatorio */
                 $now = date("h-i-sa").'-'.date("Y-M-d");
                 $database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/relatorios/'.$now)->set($relatorio);

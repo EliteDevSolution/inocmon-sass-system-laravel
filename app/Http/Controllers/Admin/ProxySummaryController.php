@@ -80,8 +80,8 @@ class ProxySummaryController extends Controller
         $toSaveData = [
             'hostname' =>$request['hostVal'],
             'ipv4' => $request['routerVal'],
-            'portahttp' => $request['portaSshVal'],
-            'portassh' => $request['portaVal'],
+            'portassh' => $request['portaSshVal'],
+            'portahttp' => $request['portaVal'],
             'pwd' => $request['pwdVal'],
             'user' => $request['userVal']
         ];

@@ -90,7 +90,7 @@
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Config global</p>
-                                                            <p class="modal-text" id="report">{!! $toSendData['configBaseRr'] !!}</p>
+                                                            <p class="modal-text">{!! $toSendData['configBaseRr'] !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -123,6 +123,30 @@
                                             </thead>
                                         </table>
                                     </div>
+
+                                    <div id="new-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">PR hostName : {{$toSendData['hostName']}}</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body p-3">
+                                                    <div class="col">
+                                                        <p class="header-title mb-2">Config global</p>
+                                                        <p class="modal-text" id="report">no result</p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="button-list" id="newreport">
+                                        <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#new-modal">Visualizar relatório</button>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -311,7 +335,7 @@
                 }
                 }).done(function( msg ) {
                     console.log(msg);
-                    $(".modal-text").html(msg['relatorio']);
+                    // $(".modal-text").html(msg['relatorio']);
                     if(msg['status'] === 'ok') {
                         $.NotificationApp.send("Alert!"
                             ,"Successfull operated!"
