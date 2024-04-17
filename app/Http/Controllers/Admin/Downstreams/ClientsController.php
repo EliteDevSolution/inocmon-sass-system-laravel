@@ -28,8 +28,14 @@ class ClientsController extends Controller
         $asn = $clientDetailData['bgp']['asn'];
         $community = $clientDetailData['bgp']['community0'];
         $equipments = $clientDetailData['equipamentos'] ?? [];
-        $buscaCommunitiesTransito = $clientDetailData['bgp']['interconexoes']['transito'];
-        $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['transito'];
+        if( array_key_exists('interconexoes', $clientDetailData['bgp']) ) {
+            $buscaCommunitiesTransito = $clientDetailData['bgp']['interconexoes']['transito'];
+            $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['transito'];
+        }
+        else {
+            $buscaCommunitiesTransito = [];
+            $buscaCommunitiesIx = [];
+        }
         $community = $clientDetailData['bgp']['community0'];
 
         $toSendData = [

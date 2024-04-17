@@ -69,9 +69,11 @@
                             <input type="text" name="recursivos" id="recursivos" class="form-control mb-1" placeholder="IPV6 remoto gbp 01" style=" z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Equipamento PE</label>
                             <select class="form-control" id="equip" data-toggle="select2">
-                                @foreach ( $buscaEquipamentos as $equipIndex => $equipVal )
-                                    <option value="{{$equipIndex}}">{{$equipVal['hostname'] ?? ''}}</option>
-                                @endforeach
+                                @if(is_array($buscaEquipamentos))
+                                    @foreach ( $buscaEquipamentos as $equipIndex => $equipVal )
+                                        <option value="{{$equipIndex}}">{{$equipVal['hostname'] ?? ''}}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             <button class="btn btn-primary mt-4 " type="" onclick="saveData()">Cadastrar</button>
                         </div>

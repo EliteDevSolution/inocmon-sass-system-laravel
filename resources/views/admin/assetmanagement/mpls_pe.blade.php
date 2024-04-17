@@ -61,33 +61,35 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($toSendData['equipments'] as $index => $value)
-                                <tr id="equipId{{$index}}">
-                                    <td>{{$index}}</td>
-                                    <td>{{$value['hostname'] ?? ""}}</td>
-                                    <td>{{$value['routerid'] ?? ""}}</td>
-                                    <td>{{$value['template-vendor'] ?? ""}}</td>
-                                    <td>{{$value['template-family'] ?? ""}}</td>
-                                    <td>{{$value['protocolo'] ?? ""}}</td>
-                                    <td>{{$value['porta'] ?? ""}}</td>
-                                    <td>{{$value['user'] ?? ""}}</td>
-                                    <td>{{$value['pwd'] ?? ""}}</td>
-                                    <td>
-                                        <a href="{{ route("mpls-detail.index", array('client_id' =>
-                                        request()->query()['client_id'], 'equip_id' => $index ) ) }}">
-                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a  onclick="showEdit('equipId{{$index}}')" class="getRow">
-                                            <i class="fe-edit"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <i class="fe-trash" onclick="deleteEquip(this, '{{$index}}')"></i>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if(is_array($toSendData['equipments']))
+                                @foreach ($toSendData['equipments'] as $index => $value)
+                                    <tr id="equipId{{$index}}">
+                                        <td>{{$index}}</td>
+                                        <td>{{$value['hostname'] ?? ""}}</td>
+                                        <td>{{$value['routerid'] ?? ""}}</td>
+                                        <td>{{$value['template-vendor'] ?? ""}}</td>
+                                        <td>{{$value['template-family'] ?? ""}}</td>
+                                        <td>{{$value['protocolo'] ?? ""}}</td>
+                                        <td>{{$value['porta'] ?? ""}}</td>
+                                        <td>{{$value['user'] ?? ""}}</td>
+                                        <td>{{$value['pwd'] ?? ""}}</td>
+                                        <td>
+                                            <a href="{{ route("mpls-detail.index", array('client_id' =>
+                                            request()->query()['client_id'], 'equip_id' => $index ) ) }}">
+                                                <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a  onclick="showEdit('equipId{{$index}}')" class="getRow">
+                                                <i class="fe-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <i class="fe-trash" onclick="deleteEquip(this, '{{$index}}')"></i>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

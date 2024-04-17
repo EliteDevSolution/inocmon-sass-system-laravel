@@ -72,9 +72,11 @@
                             <input type="text" name="vírgula" required id="vírgula" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Equipmentos</label></label>
                             <select class="form-control" id="equip" required data-toggle="select2">
+                            @if(is_array($buscaEquipamentos))
                                 @foreach ($buscaEquipamentos as $index => $value)
                                     <option value="{{$index}}" id="equip">{{$value['hostname']}}</option>
                                 @endforeach
+                            @endif
                             </select>
                         </div>
                         <div class="row ml-2 mt-2">

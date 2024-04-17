@@ -97,7 +97,7 @@
                                                 <div class="modal-body p-3">
                                                     <div class="col">
                                                         <p class="header-title mb-2">Config global</p>
-                                                        <p>{{$toSendData['configSalva']}}</p>
+                                                        <p>{!! $toSendData['configSalva'] !!}</p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -141,6 +141,30 @@
                                         </thead>
                                     </table>
                                 </div>
+
+                                <div id="new-report" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">{{$toSendData['nomeDoGrupo']}} {{$toSendData['targetPeName']}}</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            </div>
+                                            <div class="modal-body p-3">
+                                                <div class="col">
+                                                    <p class="header-title mb-2">Config aplicada</p>
+                                                    <p id="report"></p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="button-list mt-2">
+                                    <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#new-report">Visualizar relatório</button>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -176,14 +200,14 @@
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title">Config: : {{$toSendData['nomeDoGrupo']}}</h4>
-                                                    <h4 class="modal-title">Token : {{$toSendData['configToken']}}</h4>
+                                                    <p class="modal-title">Config: : {{$toSendData['nomeDoGrupo']}}</p>
+                                                    <p class="modal-title">Token : {{$toSendData['configToken']}}</p>
                                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                                 </div>
                                                 <div class="modal-body p-3">
                                                     <div class="col">
                                                         <p class="header-title mb-2">Relatório de configuração:</p>
-                                                        <p>{{$relatorVal}}</p>
+                                                        <p>{!! nl2br($relatorVal) !!}</p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -231,6 +255,7 @@
         });
 
         function applyConfig(){
+            $("#report").html('');
             var proxyId = $("#proxyid").val();
             console.log(proxyId);
             if(proxyId == null) {
@@ -255,6 +280,7 @@
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
+                $("#report").html(msg['relatorio']);
                 if(msg['status'] == 'ok') {
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
@@ -278,7 +304,7 @@
                     ,"#2ebbdb"
                     ,"error",
                 );
-                elementUnBlock('card-box');
+                elementUnBlock('.card-box');
             });
         }
     </script>

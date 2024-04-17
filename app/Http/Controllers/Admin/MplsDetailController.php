@@ -32,10 +32,18 @@ class MplsDetailController extends Controller
 
         $debugDir = 'clientes/'.$clientId.'/equipamentos/'.$equipId.'/debug';
         $debugFile = 'DEBUG-'.$clientId;
-        $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'];
-        $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'];
-        $sondaUser = $detailClientData['sondas'][$sondaId]['user'];
-        $sondaPwd = $detailClientData['sondas'][$sondaId]['pwd'];
+        if(array_key_exists('sondas', $detailClientData)) {
+            $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'];
+            $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'];
+            $sondaUser = $detailClientData['sondas'][$sondaId]['user'];
+            $sondaPwd = $detailClientData['sondas'][$sondaId]['pwd'];
+        } else {
+            $sondaIpv4 = '';
+            $sondaPortaSsh = '';
+            $sondaUser = '';
+            $sondaPwd = '';
+        }
+
 
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
@@ -90,10 +98,10 @@ class MplsDetailController extends Controller
 
                 $scp->put($configFileNamePe, public_path() . '/storage/configuracoes/'.$configFileNamePe, 1);
                 $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
-                $routerId = $detailClientData['equipamentos'][$equipId]['routerid'];
-                $porta = $detailClientData['equipamentos'][$equipId]['porta'];
-                $user = $detailClientData['equipamentos'][$equipId]['user'];
-                $pwd = $detailClientData['equipamentos'][$equipId]['pwd'];
+                $routerId = $detailClientData['equipamentos'][$equipId]['routerid'] ?? '';
+                $porta = $detailClientData['equipamentos'][$equipId]['porta'] ?? '';
+                $user = $detailClientData['equipamentos'][$equipId]['user'] ?? '';
+                $pwd = $detailClientData['equipamentos'][$equipId]['pwd'] ?? '';
                 $userInocmon = $detailClientData['equipamentos'][$equipId]['userinocmon'] ?? '';
                 $senhaInocmon = $detailClientData['equipamentos'][$equipId]['senhainocmon'] ?? '';
 
@@ -246,18 +254,18 @@ class MplsDetailController extends Controller
         $equipId = $req->query()['equip_id'];
 
         $detailClientData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
-        $debug = $detailClientData['equipamentos'][$equipId]['debug'];
-        $hostName = $detailClientData['equipamentos'][$equipId]['hostname'];
-        $routerId = $detailClientData['equipamentos'][$equipId]['routerid'];
-        $buscaSondas = $detailClientData['sondas'];
-        $senhaInocmonCifrada = $detailClientData['seguranca']['senhainocmoncifrada'];
-        $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
-        $community0 = $detailClientData['bgp']['community0'];
+        $debug = $detailClientData['equipamentos'][$equipId]['debug'] ?? '';
+        $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
+        $routerId = $detailClientData['equipamentos'][$equipId]['routerid'] ?? '';
+        $buscaSondas = $detailClientData['sondas'] ?? [];
+        $senhaInocmonCifrada = $detailClientData['seguranca']['senhainocmoncifrada'] ?? '';
+        $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'] ?? '';
+        $community0 = $detailClientData['bgp']['community0'] ?? '';
         $asn = $detailClientData['bgp']['asn'];
         $buscaRr = $detailClientData['rr'] ?? [];
-        $templateVendor = $detailClientData['equipamentos'][$equipId]['template-vendor'];
-        $templateFamily = $detailClientData['equipamentos'][$equipId]['template-family'];
-        $grupoIbgp = $detailClientData['equipamentos'][$equipId]['grupo-ibgp'];
+        $templateVendor = $detailClientData['equipamentos'][$equipId]['template-vendor'] ??  '';
+        $templateFamily = $detailClientData['equipamentos'][$equipId]['template-family'] ?? '';
+        $grupoIbgp = $detailClientData['equipamentos'][$equipId]['grupo-ibgp'] ?? '';
 
         $dir = 'lib/templates/pe/'.$templateVendor.'/'.$templateFamily;
         $buscaConfigs = $this->database->getReference($dir)->getSnapshot()->GetValue();

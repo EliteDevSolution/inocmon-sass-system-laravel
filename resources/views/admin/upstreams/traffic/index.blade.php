@@ -12,9 +12,9 @@
         th, td {
             text-align : center;
         }
-        /* .th_td_hide {
+        .th_td_hide {
             display: none;
-        } */
+        }
     </style>
 @endsection
 
@@ -119,11 +119,13 @@
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">PE</label>
                             <select class="form-control mb-1" id="peVal">
-                                @foreach ( $toSendData['buscaEquip'] as $index => $value )
-                                    <option value="{{$index}}">
-                                        {{$value['hostname']}}
-                                    </option>
-                                @endforeach
+                                @if(is_array($toSendData['buscaEquip']))
+                                    @foreach ( $toSendData['buscaEquip'] as $index => $value )
+                                        <option value="{{$index}}">
+                                            {{$value['hostname']}}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">PROVEDPR</label>
                             <input type="text" id="provedor" required class="form-control mb-1"/>

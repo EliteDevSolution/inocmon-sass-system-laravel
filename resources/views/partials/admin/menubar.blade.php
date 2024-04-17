@@ -179,20 +179,21 @@
                 </ul>
             </li>
 
+            @if(!auth()->user()->hasRole("administrator"))
             <li class="menu-title mt-2">Sistema</li>
-
-            <li>
-                <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
-                    <span> ChangeLogs </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li >
-                        <a href="{{ route('changelog.index') }}">Change Log</a>
-                    </li>
-                </ul>
-            </li>
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-pocket"></i>
+                        <span> ChangeLogs </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li >
+                            <a href="{{ route('changelog.index') }}">Change Log</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
 
         </ul>
     @else

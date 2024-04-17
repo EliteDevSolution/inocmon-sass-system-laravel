@@ -33,16 +33,17 @@ class TemplateConfigController extends Controller
 		$targetPeId = $buscaDadosDaConexao['peid'];
         $templateVendor = $detailClientData['equipamentos'][$targetPeId]['template-vendor'];
         $templateFamily = $detailClientData['equipamentos'][$targetPeId]['template-family'];
-        $buscaTemplate = $this->database->getReference('lib/templates/bgp/'.$tipoConexao.'/'.$templateVendor.'/'.$templateFamily)->getSnapshot();
+
+        $buscaTemplate = $this->database->getReference('lib/templates/bgp/'.$tipoConexao.'/'.$templateVendor.'/'.$templateFamily)->getSnapshot()->getValue();
         $targetPeRouterId = $detailClientData['equipamentos'][$targetPeId]['routerid'];
         $targetPeName = $detailClientData['equipamentos'][$targetPeId]['hostname'];
         $userInform = $detailClientData['seguranca'];
         $userInocmon = $userInform['userinocmon'];
         $senhaInocmon = $userInform['senhainocmon'];
-
+        $relatorio = '';
         $this->database->getReference($debugDir)->set('preparando config base para '.$nomeDoGrupo);
 
-        if(! $buscaTemplate->getValue()) {
+        if(!$buscaTemplate) {
             $this->database->getReference($debugDir)->set('# não foram encontradas templates para '.$templateVendor.' '.$templateFamily);
         }
         else {
@@ -93,9 +94,11 @@ class TemplateConfigController extends Controller
                     $scp = new SCP($ssh);
                     $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
                     $scp->put($configFileName, public_path() . '/storage/configuracoes/'.$configFileName, 1);
+                    sleep(3);
                     $lineCount = substr_count($configFinal, "\n");
                     $this->database->getReference($debugDir)->set('iniciando config em PE '.$targetPeName.'... tempo estimado: '.$lineCount.'s');
                     $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileName.' '.$debugFile.' & ');
+                    sleep(5);
                     if (str_contains($comandoRemoto, 'Err')) {
                         $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
                     }else{
@@ -104,7 +107,6 @@ class TemplateConfigController extends Controller
                             $progresso = ($i / $lineCount  * 100);
                             $progresso = round($progresso, 0);
                             $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
-                            sleep(1);
                         }
                     }
                     $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
@@ -116,13 +118,13 @@ class TemplateConfigController extends Controller
                         $progresso = round($progresso, 0);
                         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
                     }
-
                     $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
                     if (!$ssh->login($proxyUser, $proxyPwd)) {
                         $this->database->getReference($debugDir)->set('falha de login no proxy...');
                         $status = 'failed';
                     } else {
                         $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+                        sleep(4);
                         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
                         $now = date("Y-M-d").'-'.date("h-i-sa");
                         $this->database->getReference($diretorioConexaoBgp.'/relatorios/'.$now)->set($relatorio);
@@ -136,11 +138,9 @@ class TemplateConfigController extends Controller
            }
         }
 
-        $updatedDebug = $this->database->getReference($debugDir)->getSnapshot()->getValue();
-
         return response()->json([
             'status' => $status,
-            'updatedDebug' => $updatedDebug
+            'relatorio' => nl2br($relatorio),
         ]);
     }
     /**
@@ -292,7 +292,7 @@ class TemplateConfigController extends Controller
             'nomeDoGrupo' => $nomeDoGrupo,
             'img' => $img,
             'targetPeName' =>$targetPeName,
-            'configSalva' => $configSalva,
+            'configSalva' => nl2br($configSalva),
             'buscaProxy' => $buscaProxy,
             'targetPeRouterId' => $targetPeRouterId,
             'targetPeId' => $targetPeId,

@@ -121,11 +121,13 @@
                                 <input type="text" id ="ipv602"   required class="form-control mb-1" />
                                 <label class="mb-1 font-weight-bold text-muted">PE</label>
                                 <select class="form-control" id="peVal">
-                                    @foreach ( $toSendData['buscaEquip'] as $index => $value )
-                                        <option value="{{$index}}">
-                                            {{$value['hostname']}}
-                                        </option>
-                                    @endforeach
+                                    @if(is_array($toSendData['buscaEquip']))
+                                        @foreach ( $toSendData['buscaEquip'] as $index => $value )
+                                            <option value="{{$index}}">
+                                                {{$value['hostname']}}
+                                            </option>
+                                        @endforeach
+                                    @endif
                                 </select>
                             </div>
                             <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>

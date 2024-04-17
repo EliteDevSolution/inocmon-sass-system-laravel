@@ -104,7 +104,7 @@ class PRTemplateController extends Controller
 
                 // $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.public_path().'/storage/configuracoes/'.$configFileNameRr.' '.$debugFile.' & ');
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
-                sleep(10);
+                sleep(7);
                 //dd($comandoRemoto,  $configFileNameRr, $configRrFinal);
 
                 if (str_contains($comandoRemoto, 'Err')) {
@@ -196,6 +196,7 @@ class PRTemplateController extends Controller
 			$configRr = str_replace("%grupo-ibgp%",$equipgrupoIbgp, $configRr);
 			$configRrFinal .= $configRr;
         }
+
         $routerId = $detailClientData['rr'][$rrId]['routerid'];
         $hostName = $detailClientData['rr'][$rrId]['hostname'];
         $porta = $detailClientData['rr'][$rrId]['porta'];
@@ -250,8 +251,8 @@ class PRTemplateController extends Controller
                 $lineCount = substr_count($configRrFinal, "\n");
 
                 $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
-                $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.public_path().'/storage/configuracoes/'.$configFileNameRr.' '.$debugFile.' & ');
-                sleep(3);
+                $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
+                sleep(7);
                 if (str_contains($comandoRemoto, 'Err')) {
                     $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
                 } else {

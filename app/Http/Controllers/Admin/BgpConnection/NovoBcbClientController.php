@@ -29,9 +29,17 @@ class NovoBcbClientController extends Controller
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
         $buscaEquipamentos= $detailClientData['equipamentos'];
-        $cdns = $detailClientData['bgp']['interconexoes']['cdn'];
-        $buscaCommunitiesTransito = $detailClientData['bgp']['interconexoes']['transito'];
-        $buscaCommunitiesIx = $detailClientData['bgp']['interconexoes']['transito'];
+
+        if( array_key_exists('interconexoes', $detailClientData['bgp']) ) {
+            $buscaCommunitiesTransito = $detailClientData['bgp']['interconexoes']['transito'] ?? [];
+            $buscaCommunitiesIx = $detailClientData['bgp']['interconexoes']['ix'] ?? [];
+            $cdns = $detailClientData['bgp']['interconexoes']['cdn'];
+        } else {
+            $buscaCommunitiesTransito =[];
+            $buscaCommunitiesIx= [];
+            $cdns = [];
+        }
+
         $community = $detailClientData['bgp']['community0'];
 
         return view('admin.bgpconnection.bgpclient', compact('clientId','buscaEquipamentos',

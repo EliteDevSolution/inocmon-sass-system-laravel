@@ -121,11 +121,13 @@
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Equipmento PE</label>
                             <select class="form-control" id="peVal">
-                                @foreach ( $toSendData['buscaEquip'] as $equipIndex => $equipVal )
-                                    <option value="{{$equipIndex}}">
-                                        {{$equipVal['hostname']}}
-                                    </option>
-                                @endforeach
+                                @if(is_array($toSendData['buscaEquip']))
+                                    @foreach ( $toSendData['buscaEquip'] as $equipIndex => $equipVal )
+                                        <option value="{{$equipIndex}}">
+                                            {{$equipVal['hostname']}}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>

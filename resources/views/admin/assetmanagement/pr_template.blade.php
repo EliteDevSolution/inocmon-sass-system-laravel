@@ -110,9 +110,11 @@
                                                 <td>Sonda remota</td>
                                                 <td>
                                                     <select name="sondaRemote" class="form-control" data-toggle="select2" >
-                                                        @foreach ($toSendData['buscaSondas'] as $index => $value)
-                                                            <option value="{{$index}}">{{$value['hostname']}}</option>
-                                                        @endforeach
+                                                       @if(is_array($toSendData['buscaSondas']))
+                                                            @foreach ($toSendData['buscaSondas'] as $index => $value)
+                                                                <option value="{{$index}}">{{$value['hostname']}}</option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </td>
                                             </tr>
@@ -165,23 +167,27 @@
                                             </button>
                                             <label for="sondaid" class="mb-0">Proxy:</label>
                                             <select name="sondaid" id="sondaid" required class="form-control w-auto" data-toggle="select2" >
-                                                @foreach ($toSendData['buscaSondas'] as $index => $value)
-                                                    <option value="{{$index}}">{{$value['hostname']}}</option>
-                                                @endforeach
+                                                @if(is_array($toSendData['buscaSondas']))
+                                                    @foreach ($toSendData['buscaSondas'] as $index => $value)
+                                                        <option value="{{$index}}">{{$value['hostname']}}</option>
+                                                    @endforeach
+                                                @endif
                                             </select>
                                             <button type="button" onclick='applyConfigPes()' class="btn btn-success waves-effect waves-light">
                                                 Aplicar confg BGP com PEs
                                             </button>
                                         </td>
                                     </tr>
-                                    @foreach ($toSendData['buscaEquipamentos'] as $equipIndex => $equipVal)
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" class="pe" id="pe" name="equip" value="{{$equipIndex}}">
-                                                <label for="base"> {{$equipVal['hostname'] ?? ''}}</label><br>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    @if(is_array($toSendData['buscaEquipamentos']))
+                                        @foreach ($toSendData['buscaEquipamentos'] as $equipIndex => $equipVal)
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" class="pe" id="pe" name="equip" value="{{$equipIndex}}">
+                                                    <label for="base"> {{$equipVal['hostname'] ?? ''}}</label><br>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
 

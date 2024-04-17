@@ -64,9 +64,11 @@
                             <input type="text" name="ipv602" required id="ipv602" class="form-control mb-1"  style="z-index: 2; background: transparent;"/>
                             <label class="mb-1 font-weight-bold text-muted">Equipamento PE:</label>
                             <select class="form-control" id="equip" required data-toggle="select2">
-                                @foreach ($buscaEquipamentos as $index => $value)
-                                    <option value="{{$index}}">{{$value['hostname']}}</option>
-                                @endforeach
+                                @if(is_array($buscaEquipamentos))
+                                    @foreach ($buscaEquipamentos as $index => $value)
+                                        <option value="{{$index}}">{{$value['hostname']}}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="row ml-2 mt-2">

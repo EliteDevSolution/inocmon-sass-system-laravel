@@ -121,11 +121,13 @@
                         <input type="text"  id="pop"  required class="form-control mb-1"/>
                         <label class="mb-1 font-weight-bold text-muted">PE</label>
                         <select class="form-control mb-1" id="pe">
-                            @foreach ( $toSendData['equipment'] as $index => $value )
-                                <option value="{{$index}}">
-                                    {{$value['hostname']}}
-                                </option>
-                            @endforeach
+                            @if(is_array($toSendData['equipment']))
+                                @foreach ( $toSendData['equipment'] as $index => $value )
+                                    <option value="{{$index}}">
+                                        {{$value['hostname']}}
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                         <label class="mb-1 font-weight-bold text-muted">Blocos-Ipv6</label>
                         <input type="text"  id="block6"  required class="form-control mb-1"/>
