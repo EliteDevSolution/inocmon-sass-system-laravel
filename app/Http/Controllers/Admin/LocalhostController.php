@@ -198,7 +198,6 @@ class LocalhostController extends Controller
         } catch (\Throwable $th) {
             $status = 'failed';
         }
-
 	    $this->database->getReference($debugDir)->set('arquivo '.$configFileName.' gerado com sucesso! preparando transferência...');
 	    $this->database->getReference($debugDir)->set('conectando ao proxy: '.$proxyHostName.' '.$proxyIpv4.' '.$proxyPortaSsh.' '.$proxyUser.' '.base64_encode($proxyPwd));
 	    $ssh = new SSH2($proxyIpv4, $proxyPortaSsh);
@@ -220,7 +219,6 @@ class LocalhostController extends Controller
                 $lineCount = substr_count($configUpdateFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$proxyHostName.'... tempo estimado: '.$lineCount.'s');
                 $output = $ssh->exec('inoc-config '.$proxyIpv4.' '.$proxyUser.' \''.$proxyPwd.'\' '.$proxyPortaSsh.' '. public_path().'/storage/configuracoes/'.$configFileName.' configuracoes/'.$debugFile.' &');
-
                 sleep(5);
 
 

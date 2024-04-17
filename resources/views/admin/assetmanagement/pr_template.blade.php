@@ -133,7 +133,7 @@
                                                 </div>
                                                 <div class="modal-body p-3">
                                                     <div class="col">
-                                                        <p class="header-title mb-2">Config global</p>
+                                                        <p class="header-title mb-2">Config aplicada</p>
                                                         <p class="modal-text" id="report">nenhum resultado</p>
                                                     </div>
                                                 </div>
@@ -146,7 +146,6 @@
                                     <div class="button-list" id="newreport">
                                         <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#new-modal">Visualizar relatório</button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

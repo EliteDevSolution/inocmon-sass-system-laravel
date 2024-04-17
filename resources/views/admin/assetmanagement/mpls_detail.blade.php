@@ -169,7 +169,7 @@
                                 <div class="modal-body p-3">
                                     <div class="col">
                                         <p class="header-title mb-2">Config global</p>
-                                        <p id="modal-value">{!! nl2br($toSendData['configGlobal']) !!}</p>
+                                        <p>{!! nl2br($toSendData['configGlobal']) !!}</p>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -180,6 +180,29 @@
                     </div>
                     <div class="button-list">
                         <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#con-close-modal">Visual Config Base</button>
+                    </div>
+                    <p class="m-2">Nenhum resultado</p>
+                    <div id="new-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Hostname : {{$toSendData['hostName']}}</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                </div>
+                                <div class="modal-body p-3">
+                                    <div class="col">
+                                        <p class="header-title mb-2">Config aplicada</p>
+                                        <p id="modal-value">nenhum resultado</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-list">
+                        <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#new-modal">Visualizar relatório</button>
                     </div>
                 </div>
             </div>

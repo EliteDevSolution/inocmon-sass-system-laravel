@@ -87,7 +87,7 @@
                                                     <div class="modal-body p-3">
                                                         <div class="col">
                                                             <p class="header-title mb-2">Config global</p>
-                                                            <p id="report">{!! $toSendData['configBase'] !!}</p>
+                                                            <p>{!! $toSendData['configBase'] !!}</p>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -117,6 +117,29 @@
                                             </thead>
                                         </table>
                                     </div>
+                                    <div id="new-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">PR Hostname : {{$toSendData['hostname']}}</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                    </div>
+                                                    <div class="modal-body p-3">
+                                                        <div class="col">
+                                                            <p class="header-title mb-2">Config aplicada</p>
+                                                            <p id="report"></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Fechar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="button-list">
+                                            <button type="button" class="btn btn-success waves-effect waves-light" data-toggle="modal" data-target="#new-modal">Visualizar relatório</button>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -135,7 +158,7 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h4 class="modal-title">
-                                                            PR Hostname : {{$toSendData['hostname']}}
+                                                            PR Hostname : {{$toSendData['hostname']}}<br>
                                                             Config Token : {{$toSendData['configToken']}}
                                                         </h4>
                                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

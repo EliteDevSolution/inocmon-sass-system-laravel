@@ -54,8 +54,9 @@ class MplsDetailController extends Controller
         $this->database->getReference($debugDir)->set('preparando:'.$realIndexConfig.'...');
 
         $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
-        if(is_array($buscaConfigIds)) {
-            if(count($buscaConfigIds) > 0){
+
+        if(is_array($buscaConfigIds) || is_array($buscaRrIds)) {
+            if( count($buscaConfigIds) > 0 || count($buscaRrIds) > 0 ){
                 $configFileNamePe = 'CONFIG-PE-'.$clientId.'-'.$equipId;
                 $uploadFilePe = 'public/configuracoes/'.$configFileNamePe;
 
@@ -69,11 +70,9 @@ class MplsDetailController extends Controller
                 } catch (\Throwable $th) {
                     $status = 'failed';
                 }
-
                 $this->database->getReference($debugDir)->set('arquivo '.$configFileNamePe.' gerado com sucesso! Iniciando transferência...');
 
                 $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
-
 
                 try {
                     if (!$ssh->login($sondaUser, $sondaPwd)) {
