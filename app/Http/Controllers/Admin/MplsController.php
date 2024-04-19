@@ -58,8 +58,8 @@ class MplsController extends Controller
     public function store(Request $request)
     {
         $status = "";
-        $clientId = $request['client_id'];
-	    try {
+        $clientId = $request['clientId'];
+  	    try {
             $key = $this->database->getReference('clientes/'.$clientId.'/equipamentos')->push()->getKey();
             $data = [
                 'configs' => [],
@@ -67,21 +67,24 @@ class MplsController extends Controller
                 'grupo-ibgp' => "",
                 'hostname' => $request['hostname'],
                 'porta' => $request['porta'],
-                'protocolo' => $request['protocolo'],
+                'protocolo' => $request['protocol'],
                 'pwd' => $request['senha'],
-                'routerid' => $request['routerId'],
+                'routerid' => $request['routerid'],
                 'template-vendor' =>$request['vendor'],
                 'template-family' => $request['family'],
                 'user' => $request['user']
             ];
 
             $this->database->getReference('clientes/'.$clientId.'/equipamentos/' . $key)->set($data);
-            $status = "success";
-            return redirect()->back()->with('success', $status);;
-
+            $status = "ok";
+            return response()->json([
+                'status' => $status
+            ]);
         } catch(Exception  $err) {
             $status = 'failed';
-            return redirect()->back()->with('failed', $status);
+            return response()->json([
+                'status' => $status
+            ]);
         }
 
     }

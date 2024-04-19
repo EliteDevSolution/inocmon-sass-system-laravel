@@ -85,12 +85,11 @@ class LocalhostController extends Controller
 
             $ssh = new SSH2($proxyIp4, $proxyPortaSsh);
 
-            if (!$proxyUser) { $proxyUser = $userInocmon; }
-	        if (!$proxyPwd) { $proxyPwd = $senhaInocmon; }
+            if (!$proxyUser || $proxyUser == '') { $proxyUser = $userInocmon; }
+	        if (!$proxyPwd || $proxyPwd == '') { $proxyPwd = $senhaInocmon; }
 
             $configToken = bin2hex(random_bytes(64));
             $configToken = substr($configToken,0, -85);
-            //$_SESSION['token_config_rr'] = $configToken;
             $echoRes = "";
             try {
                 if (!$ssh->login($proxyUser, $proxyPwd)) {
@@ -103,14 +102,13 @@ class LocalhostController extends Controller
                     $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileName);
 
                     $echoRes = $scp->put($configFileName, public_path() . '/storage/configuracoes/'.$configFileName, 1);
-                    sleep(3);
+                    sleep(1);
                     $lineCount = substr_count($configBaseFinal, "\n");
                     $this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
                     $comandoRemoto = $ssh->exec('sh '.$configFileName.' >> '.$debugFile.' & ');
-                    sleep(4);
+                    sleep(3);
                     if (str_contains($comandoRemoto, 'Err')) {
                         $database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
-                        sleep(1);
 				    } else {
                         for ($i = 0; $i < $lineCount; $i++){
                             $tempoEstimado = ($lineCount - $i);
@@ -127,6 +125,7 @@ class LocalhostController extends Controller
                             $progresso = ($i / $lineCount  * 100);
                             $progresso = round($progresso, 0);
                             $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
+                            sleep(1);
                         }
 
                         $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
@@ -138,7 +137,6 @@ class LocalhostController extends Controller
                         $this->database->getReference('clientes/'.$clientId.'/sondas/'.$proxyId.'/relatorios/'.$now)->set($relatorio);
 
                         $this->database->getReference($debugDir)->set('Configuração concluída!');
-                        sleep(5);
                         $consoleData = $detailClientData['sondas'][$proxyId]['debug'];
                         $this->database->getReference($debugDir)->set('idle');
                     }
@@ -179,8 +177,8 @@ class LocalhostController extends Controller
         $senhaInocmon = $detailClientData['seguranca']['senhainocmon'];
         $configBaseSalva = $detailClientData['sondas'][$proxyId]['configs']['baseconfig'];
         $this->database->getReference($debugDir)->set('preparando atualização para proxy'.$proxyId.': '.$proxyHostName);
-        if (!$proxyUser) { $user = $userInocmon; }
-	    if (!$proxyPwd) { $pwd = $senhaInocmon; }
+        if (!$proxyUser || $proxyUser == '') { $user = $userInocmon; }
+	    if (!$proxyPwd || $proxyPwd == '') { $pwd = $senhaInocmon; }
         $configUpdateFinal = str_replace("<br />","",$getTemplateUpdate);
         $configUpdateFinal = str_replace("%pwd%",$proxyPwd, $configUpdateFinal);
         $configUpdateFinal = str_replace("%user%",$proxyUser, $configUpdateFinal);
@@ -207,22 +205,19 @@ class LocalhostController extends Controller
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
                 $status = 'failed';
             } else {
-                $output = $ssh->exec('echo \'config begin -> '.$configToken.'\' >> configuracoes/'.$debugFile.'.log');
-                sleep(2);
+                $output = $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                 #echo "<pre>$output</pre>";
                 $scp = new SCP($ssh);
+                $scp->put($configFileName, public_path() . '/storage/configuracoes/'.$configFileName, 1);
+                sleep(1);
                 $this->database->getReference($debugDir)->set('iniciando copia dos arquivos...');
                 $scp->put('inoc-config', '/usr/bin/inoc-config', 1);
-                sleep(3);
                 $scp->put('inoc-command', '/usr/bin/inoc-command', 1);
-                sleep(3);
+                sleep(2);
                 $lineCount = substr_count($configUpdateFinal, "\n");
                 $this->database->getReference($debugDir)->set('iniciando config em PROXY '.$proxyId.' '.$proxyHostName.'... tempo estimado: '.$lineCount.'s');
-                $output = $ssh->exec('inoc-config '.$proxyIpv4.' '.$proxyUser.' \''.$proxyPwd.'\' '.$proxyPortaSsh.' '. public_path().'/storage/configuracoes/'.$configFileName.' configuracoes/'.$debugFile.' &');
-                sleep(5);
-
-
-                for ($i = 0; $i < $lineCount; $i++){
+                $output = $ssh->exec('inoc-config '.$proxyIpv4.' '.$proxyUser.' \''.$proxyPwd.'\' '.$proxyPortaSsh.' '.$configFileName.' '.$debugFile.' &');
+                for ($i = 0; $i < $lineCount; $i++) {
                     $tempoEstimado = ($lineCount - $i);
                     $progresso = ($i / $lineCount  * 100);
                     $progresso = round($progresso, 0);
@@ -247,7 +242,7 @@ class LocalhostController extends Controller
         }
 
         //$cli = 'awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' configuracoes/'.$debugFile.'.log';
-        $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' configuracoes/'.$debugFile.'.log');
+        $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
         sleep(3);
         //$relatorio = $ssh->exec($cli);
         #echo "<pre>$relatorio</pre>";

@@ -43,20 +43,23 @@ class UsersController extends Controller
         $users = User::all();
         $selectClients = [];
         foreach ($clients as $clientIndex => $client) {
-            $flag = true;
-            foreach ($users as $userIndex => $user) {
-                if($user['client_id'] != $clientIndex) {
-                    $flag = true;
-                } else {
-                    $flag = false;
-                    break;
-                }
-            }
             $clientForArray = [];
-            if($flag) {
-                $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
-                $selectClients = array_merge($selectClients, $clientForArray);
-            }
+            $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
+            $selectClients = array_merge($selectClients, $clientForArray);
+            // $flag = true;
+            // foreach ($users as $userIndex => $user) {
+            //     if($user['client_id'] != $clientIndex) {
+            //         $flag = true;
+            //     } else {
+            //         $flag = false;
+            //         break;
+            //     }
+            // }
+            // $clientForArray = [];
+            // if($flag) {
+            //     $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
+            //     $selectClients = array_merge($selectClients, $clientForArray);
+            // }
         }
         if (! Gate::allows('users_manage')) {
             return abort(401);
@@ -111,24 +114,27 @@ class UsersController extends Controller
         $users = User::all();
         $selectClients = [];
         foreach ($clients as $clientIndex => $client) {
-            $flag = true;
-            foreach ($users as $userIndex => $userData) {
-                if($userData['client_id'] != $clientIndex) {
-                    $flag = true;
-                } else if ($user['client_id'] == $clientIndex ) {
-                    $flag = true;
-                    break;
-                }
-                else {
-                    $flag = false;
-                    break;
-                }
-            }
             $clientForArray = [];
-            if($flag) {
-                $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
-                $selectClients = array_merge($selectClients, $clientForArray);
-            }
+            $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
+            $selectClients = array_merge($selectClients, $clientForArray);
+            // $flag = true;
+            // foreach ($users as $userIndex => $userData) {
+            //     if($userData['client_id'] != $clientIndex) {
+            //         $flag = true;
+            //     } else if ($user['client_id'] == $clientIndex ) {
+            //         $flag = true;
+            //         break;
+            //     }
+            //     else {
+            //         $flag = false;
+            //         break;
+            //     }
+            // }
+            // $clientForArray = [];
+            // if($flag) {
+            //     $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
+            //     $selectClients = array_merge($selectClients, $clientForArray);
+            // }
         }
         if (! Gate::allows('users_manage')) {
             return abort(401);

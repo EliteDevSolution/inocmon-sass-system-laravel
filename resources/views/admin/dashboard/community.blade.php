@@ -102,7 +102,7 @@
                                 <tbody>
                                     <tr>
                                         <th>NO-EXPORT-ALL-TRANSIT</th>
-                                        <th>{{$toSendData["community"]}}:911</th>
+                                        <th>{{$toSendData["community"]}}:910</th>
                                     </tr>
                                     <tr>
                                         <th>EXPORT-PADRAO-TRANSIT</th>

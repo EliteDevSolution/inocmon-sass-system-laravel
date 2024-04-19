@@ -105,7 +105,7 @@ class TempEditController extends Controller
             if(isset($family)) {
                 try {
                     $toSaveData = [
-                        $family => []
+                        $family => ''
                     ];
                     $this->database->getReference('lib/templates/bgp/transito/'.$configSection)->update($toSaveData);
                     $status = "ok";

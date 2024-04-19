@@ -58,22 +58,24 @@
                 </button>
             </div>
             <div class="col-6">
-                <p class="header-title mb-2">Nova Config section</p>
+                <p class="header-title mb-2">Nova config section</p>
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted">Family</label>
-                    <input type="text" name="family" required id="family" class="custom-input form-control mb-1"/>
-                </div>
-                <div class="group-input m-2">
-                    <label class="mb-1 custom-lable font-weight-bold text-muted">Nova config section</label>
                     <select class="custom-input form-control" id="configsection" required>
                         @foreach ($templates as $indexTemp => $valueTemp)
-                            @foreach ($templates[$indexTemp] as $index => $value)
-                                <option value="{{$indexTemp.'/'.$index}}">
-                                    {{$indexTemp.'/'.$index}}
-                                </option>
-                            @endforeach
+                            @if (is_array($valueTemp))
+                                @foreach ($templates[$indexTemp] as $index => $value)
+                                    <option value="{{$indexTemp.'/'.$index}}">
+                                        {{$indexTemp.'/'.$index}}
+                                    </option>
+                                @endforeach
+                            @endif
                         @endforeach
                     </select>
+                </div>
+                <div class="group-input m-2">
+                    <label class="mb-1 custom-lable font-weight-bold text-muted">Nova Config section</label>
+                    <input type="text" name="family" required id="family" class="custom-input form-control mb-1"/>
                 </div>
                 <button class="ml-1 btn btn-primary mt-2" onclick="saveData('config-section')">
                     Cadastrar-Section
@@ -105,9 +107,7 @@
 
                                                     <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{$index}}" data-parent="#accordion">
                                                         <div class="card-body">
-                                                            <textarea rows = 10 cols = 100 id="{{$index}}">
-                                                                {{$value}}
-                                                            </textarea>
+                                                            <textarea rows = 10 cols = 100 id="{{$index}}">{{$value}}</textarea>
                                                             <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
                                                                 Garava
                                                             </button>
@@ -149,8 +149,6 @@
             var family = $("#family").val();
             var configSection = $("#configsection").val();
             var textVal = $(`#${todo}`).val();
-            console.log(textVal);
-
 
             if( todo == "family-update" && novaFamily == "" ) {
                 $.NotificationApp.send("Alarm!"

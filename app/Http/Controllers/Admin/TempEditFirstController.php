@@ -104,7 +104,7 @@ class TempEditFirstController extends Controller
             if(isset($family)) {
                 try {
                     $toSaveData = [
-                        $family => []
+                        $family => ''
                     ];
                     $this->database->getReference('lib/templates/pe/'.$configSection)->update($toSaveData);
                     $status = "ok";

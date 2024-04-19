@@ -41,10 +41,10 @@ class PRTemplateController extends Controller
         $debugFile = 'DEBUG-'.$clientId;
         $this->database->getReference($debugDir)->set('preparando config base para RR'.$rrId.': '.$hostName);
 
-        if (!$user) {
+        if (!$user || $user == '') {
              $user = $userInocmon;
         }
-        if (!$pwd) {
+        if (!$pwd || $pwd == '') {
             $pwd = $senhaInocmon;
         }
         $configRrFinal = '';
@@ -89,14 +89,12 @@ class PRTemplateController extends Controller
             } else {
                 $status = "ok";
                 $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-                sleep(2);
-
                 $scp = new SCP($ssh);
 
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
 
                 $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
-                sleep(3);
+                sleep(2);
 
                 $lineCount = substr_count($configRrFinal, "\n");
 
@@ -104,7 +102,6 @@ class PRTemplateController extends Controller
 
                 // $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.public_path().'/storage/configuracoes/'.$configFileNameRr.' '.$debugFile.' & ');
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
-                sleep(7);
                 //dd($comandoRemoto,  $configFileNameRr, $configRrFinal);
 
                 if (str_contains($comandoRemoto, 'Err')) {
@@ -115,6 +112,7 @@ class PRTemplateController extends Controller
                         $progresso = ($i / $lineCount  * 100);
                         $progresso = round($progresso, 0);
                         $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                        sleep(1);
                     }
                 }
             }
@@ -205,8 +203,8 @@ class PRTemplateController extends Controller
         $userInocmon = $detailClientData['seguranca']['userinocmon'];
         $senhaInocmon = $detailClientData['seguranca']['senhainocmon'];
 
-        if (!$user) { $user = $userInocmon; }
-	    if (!$pwd) { $pwd = $senhaInocmon; }
+        if (!$user || $user == '') { $user = $userInocmon; }
+	    if (!$pwd || $pwd == '') { $pwd = $senhaInocmon; }
 
         $configFileNameRr = 'CONFIG-RR'.$rrId.'-'.$hostName.'-'.$clientId;
         $uploadFilePath = 'public/configuracoes/'.$configFileNameRr;
@@ -223,8 +221,6 @@ class PRTemplateController extends Controller
             $status = 'failed';
         }
         $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
-	    sleep(3);
-
         $sondaHostName = $detailClientData['sondas'][$sondaId]['hostname'] ?? '';
         $sondaIpv4 = $detailClientData['sondas'][$sondaId]['ipv4'] ?? '';
         $sondaPortaSsh = $detailClientData['sondas'][$sondaId]['portassh'] ?? '';
@@ -243,16 +239,14 @@ class PRTemplateController extends Controller
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
             } else {
                 $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-                sleep(1);
                 $scp = new SCP($ssh);
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-                $aaa = $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
-                sleep(3);
+                $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
+                sleep(2);
                 $lineCount = substr_count($configRrFinal, "\n");
 
                 $this->database->getReference($debugDir)->set('iniciando config em RR'.$rrId.' '.$hostName.'... tempo estimado: '.$lineCount.'s');
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNameRr.' '.$debugFile.' & ');
-                sleep(7);
                 if (str_contains($comandoRemoto, 'Err')) {
                     $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
                 } else {
@@ -261,6 +255,7 @@ class PRTemplateController extends Controller
                         $progresso = ($i / $lineCount  * 100);
                         $progresso = round($progresso, 0);
                         $this->database->getReference($debugDir)->set($progresso.'% aplicando config em '.$hostName.' tempo estimado: '.$tempoEstimado.'s ');
+                        sleep(1);
                     }
                 }
                 $status = 'ok';

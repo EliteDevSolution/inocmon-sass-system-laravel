@@ -55,7 +55,7 @@
                                     RouterId
                                 </th>
                                 <th>
-                                    Plataforma
+                                    Platforma
                                 </th>
                                 <th>
                                     SO
@@ -86,12 +86,12 @@
                         <tbody>
                             @if(is_array($buscarSondas))
                                 @foreach ($buscarSondas as $index => $buscarSonda )
-                                    <tr id="buscarSondaId{{$index}}">
+                                    <tr id="buscarSondaId{{$index}}" pop="{{$buscarSonda['pop'] ?? ''}}">
                                         <td id='index'> {{$index}} </td>
                                         <td id='hostname'> {{$buscarSonda['hostname'] ?? ''}} </td>
                                         <td id='router'> {{$buscarSonda['ipv4'] ?? ''}} </td>
-                                        <td id='pltaforma'> pltaforma </td>
-                                        <td id='so'> so </td>
+                                        <td id='pltaforma'> {{$buscarSonda['platforma'] ?? ''}} </td>
+                                        <td id='so'> {{$buscarSonda['so'] ?? ''}} </td>
                                         <td id='portassh'> {{$buscarSonda['portassh'] ?? ''}} </td>
                                         <td id='portahttp'> {{$buscarSonda['portahttp'] ?? ''}} </td>
                                         <td id='user'> {{$buscarSonda['user'] ?? ''}} </td>
@@ -125,27 +125,29 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">HostName</label>
-                            <input type="text" id ="hostVal" name=""  required class="form-control mb-1" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id ="hostVal" name=""  required class="form-control mb-1" />
                             <label class="mb-1 font-weight-bold text-muted">RouterId</label>
-                            <input type="text" id="routerVal"   class="form-control mb-1" required placeholder="Asn" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="routerVal"   class="form-control mb-1" required/>
+                            <label class="mb-1 font-weight-bold text-muted">Pop</label>
+                            <input type="text" id="popVal" class="form-control mb-1" required/>
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">Plataforma</label>
-                            <input type="text"  id="plataFormaVal"  required class="form-control mb-1"  placeholder="Community" style=" z-index: 2; background: transparent;"/>
+                            <input type="text"  id="plataFormaVal"  required class="form-control mb-1"  placeholder="Community" />
                             <label class="mb-1 font-weight-bold text-muted">So</label>
-                            <input type="text"  id="soVal" required  class="form-control mb-1"  placeholder="Ipv4 remoto bgp 01" required style=" z-index: 2; background: transparent;"/>
+                            <input type="text"  id="soVal" required  class="form-control mb-1"  placeholder="Ipv4 remoto bgp 01" required />
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">PortaSsh</label>
-                            <input type="text" id="portaSshVal" required class="form-control mb-1"  placeholder="Userinocmon" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="portaSshVal" required class="form-control mb-1"  placeholder="Userinocmon" />
                             <label class="mb-1 font-weight-bold text-muted">Porta</label>
-                            <input type="text" id="portaVal" required  class="form-control mb-1"  placeholder="inocmon" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="portaVal" required  class="form-control mb-1"  placeholder="inocmon" />
                         </div>
                         <div class="col-md-3">
                             <label class="mb-1 font-weight-bold text-muted">User</label>
-                            <input type="text" id="useVal" required class="form-control mb-1"  placeholder="Community SNMP:	" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="useVal" required class="form-control mb-1"  placeholder="Community SNMP:	" />
                             <label class="mb-1 font-weight-bold text-muted">Senha</label>
-                            <input type="text" id="senhaVal" required  class="form-control mb-1"  placeholder="Nome do group" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="senhaVal" required  class="form-control mb-1"  placeholder="Nome do group" />
                         </div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                         <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
@@ -213,6 +215,7 @@
             var portahttp = row.querySelector('td:nth-child(7)').innerText;
             var user = row.querySelector('td:nth-child(8)').innerText;
             var pwd = row.querySelector('td:nth-child(9)').innerText;
+            var pop = $(row).attr('pop');
 
             $('#hostVal').val(hostName);
             $('#routerVal').val(routerId);
@@ -222,6 +225,8 @@
             $('#portaVal').val(portahttp);
             $('#useVal').val(user);
             $('#senhaVal').val(pwd);
+            $('#popVal').val(pop);
+
         }
 
         let saveData = () => {
@@ -235,6 +240,7 @@
             var userVal  = $('#useVal').val();
             var pwdVal  = $('#senhaVal').val();
             var proxyId = row.querySelector('td:nth-child(1)').innerText;
+            var popVal = $('#popVal').val();
 
             if(hostVal == "" || routerVal == "" || plataFormaVal == "" || soVal == "" || portaSshVal == "" || portaVal == "" || userVal == "" || userVal == "" || pwdVal == ""
             )   {
@@ -262,6 +268,7 @@
                     portaVal : portaVal,
                     userVal : userVal,
                     pwdVal : pwdVal,
+                    popVal : popVal,
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }

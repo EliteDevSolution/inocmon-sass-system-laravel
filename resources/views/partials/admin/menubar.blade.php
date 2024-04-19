@@ -4,7 +4,7 @@
             $clients = getClient();
         }
     @endphp
-
+    <ul class="metismenu" id="side-menu">
     @if(isset(request()->query()['client_id']) || !auth()->user()->hasRole("administrator"))
         @php
             $clientId;
@@ -16,7 +16,7 @@
             $clientIdQueryParam = array("client_id" => $clientId);
         @endphp
 
-        <ul class="metismenu" id="side-menu">
+
             <li class="menu-title">Navigation</li>
             <li>
                 <a href="javascript: void(0);">
@@ -95,7 +95,7 @@
 
             <li>
                 <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
+                    <i class="fe-message-square"></i>
                     <span> Upstreams </span>
                     <span class="menu-arrow"></span>
                 </a>
@@ -117,7 +117,7 @@
 
             <li>
                 <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
+                    <i class="fe-toggle-left"></i>
                     <span> DownStreams </span>
                     <span class="menu-arrow"></span>
                 </a>
@@ -138,7 +138,7 @@
             <li>
                 <a href="javascript: void(0);">
                     <i class="fe-pocket"></i>
-                    <span> Cadastro BGP</span>
+                    <span> Conexão BGP</span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
@@ -162,8 +162,8 @@
 
             <li>
                 <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
-                    <span> Network assets </span>
+                    <i class="fe-paperclip"></i>
+                    <span> Ativo de rede </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="nav-second-level" aria-expanded="false">
@@ -178,31 +178,75 @@
                     </li>
                 </ul>
             </li>
-
-            @if(!auth()->user()->hasRole("administrator"))
             <li class="menu-title mt-2">Sistema</li>
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-file"></i>
+                    <span> ChangeLogs </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('changelog.index') }}">Change Log</a>
+                    </li>
+                </ul>
+            </li>
+            @if(auth()->user()->hasRole("administrator"))
+                <li class="menu-title mt-2">Clinetes</li>
                 <li>
                     <a href="javascript: void(0);">
-                        <i class="fe-pocket"></i>
-                        <span> ChangeLogs </span>
+                        <i class="fe-user-check"></i>
+                        <span> Clientes </span>
                         <span class="menu-arrow"></span>
                     </a>
-                    <ul class="nav-second-level" aria-expanded="false">
-                        <li >
-                            <a href="{{ route('changelog.index') }}">Change Log</a>
-                        </li>
-                    </ul>
+                    @foreach($clients as $key => $client)
+                        <ul class="nav-second-level" aria-expanded="false">
+                            <li >
+                                <a href="{{ route('dashboard', array('client_id' => $key)) }}">{{$client['nome']}}</a>
+                            </li>
+                        </ul>
+                    @endforeach
+                </li>
+                <li class="menu-title mt-2">Admin</li>
+                <li>
+                    <a href="{{route('client.index')}}">
+                        <i class="fe-layers"></i>
+                        <span> Admin Page </span>
+                        <span class="menu-arrow"></span>
+                    </a>
                 </li>
             @endif
+            <li>
+                <a onclick="location.reload()" style="cursor:pointer">
+                    <i class="fe-refresh-ccw"></i>
+                    <span> Refresh </span>
+                    <span class="menu-arrow"></span>
+                </a>
+            </li>
 
-        </ul>
-    @else
-        <ul class="metismenu" id="side-menu">
-            <li class="menu-title">Atalhhos</li>
+        @else
+            <li class="menu-title">Gestão de clientes</li>
             <li>
                 <a href="javascript: void(0);">
                     <i class="fe-airplay"></i>
-                    <span> Client </span>
+                    <span> Gestão de clientes </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li >
+                        <a href="{{ route('client.index') }}">Gerenciar</a>
+                    </li>
+                    <li >
+                        <a href="{{ route('client.create') }}">Adicionar</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-title">Atalhhos</li>
+            <li>
+                <a href="javascript: void(0);">
+                    <i class="fe-users"></i>
+                    <span> Clientes </span>
                     <span class="menu-arrow"></span>
                 </a>
                 @foreach($clients as $key => $client)
@@ -218,7 +262,7 @@
 
             <li>
                 <a href="javascript: void(0);">
-                    <i class="fe-airplay"></i>
+                    <i class="fe-settings"></i>
                     <span> Template Edit </span>
                     <span class="menu-arrow"></span>
                 </a>
@@ -241,6 +285,9 @@
                     <li >
                         <a href="{{ route('deny-customer.index') }}">Deny Customer-In</a>
                     </li>
+                    <li >
+                        <a href="{{ route('template-rr.index') }}">Template Reflectors</a>
+                    </li>
                 </ul>
             </li>
 
@@ -248,7 +295,7 @@
 
             <li>
                 <a href="javascript: void(0);">
-                    <i class="fe-airplay"></i>
+                    <i class="fe-book-open"></i>
                     <span> IXBR </span>
                     <span class="menu-arrow"></span>
                 </a>
@@ -263,7 +310,7 @@
 
             <li>
                 <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
+                    <i class="fe-file"></i>
                     <span> ChangeLogs </span>
                     <span class="menu-arrow"></span>
                 </a>
@@ -273,24 +320,30 @@
                     </li>
                 </ul>
             </li>
+            @if(auth()->user()->hasRole("administrator"))
+                <li class="menu-title mt-2">admin</li>
 
-            <li class="menu-title mt-2">admin</li>
-
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-codepen"></i>
+                        <span> User management </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li >
+                            <a href="{{ route('users.index') }}">Users</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
             <li>
-                <a href="javascript: void(0);">
-                    <i class="fe-pocket"></i>
-                    <span> User management </span>
+                <a onclick="location.reload()" style="cursor:pointer">
+                    <i class="fe-refresh-ccw"></i>
+                    <span> Refresh </span>
                     <span class="menu-arrow"></span>
                 </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li >
-                        <a href="{{ route('users.index') }}">Users</a>
-                    </li>
-                </ul>
             </li>
-
         </ul>
-
     @endif
 </div>
 

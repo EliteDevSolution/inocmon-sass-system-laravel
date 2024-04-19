@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card-box p-1">
-                <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Client id : {{$key}}</label>
+                <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Client Id : {{$key}}</label>
                 <div class="card-body">
                     <form action="{{ route("client.update", $key) }}" class="myForm" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -69,6 +69,7 @@
                                 </select>
                             </div>
                             <button class="btn btn-primary ml-2 mt-1" type="submit">atualizar</button>
+                            <a class="btn btn-primary ml-2 mt-1" href="{{route('client.index')}}" style="color : white" type="submit">volte</a>
                         </div>
                     </form>
                 </div> <!-- end row -->
@@ -123,9 +124,10 @@
                 },
                 order: [[ 0, "asc" ]]
             });
-
-
         });
+        function goBack() {
+            window.location.back();
+        }
     </script>
 
 

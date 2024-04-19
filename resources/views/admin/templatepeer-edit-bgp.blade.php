@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <p class="header-title mb-2">Nova Vendor</p>
                 <div class="group-input">
                     <label class="mb-1 font-weight-bold text-muted">Nova Vendor</label>
@@ -54,10 +54,6 @@
                 <p class="header-title mb-2">Nova Family</p>
                 <div class="group-input">
                     <label class="mb-1 font-weight-bold text-muted">Vendor</label>
-                    <input type="text" name="vendor" required id="vendor" class="form-control mb-1"/>
-                </div>
-                <div class="group-input">
-                    <label class="mb-1 font-weight-bold text-muted">Nova Family</label>
                     <select class="form-control" id="novafamily" required >
                         @foreach ($templates as $indexTemp => $valueTemp)
                             <option value="{{$indexTemp}}">
@@ -66,28 +62,33 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="mt-1 group-input">
+                    <label class="font-weight-bold text-muted">Nova Family</label>
+                    <input type="text" name="vendor" required id="vendor" class="form-control mb-1"/>
+                </div>
                 <button class="btn btn-primary mt-2" onclick="saveData('family-update')">
                     Cadastrar-Family
                 </button>
             </div>
-            <div class="col-4">
+            <div class="col-5">
                 <p class="header-title mb-2">Nova Config section</p>
                 <div class="group-input">
                     <label class="mb-1 font-weight-bold text-muted">Family</label>
-                    <input type="text" name="family" required id="family" class="form-control mb-1"/>
-                </div>
-                <div class="group-input">
-                    <label class="mb-1 font-weight-bold text-muted">Nova config section</label>
                     <select class="form-control" id="configsection" required>
                         @foreach ($templates as $indexTemp => $valueTemp)
-                            @foreach ($templates[$indexTemp] as $index => $value)
-                                <option value="{{$indexTemp.'/'.$index}}">
-                                    {{$indexTemp.'/'.$index}}
-                                </option>
-                            @endforeach
+                            @if(is_array($valueTemp))
+                                @foreach ($templates[$indexTemp] as $index => $value)
+                                    <option value="{{$indexTemp.'/'.$index}}">
+                                        {{$indexTemp.'/'.$index}}
+                                    </option>
+                                @endforeach
+                            @endif
                         @endforeach
-
                     </select>
+                </div>
+                <div class="mt-1 group-input">
+                    <label class="font-weight-bold text-muted">Nova config section</label>
+                    <input type="text" name="family" required id="family" class="form-control mb-1"/>
                 </div>
                 <button class="btn btn-primary mt-2" onclick="saveData('config-section')">
                     Cadastrar-Section
@@ -107,7 +108,7 @@
                                 @if (is_array($valueFamily))
                                     @foreach ($valueTemp[$indexFamily] as $index => $value)
                                         @if (is_array($valueTemp[$indexFamily]))
-                                            <div id="accordion">
+                                            <div id="accordion{{$index}}">
                                                 <div class="card mb-1">
                                                     <div class="card-header" id="headingOne{{$index}}">
                                                         <h5 class="m-0">
@@ -118,11 +119,9 @@
                                                         </h5>
                                                     </div>
 
-                                                    <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{$index}}" data-parent="#accordion">
+                                                    <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{$index}}" data-parent="#accordion{{$index}}">
                                                         <div class="card-body">
-                                                            <textarea rows = 10 cols = 100 id="{{$index}}">
-                                                                {{$value}}
-                                                            </textarea>
+                                                            <textarea rows = 10 cols = 100 id="{{$index}}">{{$value}}</textarea>
                                                             <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
                                                                 Garava
                                                             </button>

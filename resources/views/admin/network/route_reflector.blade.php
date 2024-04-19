@@ -47,7 +47,7 @@
                             <label class="mb-1 font-weight-bold text-muted">RouterId</label>
                             <input type="text" name="routerid" id="routerid" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Template Vendor</label>
-                            <select id="ibgps" class="form-control" >
+                            <select id="vendor" class="form-control" >
                                 @foreach ($buscaTemplates as $indexVendor => $valueVendor )
                                     <option value="{{$indexVendor}}">
                                         {{$indexVendor}}
@@ -57,7 +57,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Template Family</label>
-                            <select id="ibgps" class="form-control mb-1" >
+                            <select id="family" class="form-control mb-1">
                                 @foreach ($buscaTemplates as $indexVendor => $valueVendor )
                                     @foreach ($valueVendor as $indexFamily => $valueFamily)
                                         <option value="{{$indexFamily}}">
@@ -77,6 +77,7 @@
                             <label class="mb-1 font-weight-bold text-muted">Senha</label>
                             <input type="text" name="senha" id="senha" class="form-control mb-1"/>
                             <button class="mt-3 btn btn-primary ml-2" onclick="saveData()" type="submit">Cadastrar</button>
+                            <button class="mt-3 btn btn-blue ml-2" onclick="goBack()">Volt</button>
                         </div>
                     </div>
                 </div>
@@ -137,6 +138,9 @@
     </script>
 
     <script>
+        function goBack() {
+            location.href = "/pr-summary?client_id={{$clientId}}";
+        }
 
         function saveData(){
             if( $("#hostname").val() == "" || $("#routerid").val() == "" || $("#vendor").val() == "" ||

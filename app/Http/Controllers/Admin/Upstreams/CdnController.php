@@ -26,7 +26,7 @@ class CdnController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos = $detailClientData['equipamentos'];
+        $buscaEquipamentos = $detailClientData['equipamentos'] ?? [];
         $buscaBgpConexoes = $detailClientData['bgp']['interconexoes']['cdn'] ?? [];
 
         $toSendData = [

@@ -76,6 +76,7 @@
                                 @endif
                             </select>
                             <button class="btn btn-primary mt-4 " type="" onclick="saveData()">Cadastrar</button>
+                            <button class="btn btn-blue mt-4" type="" onclick="goBack()">Volt</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -247,6 +248,9 @@
     </script>
 
     <script>
+    function goBack() {
+        location.href = "downstreams-clients?client_id={{$clientId}}";
+    }
     function saveData(){
         var communityArray = [];
         $('input:checkbox[name=community]').each(function()

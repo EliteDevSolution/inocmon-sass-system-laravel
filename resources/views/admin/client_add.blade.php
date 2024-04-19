@@ -68,7 +68,7 @@
                                 </select>
                             </div>
                             <button class="btn btn-primary ml-2 mt-1" type="submit">atualizar</button>
-                            <a class="btn btn-primary ml-2 mt-1" href="{{route("client.index")}}" style="color : white" type="submit">go back</a>
+                            <a class="btn btn-primary ml-2 mt-1" href="{{route('client.index')}}" style="color : white" type="submit">volte</a>
                         </div>
                     </form>
                 </div> <!-- end row -->

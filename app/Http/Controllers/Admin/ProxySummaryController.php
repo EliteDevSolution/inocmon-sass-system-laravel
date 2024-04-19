@@ -83,7 +83,10 @@ class ProxySummaryController extends Controller
             'portassh' => $request['portaSshVal'],
             'portahttp' => $request['portaVal'],
             'pwd' => $request['pwdVal'],
-            'user' => $request['userVal']
+            'user' => $request['userVal'],
+            'platforma' => $request['plataFormaVal'],
+            'so' => $request['soVal'],
+            'pop' => $request['popVal'],
         ];
 
         $proxyId = $request['proxyId'];

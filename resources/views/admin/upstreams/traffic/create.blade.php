@@ -77,6 +77,8 @@
                                 Bloquear clientes de trânsito
                             </div>
                             <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
+                            <button class="btn btn-blue ml-2" id="btn" type="" onclick="goBack()">Volt</button>
+
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -206,6 +208,9 @@
                 );
                 elementUnBlock('.p-1');
             });;
+        }
+        function goBack() {
+            location.href = "/upstreams?client_id={{$clientId}}";
         }
     </script>
 @endsection

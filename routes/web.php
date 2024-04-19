@@ -1,10 +1,4 @@
 <?php
-Route::get('/', function(){
-    // if (!\Auth::user()) {
-       return redirect()->to("login");
-    // }
-});
-
 Route::get('lang/{locale}',function ($locale){
     session(['locale' => $locale]);
     return redirect()->back();
@@ -19,6 +13,9 @@ Route::patch('change_password', 'Auth\ChangePasswordController@changePassword')-
 
 
 Route::group(['middleware' => ['auth', 'approved']], function () {
+
+    Route::get('/', 'Admin\ChangelogController@index');
+
 
     Route::resource('client', 'Admin\ClientController');
 
@@ -35,6 +32,8 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
     Route::resource('tempcdn-edit-bgp', 'Admin\TempEditCdnController');
 
     Route::resource('deny-customer', 'Admin\DenyCustomerController');
+
+    Route::resource('template-rr', 'Admin\TemplateRrController');
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
     Route::post('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');
@@ -77,6 +76,7 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
         'index' => 'mpls_pe.index',
         'update' => 'mpls_pe.update',
         'create' => 'mpls_pe.create',
+        'store' => 'mpls_pe.store',
     ]);
 
     Route::resource('upstreams', 'Admin\Upstreams\TrafficController');

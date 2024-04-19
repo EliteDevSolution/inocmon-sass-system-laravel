@@ -28,7 +28,7 @@ class NovoBcbClientController extends Controller
     {
         $clientId = $req->query()['client_id'];
         $detailClientData = $this->database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
-        $buscaEquipamentos= $detailClientData['equipamentos'];
+        $buscaEquipamentos= $detailClientData['equipamentos'] ?? [];
 
         if( array_key_exists('interconexoes', $detailClientData['bgp']) ) {
             $buscaCommunitiesTransito = $detailClientData['bgp']['interconexoes']['transito'] ?? [];

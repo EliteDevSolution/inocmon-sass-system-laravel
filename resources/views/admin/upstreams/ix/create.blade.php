@@ -67,6 +67,8 @@
                         </div>
                         <div class="row ml-2 mt-2">
                             <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
+                            <button class="btn btn-blue ml-2" id="btn" type="" onclick="goBack()">Volt</button>
+
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -105,6 +107,10 @@
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
 
     <script>
+
+        function goBack() {
+            location.href = "/upstreams-ix?client_id={{$clientId}}";
+        }
 
         function saveData(){
 

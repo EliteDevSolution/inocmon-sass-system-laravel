@@ -89,12 +89,12 @@ class TempEditPeerController extends Controller
         $notification = '';
 
         if($todo == 'family-update') {
-            if(isset($newFamily)) {
+            if(isset($vendor)) {
                 try {
                     $toSaveData = [
-                        $newFamily => $newFamily
+                        $vendor => $vendor
                     ];
-                    $this->database->getReference('lib/templates/bgp/peering/'.$vendor)->update($toSaveData);
+                    $this->database->getReference('lib/templates/bgp/peering/'.$newFamily)->update($toSaveData);
                     $status = "ok";
                 } catch (\Throwable $th) {
                     $status = "failed";
@@ -105,7 +105,7 @@ class TempEditPeerController extends Controller
             if(isset($family)) {
                 try {
                     $toSaveData = [
-                        $family => []
+                        $family => ''
                     ];
                     $this->database->getReference('lib/templates/bgp/peering/'.$configSection)->update($toSaveData);
                     $status = "ok";

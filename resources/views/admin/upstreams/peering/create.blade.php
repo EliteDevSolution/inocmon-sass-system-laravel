@@ -74,6 +74,7 @@
                         <div class="row ml-2 mt-2">
                             <div class="mt-2"><input type="checkbox" value="check" id="check"> Bloquear</div>
                             <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
+                            <button class="btn btn-blue ml-2" id="btn" type="" onclick="goBack()">Cadastrar</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -112,6 +113,9 @@
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
 
     <script>
+        function goBack() {
+            location.href = "/upstreams-peer?client_id={{$clientId}}";
+        }
 
         function saveData(){
             if( $('#nome').val() == "" || $('#pop').val()  == "" || $('#ipv401').val() == "" || $('#ipv402').val() == "" || $('#ipv601').val() == "" || $('#ipv602').val() == "" ) {

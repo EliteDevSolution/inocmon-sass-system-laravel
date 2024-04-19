@@ -67,11 +67,13 @@
                     <label class="mb-1 custom-lable font-weight-bold text-muted">Nova config section</label>
                     <select class="custom-input form-control" id="configsection" required >
                         @foreach ($templates as $indexTemp => $valueTemp)
-                            @foreach ($templates[$indexTemp] as $index => $value)
-                                <option value="{{$indexTemp.'/'.$index}}">
-                                    {{$indexTemp.'/'.$index}}
-                                </option>
-                            @endforeach
+                            @if(is_array($valueTemp))
+                                @foreach ($templates[$indexTemp] as $index => $value)
+                                    <option value="{{$indexTemp.'/'.$index}}">
+                                        {{$indexTemp.'/'.$index}}
+                                    </option>
+                                @endforeach
+                            @endif
                         @endforeach
 
                     </select>
@@ -106,9 +108,7 @@
 
                                                     <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{$index}}" data-parent="#accordion">
                                                         <div class="card-body">
-                                                            <textarea rows = 10 cols = 100 id="{{$index}}">
-                                                                {{$value}}
-                                                            </textarea>
+                                                            <textarea rows = 10 cols = 100 id="{{$index}}">{{$value}}</textarea>
                                                             <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
                                                                 Garava
                                                             </button>

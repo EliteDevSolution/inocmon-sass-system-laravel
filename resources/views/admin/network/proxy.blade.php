@@ -58,18 +58,18 @@
                             <input type="text" name="http" id="http" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">usuario</label>
+                            <label class="mb-1 font-weight-bold text-muted">Usuario</label>
                             <input type="text" name="user" id="user" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">senha</label>
+                            <label class="mb-1 font-weight-bold text-muted">Senha</label>
                             <input type="text" name="senha" id="senha" class="form-control mb-1"/>
                             <button class="mt-3 btn btn-primary ml-2" onclick="saveData()" type="submit">Cadastrar</button>
+                            <button class="mt-3 btn btn-blue ml-2" onclick="goBack()">Volt</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')
@@ -118,6 +118,11 @@
     </script>
 
     <script>
+
+        function goBack() {
+            location.href = "/proxy-summary/?client_id={{$clientId}}";
+        }
+
         function saveData(){
             if( $("#hostname").val() == "" || $("#pop").val() == "" || $("#ipv4").val() == "" ||
                 $("#ssh").val() == "" || $("#http").val() == "" || $("#user").val() == "" ||
@@ -147,7 +152,6 @@
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
-                console.log(msg);
                 if(msg['status'] == 'ok') {
                     $("#hostname").val("");
                     $("#ipv4").val("");
@@ -171,6 +175,14 @@
                         ,"error",
                     );
                 }
+                elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
                 elementUnBlock('body');
             });
         }

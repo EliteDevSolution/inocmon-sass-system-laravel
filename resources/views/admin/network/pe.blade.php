@@ -84,6 +84,7 @@
                         </div>
                         <div class="row ml-2 mt-2">
                             <button class="btn btn-primary ml-2" onclick="saveData()">Cadastrar</button>
+                            <button class="btn btn-blue ml-2" onclick="goBack()">Volt</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -94,50 +95,6 @@
 @endsection
 
 @section('scripts')
-    @parent
-    <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('admin_assets/js/pages/datatables.init.js') }}"></script>
-
-
-    @parent
-    <!-- third party js -->
-    <script src="{{ asset('admin_assets/libs/datatables/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ asset('admin_assets/libs/datatables/dataTables.responsive.min.js') }}"></script>
-    <!-- third party js ends -->
-    <!-- Datatables init -->
-    <script>
-        $(document).ready(function(){
-            $('#datatable').DataTable({
-                responsive: false,
-                stateSave: true,
-                stateDuration: 60 * 60 * 24 * 60 * 60,
-                autoWidth: false,
-                scrollCollapse: true,
-                scrollX: true,
-                bProcessing: true,
-                lengthMenu: [
-                    [ 10, 50, 100, 500],
-                    [ '10', '50', '100', '500' ]
-                ],
-                columnDefs: [
-                    { "width": "10%", "targets": 1 }
-                ],
-                pageLength: 50,
-                language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only"></span>',
-                    paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
-                    }
-                },
-                order: [[ 0, "asc" ]]
-            });
-
-
-        });
-    </script>
-
     <script>
         function saveData(){
             if( $("#hostname").val()  == "" || $("#routerid").val()  == "" || $("#ibgp").val()  == "" ||
@@ -154,7 +111,7 @@
             elementBlock('square1', 'div.card-box');
             $.ajax({
                 type: "POST",
-                url: '{{ route("network-pe.store") }}',
+                url: '{{ route("mpls_pe.store") }}',
                 data: {
                     hostname : $("#hostname").val(),
                     routerid : $("#routerid").val(),
@@ -203,6 +160,10 @@
                 );
                 elementUnBlock('div.card-box');
             });
+        }
+
+        function goBack() {
+            location.href = "/mpls_pe?client_id={{$clientId}}";
         }
     </script>
 

@@ -82,6 +82,7 @@
                         <div class="row ml-2 mt-2">
                             <div class="mt-2"><input type="checkbox" value="check" id="check"> Bloquear</div>
                             <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
+                            <button class="btn btn-blue ml-2" id="btn" type="" onclick="goBack()">Volt</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -120,6 +121,9 @@
     <script src="{{ asset('admin_assets/libs/select2/select2.min.js') }}"></script>
 
     <script>
+        function goBack() {
+            location.href = "/upstreams-cdn?client_id={{$clientId}}";
+        }
         var communityArray = [];
         function saveData(){
             $('input:checkbox[name=equip]').each(function()

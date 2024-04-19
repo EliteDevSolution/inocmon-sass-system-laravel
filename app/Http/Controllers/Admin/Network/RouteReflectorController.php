@@ -71,8 +71,9 @@ class RouteReflectorController extends Controller
             'protocolo'   => $request['protocol'],
             'porta'   => $request['porta'],
             'user'   => $request['user'],
-            'pwd'   => $request['pwd']
+            'pwd'   => $request['senha']
         ];
+
         try {
 	        $this->database->getReference('clientes/' . $clientId .'/rr/'.$nextId )->set($toSaveData);
             $status = 'ok';

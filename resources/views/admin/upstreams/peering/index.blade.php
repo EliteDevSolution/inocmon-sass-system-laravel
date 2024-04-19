@@ -267,7 +267,7 @@
                 if(msg['status'] == 'ok') {
                     row.querySelector('td:nth-child(2)').innerText = asnVal;
                     row.querySelector('td:nth-child(3)').innerText = popVal;
-                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text();
+                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text().trim();
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"

@@ -246,9 +246,9 @@
                 }
             }).done(function( msg ) {
                 if(msg['status'] == 'ok') {
-                    row.querySelector('td:nth-child(1)').textContent = $("#ownVal option:selected").text();
+                    row.querySelector('td:nth-child(1)').textContent = $("#ownVal option:selected").text().trim();
                     row.querySelector('td:nth-child(3)').textContent = popVal;
-                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text();
+                    row.querySelector('td:nth-child(4)').innerText = $("#peVal option:selected").text().trim();
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully updated!"
                         ,"top-right"

@@ -236,8 +236,10 @@ class ClientBgpDetailController extends Controller
         $this->database->getReference($diretorioStatusConfig)->set('arquivo enviado com sucesso!');
         $this->database->getReference($diretorioStatusConfig)->set('aplicando comando: '.$comandoPe.$configFileNamePe.$debugRemoteFile);
         $checkConfigSucess = $ssh1->exec($comandoPe.$configFileNamePe.' '.$debugRemoteFile.' 2>&1 &');
+        sleep(1);
         $tokenPeConfig = substr($tokenPeConfig, 2, -1);
         $checkConfigSucess = $ssh1->exec('cat '.$debugRemoteFile.'.log | grep '.$tokenPeConfig);
+        sleep(1);
         /*I should display this data named checkConfigSucess. remember this variable*/
         $toDsiplay =  "comando  ficou: ".'cat '.$debugRemoteFile.'.log | grep '.$tokenPeConfig;
 
@@ -268,6 +270,7 @@ class ClientBgpDetailController extends Controller
                         $status = 'failed';
                     }
                     $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
+                    sleep(1);
                     $debug = 'arquivo copiado! iniciando comandos...';
                     $comandoRr = 'inoc-config '.$targetRrIpv4.' '.$targetRrUser.' \''.$targetRrPwd.'\' '.$targetRrPort.' ';
                     $debug = $ssh1->exec($comandoRr.$configFileNameRr.' '.$debugRemoteFile.' | at -b now + 1 minute');
