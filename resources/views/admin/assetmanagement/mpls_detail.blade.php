@@ -70,18 +70,18 @@
                                 @foreach ($toSendData['buscaConfigs'] as $indexConfig => $configVal)
                                     <tr>
                                         <td>
-                                            <div id="accordion">
+                                            <div id="{{str_replace(' ', '', 'accordion'.$indexConfig)}}">
                                                 <div class="card mb-1">
-                                                    <div class="card-header" id="headingOne{{$indexConfig}}">
+                                                    <div class="card-header" id="{{str_replace(' ', '', 'headingOne'.$indexConfig)}}">
                                                         <h5 class="m-0">
-                                                            <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$indexConfig}}" aria-expanded="true">
+                                                            <a class="text-dark" data-toggle="collapse" href="#{{str_replace(' ', '', 'collapseOne'.$indexConfig)}}" aria-expanded="true">
                                                                 <i class="mdi mdi-help-circle mr-1 text-primary"></i>
                                                                 Mostrar/ocultar config {{$indexConfig}}
                                                             </a>
                                                         </h5>
                                                     </div>
 
-                                                    <div id="collapseOne{{$indexConfig}}" class="collapse hide" aria-labelledby="headingOne{{$indexConfig}}" data-parent="#accordion">
+                                                    <div id="{{str_replace(' ', '', 'collapseOne'.$indexConfig)}}" class="collapse hide" aria-labelledby="{{str_replace(' ', '', 'headingOne'.$indexConfig)}}" data-parent="#{{str_replace(' ', '', 'accordion'.$indexConfig)}}">
                                                         <div class="card-body">
                                                             {!! nl2br($configVal) !!}
                                                         </div>

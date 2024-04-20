@@ -9,11 +9,11 @@
                             <li class="breadcrumb-item"><a href="/">iNOCmon</a></li>
                             <li class="breadcrumb-item active">Gerencia de activos</li>
                             <li class="breadcrumb-item active">Proxies</li>
-                            <li class="breadcrumb-item active">Localhost</li>
+                            <li class="breadcrumb-item active">Proxy Template</li>
 
                         </ol>
                     </div>
-                    <h4 class="page-title">Localhost</h4>
+                    <h4 class="page-title">Proxy Template</h4>
                 </div>
             </div>
 
@@ -109,7 +109,7 @@
                                             <tr>
                                                 <td>Sonda remota</td>
                                                 <td>
-                                                    <select name="sondaRemote" class="form-control" data-toggle="select2" >
+                                                    <select name="sondaRemote" class="form-control" data-toggle="select2" id="remotesonda">
                                                        @if(is_array($toSendData['buscaSondas']))
                                                             @foreach ($toSendData['buscaSondas'] as $index => $value)
                                                                 <option value="{{$index}}">{{$value['hostname']}}</option>
@@ -219,12 +219,7 @@
                             <h4 class="header-title mb-2">
                                 Registro das últimas configurações aplicadas em :{{$toSendData['hostName']}}
                             </h4>
-                            <div>
-                                <div class="button-list">
-                                    @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
-                                        <button type="button" class="btn btn-success waves-effect waves-light d-block" data-toggle="modal" data-target="#modal{{$relatorIndex}}">{{$relatorIndex}}</button>
-                                    @endforeach
-                                </div>
+                            @if(is_array($toSendData['buscaRelatorios']))
                                 @foreach ($toSendData['buscaRelatorios'] as $relatorIndex => $relatorVal )
                                     <div id="modal{{$relatorIndex}}" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                                         <div class="modal-dialog modal-lg">
@@ -237,7 +232,7 @@
                                                 <div class="modal-body p-3">
                                                     <div class="col">
                                                         <p class="header-title mb-2">Relatório de configuração:</p>
-                                                        <p>{!! colorReport($relatorVal) !!}</p>
+                                                        <p>{!! colorReport(nl2br($relatorVal)) !!}</p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -246,8 +241,11 @@
                                             </div>
                                         </div>
                                     </div><!-- /.modal -->
+                                    <div class="button-list p-1">
+                                        <button type="button" class="btn btn-success waves-effect waves-light d-block" data-toggle="modal" data-target="#modal{{$relatorIndex}}">{{$relatorIndex}}</button>
+                                    </div>
                                 @endforeach
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -264,10 +262,12 @@
 
 <script>
     $(document).ready(function(){
+        console.log(firebaseConfig);
         firebase.initializeApp(firebaseConfig);
         var ref = firebase.database().ref("/clientes/{{$clientId}}/rr/{{$toSendData['rrId']}}/debug");
         ref.on("value", function (snapshot) {
             const data = snapshot.val();
+            console.log(data);
             $('#console').find('p').text(data);
         }, function (error) {
             console.log("Error: " + error.code);
@@ -276,7 +276,8 @@
 
     let applyBaseConfig = () => {
 
-        var sondaId = $("#sondaid").val();
+        var sondaId = $("#remotesonda").val();
+
         elementBlock('square1', '.card-box');
         $.ajax({
             type: "POST",

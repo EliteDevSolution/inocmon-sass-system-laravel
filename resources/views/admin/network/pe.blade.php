@@ -48,8 +48,8 @@
                             <input type="text" name="routerid" id="routerid" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Group IBGP</label>
                             <select id="ibgps" class="form-control" >
-                                <option>IBGP-PARCIAL</option>
-                                <option>IBGP-FUll</option>
+                                <option value="IBGP-PARCIAL">IBGP-PARCIAL</option>
+                                <option value="IBGP-FULL">IBGP-FULL</option>
                             </select>
                         </div>
                         <div class="col-md-4">
@@ -71,7 +71,7 @@
                                     @endforeach
                                 @endforeach
                             </select>
-                            <label class="mb-1 font-weight-bold text-muted">Protocol</label>
+                            <label class="mb-1 font-weight-bold text-muted">Protocolo</label>
                             <input type="text" name="protocol" id="protocol" class="form-control mb-1" placeholder="Protocol" style=" z-index: 2; background: transparent;"/>
                         </div>
                         <div class="col-md-4">
@@ -115,7 +115,7 @@
                 data: {
                     hostname : $("#hostname").val(),
                     routerid : $("#routerid").val(),
-                    ibgp : $("#ibgp").val(),
+                    ibgp : $("#ibgps").val(),
                     vendor : $("#vendor").val(),
                     family : $("#family").val(),
                     protocol : $("#protocol").val(),

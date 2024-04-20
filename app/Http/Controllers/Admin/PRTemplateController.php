@@ -24,6 +24,7 @@ class PRTemplateController extends Controller
 
 
     public function applyBaseConfig(Request $req) {
+
         $clientId = $req['clientId'];
         $rrId = $req['rrId'];
         $sondaId = $req['sondaId'];
@@ -47,12 +48,14 @@ class PRTemplateController extends Controller
         if (!$pwd || $pwd == '') {
             $pwd = $senhaInocmon;
         }
+
         $configRrFinal = '';
         if( array_key_exists('configs', $detailClientData['rr'][$rrId])) {
             $configRrFinal = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'] ?? '';
         } else {
             $configRrFinal = '';
         }
+
     	$configRrFinal = str_replace("<br />","",$configRrFinal);
     	$configFileNameRr = 'CONFIG-RR'.$rrId.'-'.$hostName.'-'.$clientId;
         $uploadFilePath = 'public/configuracoes/'.$configFileNameRr;
@@ -66,7 +69,7 @@ class PRTemplateController extends Controller
             Storage::disk('local')->put($uploadFilePath , $configRrFinal);
             $status = "ok";
         } catch (\Throwable $th) {
-            $status = 'failed';
+            $status = 'failed ---';
         }
 
 	    $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! preparando transferência...');
@@ -82,9 +85,10 @@ class PRTemplateController extends Controller
 
         $configToken = bin2hex(random_bytes(64));
         $configToken = substr($configToken,0, -85);
+
         try {
             if (!$ssh->login($sondaUser, $sondaPwd)) {
-                $status = "failed";
+                $status = "failed 000";
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
             } else {
                 $status = "ok";
@@ -117,7 +121,7 @@ class PRTemplateController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            $status = 'failed';
+            $status = 'failed 111';
         }
 
 		$this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
@@ -136,7 +140,7 @@ class PRTemplateController extends Controller
         try {
             if (!$ssh->login($sondaUser, $sondaPwd))
             {
-                $status = "failed";
+                $status = "failed 222";
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
             } else {
                 $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
@@ -149,7 +153,7 @@ class PRTemplateController extends Controller
                 $status = "ok";
             }
         } catch (\Throwable $th) {
-            $status = "failed";
+            $status = "failed 333";
         }
         return response()->json([
             'status' => $status,
@@ -184,6 +188,7 @@ class PRTemplateController extends Controller
         }
 
         $configRrFinal = "";
+
         for ($i = 0; $i < count($equipIds); $i++) {
             $equipRouterId = $detailClientData['equipamentos'][$equipIds[$i]]['routerid'] ?? '';
             $equiphostName = $detailClientData['equipamentos'][$equipIds[$i]]['hostname'] ?? '';
@@ -311,9 +316,31 @@ class PRTemplateController extends Controller
         $debug = $detailClientData['rr'][$rrId]['debug'] ?? '';
         $hostName = $detailClientData['rr'][$rrId]['hostname'];
         $routerId = $detailClientData['rr'][$rrId]['routerid'];
+
         $templateVendor = $detailClientData['rr'][$rrId]['template-vendor'] ?? '';
         $templateFamily = $detailClientData['rr'][$rrId]['template-family'] ?? '';
+
+        $snmpCommunity = $detailClientData['seguranca']['snmpcommunity'];
+        $ipv4BgpMultiHop = $detailClientData['bgp']['ipv4bgpmultihop'];
+        $ipv6BgpMultiHop = $detailClientData['bgp']['ipv6bgpmultihop'];
+        $community0 = $detailClientData['bgp']['community0'];
+        $asn = $detailClientData['bgp']['asn'];
+
+        $getTemplateRr =  $this->database->getReference('lib/templates/rr/'.$templateVendor.'/'.$templateFamily.'/rr-base-config')->getSnapshot()->getValue() ?? '';
+
+        $configBaseFinal = str_replace("%hostname%",$hostName,$getTemplateRr);
+        $configBaseFinal = str_replace("%snmpcommunity%",$snmpCommunity, $configBaseFinal);
+        $configBaseFinal = str_replace("%routerid%",$routerId, $configBaseFinal);
+        $configBaseFinal = str_replace("%ipv4bgpmultihop%",$ipv4BgpMultiHop, $configBaseFinal);
+        $configBaseFinal = str_replace("%ipv6bgpmultihop%",$ipv6BgpMultiHop, $configBaseFinal);
+        $configBaseFinal = str_replace("%community0%",$community0, $configBaseFinal);
+        $configBaseFinal = str_replace("%asn%",$asn, $configBaseFinal);
+	    $configBaseFinal = nl2br($configBaseFinal);
+
+    	$this->database->getReference('clientes/'.$clientId.'/rr/'.$rrId.'/configs/rrbaseconfig')->set($configBaseFinal);
+
         $configBaseRr = $detailClientData['rr'][$rrId]['configs']['rrbaseconfig'] ?? '';
+
         $buscaSondas = $detailClientData['sondas'] ?? '';
         $buscaEquipamentos = $detailClientData['equipamentos']  ?? '';
         $buscaRelatorios = $detailClientData['rr'][$rrId]['relatorios']  ?? '';

@@ -111,8 +111,8 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Atualizar inoc-config</td>
-                                                    <td><button onclick="updateIncoConfig()" class="btn btn-info waves-effect waves-light">autalizar inoc-config</button></th>
+                                                    <td>aplicar config</td>
+                                                    <td><button onclick="updateIncoConfig()" class="btn btn-info waves-effect waves-light">aplicar config</button></th>
                                                 </tr>
                                             </thead>
                                         </table>

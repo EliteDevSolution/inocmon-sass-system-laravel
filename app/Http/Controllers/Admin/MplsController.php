@@ -64,7 +64,7 @@ class MplsController extends Controller
             $data = [
                 'configs' => [],
                 'debug' => "ideal",
-                'grupo-ibgp' => "",
+                'grupo-ibgp' => $request['ibgp'],
                 'hostname' => $request['hostname'],
                 'porta' => $request['porta'],
                 'protocolo' => $request['protocol'],
@@ -129,7 +129,8 @@ class MplsController extends Controller
             'protocolo' => $request['protocolo'],
             'porta' => $request['porta'],
             'user' => $request['user'],
-            'pwd' => $request['pwd']
+            'pwd' => $request['pwd'],
+            'grupo-ibgp' => $request['group'],
         ];
 
         $proxyId = $request['proxyId'];

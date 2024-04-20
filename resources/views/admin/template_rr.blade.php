@@ -39,9 +39,7 @@
                                     <p class="text-primary font-17 font-family-secondary text-center">
                                         RR base config
                                     </p>
-                                    <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>
-                                        {{$x['rr-base-config']}}
-                                    </textarea>
+                                    <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>{{$x['rr-base-config']}}</textarea>
                                     <button class="btn btn-success mt-2" onclick="saveData('rr-base-config', 'header{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
                                         gravar
                                     </button>

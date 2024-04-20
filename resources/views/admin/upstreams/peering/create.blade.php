@@ -74,7 +74,7 @@
                         <div class="row ml-2 mt-2">
                             <div class="mt-2"><input type="checkbox" value="check" id="check"> Bloquear</div>
                             <button class="btn btn-primary ml-2" id="btn" type="" onclick="saveData()">Cadastrar</button>
-                            <button class="btn btn-blue ml-2" id="btn" type="" onclick="goBack()">Cadastrar</button>
+                            <button class="btn btn-blue ml-2" id="btn" type="" onclick="goBack()">Volt</button>
                         </div>
                     </div>
                 </div> <!-- end row -->
@@ -140,12 +140,19 @@
                     ipv601 : $('#ipv601').val(),
                     ipv602 : $('#ipv602').val(),
                     equip : $('#equip').val(),
-                    check : $('#check').val(),
+                    check : $("#check").is(':checked'),
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
-                console.log(msg);
+                $('#nome').val('');
+                $('#pop').val('');
+                $('#asn').val('');
+                $('#ipv401').val('');
+                $('#ipv402').val('');
+                $('#ipv601').val('');
+                $('#ipv602').val('');
+                $('#equip').val('');
                 if(msg['status'] == 'ok') {
                     console.log(msg);
                     var id = msg['addedData']['id'];

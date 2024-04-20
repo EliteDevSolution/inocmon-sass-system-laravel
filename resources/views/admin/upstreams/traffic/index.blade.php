@@ -62,7 +62,7 @@
                         </thead>
                         <tbody>
                             @foreach ($toSendData['buscaBgp'] as $index => $value )
-                                <tr id="transito{{$index}}">
+                            <tr id="transito{{$index}}" check ="{{ $value['denycustomerin'] ?? '' }}">
                                     <td style="text-align: left">
                                         @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
                                             <div>
@@ -143,6 +143,10 @@
                             <label class="mb-1 font-weight-bold text-muted">IPV6 DA SESSA 02</label>
                             <input type="text" id="ipv602" required class="form-control mb-1"/>
                         </div>
+                        <div class="mt-2">
+                            <input type="checkbox" id="checkVal" class="ml-2">
+                            Deny Customer
+                        </div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                         <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
                     </div>
@@ -211,6 +215,15 @@
             var ipv402 = row.querySelector('td:nth-child(10)').innerText;
             var ipv601 = row.querySelector('td:nth-child(11)').innerText;
             var ipv602 = row.querySelector('td:nth-child(12)').innerText;
+            var check;
+
+            if( $(row).attr('check') == 'true' ) {
+                check = true;
+                document.getElementById('checkVal').checked = check;
+            } else {
+                check = false;
+                document.getElementById('checkVal').checked = check;
+            }
 
             $('#asnVal').val(asn);
             $('#popVal').val(pop);
@@ -220,6 +233,7 @@
             $('#ipv402').val(ipv402);
             $('#ipv601').val(ipv601);
             $('#ipv602').val(ipv602);
+            $('#checkVal').val(check);
         }
 
         let saveData = () => {
@@ -232,7 +246,7 @@
             var ipv402 = $('#provedor').val();
             var ipv601 = $('#ipv601').val();
             var ipv602 = $('#ipv602').val();
-
+            var checkVal = $('#checkVal').is(':checked');
             var trafficId  = $(row).prop('id');
 
             if( asnVal == "" || popVal == "" || peVal == "" ) {
@@ -252,6 +266,7 @@
                     asn : asnVal,
                     pop : popVal,
                     pe : peVal,
+                    checkVal : checkVal,
                     provedor : provedor,
                     ipv401 : ipv401,
                     ipv402 : ipv402,

@@ -87,7 +87,7 @@ class PeerController extends Controller
         $ipv601 = $request['ipv601'];
         $ipv602 = $request['ipv602'];
         $peid = $equipId;
-        $denycustomerin = $request['check'];
+        $denycustomerin = $request['check'] ?? true;
 
 
         $novoBgp = [

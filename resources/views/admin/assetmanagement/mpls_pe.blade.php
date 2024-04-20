@@ -63,7 +63,7 @@
                         <tbody>
                             @if(is_array($toSendData['equipments']))
                                 @foreach ($toSendData['equipments'] as $index => $value)
-                                    <tr id="equipId{{$index}}">
+                                    <tr id="equipId{{$index}}" group="{{ $value['grupo-ibgp'] ?? '' }}">
                                         <td>{{$index}}</td>
                                         <td>{{$value['hostname'] ?? ""}}</td>
                                         <td>{{$value['routerid'] ?? ""}}</td>
@@ -101,13 +101,15 @@
                 <label class="mt-2 ml-3 mb-1 font-weight-bold text-muted">Edit</label>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">HostName</label>
-                            <input type="text" id ="hostVal" name=""  required class="form-control mb-1" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id ="hostVal" name=""  required class="form-control mb-1" />
                             <label class="mb-1 font-weight-bold text-muted">RouterId</label>
-                            <input type="text" id="routerVal"   class="form-control mb-1" required placeholder="Asn" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="routerVal"   class="form-control mb-1" required />
+                            <label class="mb-1 font-weight-bold text-muted">Protocolo</label>
+                            <input type="text" id="protocoloVal" required class="form-control mb-1"/>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Vendor</label>
                             <select class="form-control mb-1" id="vendorVal">
                                 @foreach ( $buscaTemplateVendor as $index => $value )
@@ -124,19 +126,21 @@
                                     @endforeach
                                 @endforeach
                             </select>
+                            <label class="mb-1 font-weight-bold text-muted">Group IBGP</label>
+                            <select id="group" class="form-control" >
+                                <option value="IBGP-PARCIAL">IBGP-PARCIAL</option>
+                                <option value="IBGP-FULL">IBGP-FULL</option>
+                            </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="mb-1 font-weight-bold text-muted">Protocolo</label>
-                            <input type="text" id="protocoloVal" required class="form-control mb-1"  placeholder="Userinocmon" style=" z-index: 2; background: transparent;"/>
+                        <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Porta</label>
-                            <input type="text" id="portaVal" required  class="form-control mb-1"  placeholder="inocmon" style=" z-index: 2; background: transparent;"/>
-                        </div>
-                        <div class="col-md-3">
+                            <input type="text" id="portaVal" required  class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">User</label>
-                            <input type="text" id="useVal" required class="form-control mb-1"  placeholder="Community SNMP:	" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="useVal" required class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Senha</label>
-                            <input type="text" id="senhaVal" required  class="form-control mb-1"  placeholder="Nome do group" style=" z-index: 2; background: transparent;"/>
+                            <input type="text" id="senhaVal" required  class="form-control mb-1"/>
                         </div>
+                        <div>
                         <button class="btn btn-primary ml-2 mt-1" onclick="saveData()" >editar</button>
                         <button class="btn btn-primary ml-2 mt-1" onclick="closeEdit()">close</button>
                     </div>
@@ -202,6 +206,7 @@
             var porta = row.querySelector('td:nth-child(7)').innerText;
             var user = row.querySelector('td:nth-child(8)').innerText;
             var pwd = row.querySelector('td:nth-child(9)').innerText;
+            var group = $(row).attr('group');
 
             $('#hostVal').val(hostName);
             $('#routerVal').val(routerId);
@@ -211,7 +216,7 @@
             $('#portaVal').val(porta);
             $('#useVal').val(user);
             $('#senhaVal').val(pwd);
-
+            $('#group').val(group);
         }
 
         let saveData = () => {
@@ -225,6 +230,7 @@
             var user =$('#useVal').val();
             var pwd = $('#senhaVal').val();
             var equipId = row.querySelector('td:nth-child(1)').innerText;
+            var group = $('#group').val();
 
             if(hostName == "" || routerId == "" || vendor == "" || family == "" || protocolo == "" || porta == "" || user == "" || equipId == "") {
                 $.NotificationApp.send("Alarm!"
@@ -249,6 +255,7 @@
                     user : user,
                     pwd : pwd,
                     equipId : equipId,
+                    group : group,
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }

@@ -32,7 +32,7 @@
                             <li class="breadcrumb-item active">Proxy Summary</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">PR sumary</h4>
+                    <h4 class="page-title">Proxy sumary</h4>
                 </div>
             </div>
         </div>
@@ -45,42 +45,18 @@
                     <table id="datatable" class="table nowrap">
                         <thead>
                             <tr>
-                                <th width=50>
-                                    Id
-                                </th>
-                                <th>
-                                    Hostname
-                                </th>
-                                <th>
-                                    RouterId
-                                </th>
-                                <th>
-                                    Platforma
-                                </th>
-                                <th>
-                                    SO
-                                </th>
-                                <th>
-                                    &nbsp;PortaSSH
-                                </th>
-                                <th>
-                                    &nbsp;Porta
-                                </th>
-                                <th>
-                                    &nbsp;User
-                                </th>
-                                <th>
-                                    Senha
-                                </th>
-                                <th>
-                                    &nbsp;Gerenciar
-                                </th>
-                                <th>
-                                    &nbsp;Editar
-                                </th>
-                                <th>
-                                    &nbsp;Delete
-                                </th>
+                                <th width=50> Id  </th>
+                                <th> Hostname  </th>
+                                <th> RouterId </th>
+                                <th> Platforma  </th>
+                                <th> SO  </th>
+                                <th> PortaSSH </th>
+                                <th> Porta </th>
+                                <th> User </th>
+                                <th> Senha </th>
+                                <th> Gerenciar  </th>
+                                <th> Editar </th>
+                                <th> Delete </th>
                             </tr>
                         </thead>
                         <tbody>

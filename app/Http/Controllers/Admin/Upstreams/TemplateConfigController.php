@@ -221,7 +221,7 @@ class TemplateConfigController extends Controller
             $ipv601 = $buscaDadosDaConexao['ipv6-01'];
             $ipv602 = $buscaDadosDaConexao['ipv6-02'];
 
-            $denyCustomerIn = $buscaDadosDaConexao['denycustomerin'] ?? '';
+            $denyCustomerIn = $buscaDadosDaConexao['denycustomerin'] ?? 'yes';
             $denyCustomerIn = 'yes';
             $localpref = 110;
             $medIn = 0;

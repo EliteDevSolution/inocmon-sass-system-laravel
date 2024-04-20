@@ -41,9 +41,7 @@
                                 <p class="text-primary font-17 font-family-secondary text-center">
                                     Aspath
                                 </p>
-                                <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>
-                                    {{$x['header']}}
-                                </textarea>
+                                <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>{{$x['header']}}</textarea>
                                 <button class="btn btn-success mt-2" onclick="saveData('header','activity', 'header{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
                                     gravar
                                 </button>
@@ -53,9 +51,7 @@
                             <p class="text-primary font-17 font-family-secondary text-center">
                                 Aspath
                             </p>
-                            <textarea class="form-control" id="aspath{{$indexFamily}}" rows= 5 cols=120>
-                                {{$x['aspath']}}
-                            </textarea>
+                            <textarea class="form-control" id="aspath{{$indexFamily}}" rows= 5 cols=120>{{$x['aspath']}}</textarea>
                             <button class="btn btn-success mt-2" onclick="saveData('aspath', 'activity', 'aspath{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
                                 gravar
                             </button>
@@ -64,9 +60,7 @@
                             <p class="text-primary font-17 font-family-secondary text-center">
                                 Policy
                             </p>
-                            <textarea class="form-control" id="policy{{$indexFamily}}" rows= 5 cols=120>
-                                {{$x['policy']}}
-                            </textarea>
+                            <textarea class="form-control" id="policy{{$indexFamily}}" rows= 5 cols=120>{{$x['policy']}}</textarea>
                             <button class="btn btn-success mt-2" onclick="saveData('policy', 'activity', 'policy{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
                                 gravar
                             </button>
@@ -88,9 +82,7 @@
                                 <p class="text-primary font-17 font-family-secondary text-center">
                                     Aspath
                                 </p>
-                                <textarea class="form-control" id="dis{{$indexFamily}}" rows= 5 cols=120>
-                                    {{$x['aspath']}}
-                                </textarea>
+                                <textarea class="form-control" id="dis{{$indexFamily}}" rows= 5 cols=120>{{$x['aspath']}}</textarea>
                                 <button class="btn btn-success mt-2" onclick="saveData('aspath', 'deactivity', 'dis{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
                                     gravar
                                 </button>

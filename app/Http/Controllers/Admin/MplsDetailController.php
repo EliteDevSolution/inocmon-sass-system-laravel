@@ -52,6 +52,7 @@ class MplsDetailController extends Controller
 
         $realIndexConfig = "";
         $configFinal = "";
+
         if(is_array($buscaConfigIds)) {
             for ($i=0; $i < count($buscaConfigIds); $i++) {
                 $realIndexConfig = $buscaConfigIds[$i];
@@ -63,8 +64,8 @@ class MplsDetailController extends Controller
 
         $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
 
-        if(is_array($buscaConfigIds) || is_array($buscaRrIds)) {
-            if( count($buscaConfigIds) > 0 || count($buscaRrIds) > 0 ){
+        if(is_array($buscaConfigIds)) {
+            if( count($buscaConfigIds) > 0 ){
                 $configFileNamePe = 'CONFIG-PE-'.$clientId.'-'.$equipId;
                 $uploadFilePe = 'public/configuracoes/'.$configFileNamePe;
 
@@ -96,7 +97,7 @@ class MplsDetailController extends Controller
                 $scp = new SCP($ssh);
 
                 $scp->put($configFileNamePe, public_path() . '/storage/configuracoes/'.$configFileNamePe, 1);
-   
+
                 $hostName = $detailClientData['equipamentos'][$equipId]['hostname'] ?? '';
                 $routerId = $detailClientData['equipamentos'][$equipId]['routerid'] ?? '';
                 $porta = $detailClientData['equipamentos'][$equipId]['porta'] ?? '';
@@ -110,7 +111,7 @@ class MplsDetailController extends Controller
                 if (!$pwd || $pwd == '') { $pwd = $senhaInocmon; }
 
                 $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-             
+
                 $this->database->getReference($debugDir)->set('assinando token de configuração: '.$configToken);
                 $this->database->getReference($debugDir)->set('aplicando configurações em '.$hostName.'...');
                 $lineCount = substr_count($configFinal, "\n");
@@ -118,6 +119,7 @@ class MplsDetailController extends Controller
                 $command = 'inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNamePe.' '.$debugFile.' & ';
                 $comandoRemoto = $ssh->exec('inoc-config '.$routerId.' '.$user.' \''.$pwd.'\' '.$porta.' '.$configFileNamePe.' '.$debugFile.' & ');
                 sleep(1);
+
                 if (str_contains($comandoRemoto, 'Err')) {
                     $this->database->getReference($debugDir)->set('Erro de login em: '.$hostName.': '.$comandoRemoto);
                 }else{
@@ -168,10 +170,10 @@ class MplsDetailController extends Controller
                 $this->database->getReference($debugDir)->set('arquivo '.$configFileNameRr.' gerado com sucesso! Iniciando transferência...');
                 $this->database->getReference($debugDir)->set('conectando ao proxy: '.$sondaIpv4.' '.$sondaPortaSsh.' '.$sondaUser.' '.base64_encode($sondaPwd));
 
-                $rrSsh = new SSH2($sondaIpv4, $sondaPortaSsh);
+                $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
 
                 try {
-                    if (!$rrSsh->login($sondaUser, $sondaPwd)) {
+                    if (!$ssh->login($sondaUser, $sondaPwd)) {
                         $status = 'failed';
                         $this->database->getReference($debugDir)->set('falha de login no proxy...');
                     } else {
@@ -180,23 +182,23 @@ class MplsDetailController extends Controller
                 } catch (\Throwable $th) {
                     $status = 'failed';
                 }
-                if(is_array($buscaConfigIds)) {
-                    if (count($buscaConfigIds) == 0) {
-                        $rrSsh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
-                    }
+
+                if (count($buscaConfigIds) === 0) {
+                    $ssh->exec('echo \'config begin -> '.$configToken.'\' >> '.$debugFile.'.log');
                 }
 
-
-                $rrScp = new SCP($rrSsh);
+                $scp = new SCP($ssh);
 
                 $this->database->getReference($debugDir)->set('inicindo copia do arquivo '.$configFileNameRr);
-                $rrScp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
+                $scp->put($configFileNameRr, public_path() . '/storage/configuracoes/'.$configFileNameRr, 1);
 
 
                 $rrLineCount = substr_count($configRrFinal, "\n");
+
                 $this->database->getReference($debugDir)->set('aplicando config em RR'.$buscaRrIds[$j].' '.$rrHostName.'... tempo estimado: '.$rrLineCount.'s');
 
                 $ssh->exec('inoc-config '.$rrRouterId.' '.$rrUser.' \''.$rrPwd.'\' '.$rrPorta.' '.$configFileNameRr.' '.$debugFile.' &');
+
                 for ($i = 0; $i < $rrLineCount; $i++){
                     $tempoEstimado = ($rrLineCount - $i);
                     $progresso = ($i / $rrLineCount  * 100);
@@ -205,6 +207,7 @@ class MplsDetailController extends Controller
                     sleep(1);
                 }
             }
+
         }
 
         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...');
@@ -217,10 +220,10 @@ class MplsDetailController extends Controller
             $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...'.$progresso.'%');
         }
 
-        $rrSsh = new SSH2($sondaIpv4, $sondaPortaSsh);
+        $ssh = new SSH2($sondaIpv4, $sondaPortaSsh);
 
         try {
-           if (!$rrSsh->login($sondaUser, $sondaPwd)) {
+           if (!$ssh->login($sondaUser, $sondaPwd)) {
                 $this->database->getReference($debugDir)->set('falha de login no proxy...');
                 $status ="failed";
             } else {
@@ -230,17 +233,16 @@ class MplsDetailController extends Controller
             $status = 'failed';
         }
 
-        $relatorio = $rrSsh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+        $relatorio = $ssh->exec('awk \'/config begin -> '.$configToken.'/ { f = 1 } f\' '.$debugFile.'.log');
+
         $this->database->getReference($debugDir)->set('configuração finalizada! Gerando relatório...100%');
         $this->database->getReference($debugDir)->set('Configuração concluída!');
         $this->database->getReference($debugDir)->set('idle');
 
-        $lunchData = $this->database->getReference($debugDir)->getSnapshot()->getValue();
         return response()->json(
             [
                 'message' => 'Custom function called successfully',
                 'status' => $status,
-                'debugData' => $lunchData,
                 'relatorio' => nl2br($relatorio)
             ]
         );
@@ -276,6 +278,7 @@ class MplsDetailController extends Controller
         $configs = [];
         $configBgpRrX = "";
         $configBgpRrFinal = "";
+
         if(is_array($buscaConfigs)) {
             foreach($buscaConfigs as $indexConfig => &$configVal) {
                 $getTemplate = $buscaConfigs[$indexConfig];

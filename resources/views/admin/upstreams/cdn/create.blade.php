@@ -160,14 +160,23 @@
                     recursivos  : $("#recursivos").val(),
                     vírgula : $("#vírgula").val(),
                     equip : $('#equip').val(),
-                    check : $('#check').val(),
+                    check : $("#check").is(':checked'),
                     clientId : '{{$clientId}}',
                     _token : '{{ csrf_token() }}'
                 }
             }).done(function( msg ) {
                 console.log(msg);
                 if(msg['status'] == 'ok') {
-                    console.log(msg);
+                    $('#nome').val('');
+                    $('#pop').val('');
+                    $('#asn').val('');
+                    $('#cos6').val('');
+                    $('#ipv4pro').val('');
+                    $('#ipv4client').val('');
+                    $('#ipv6pro').val('');
+                    $('#ipv6client').val('');
+                    $("#recursivos").val('');
+                    $("#vírgula").val('');
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully added!"
                         ,"top-right"

@@ -135,8 +135,8 @@
                                             </th>
                                         </tr>
                                         <tr>
-                                            <th>Atualizar inoc-config</th>
-                                            <th><button onclick="applyConfig()" class="btn btn-info waves-effect waves-light">autalizar inoc-config</button></th>
+                                            <th>aplicar config</th>
+                                            <th><button onclick="applyConfig()" class="btn btn-info waves-effect waves-light">aplicar config</button></th>
                                         </tr>
                                         </thead>
                                     </table>

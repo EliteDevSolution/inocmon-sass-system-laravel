@@ -127,7 +127,8 @@
             var bgp01Val = $('#bgp01').val();
             var bgp02Val = $('#bgp02').val();
             var equipVal = $('#equip').val();
-            var checkVal = $('#check').val();
+            var checkVal = $("#check").is(':checked');
+
             if(nomeVal == "" || popVal == "" || asnVal == "" || bgp1Val == "" || bgp2Val == "" || bgp01Val == "" ||bgp02Val == "" || equipVal == "") {
                 $.NotificationApp.send("Alarm!"
                     ,"This is required field!"
@@ -207,7 +208,7 @@
                     ,"error",
                 );
                 elementUnBlock('.p-1');
-            });;
+            });
         }
         function goBack() {
             location.href = "/upstreams?client_id={{$clientId}}";
