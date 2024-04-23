@@ -16,7 +16,6 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
 
     Route::get('/', 'Admin\ChangelogController@index');
 
-
     Route::resource('client', 'Admin\ClientController');
 
     Route::resource('ixbr', 'Admin\IxbrController');

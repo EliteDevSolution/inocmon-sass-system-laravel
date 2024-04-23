@@ -190,6 +190,7 @@ class TemplateConfigController extends Controller
         }else{
             $buscaTemplate = '';
 		}
+        // dd($buscaTemplate->getValue());
         $localpref = 110;
         $medIn = 0;
         $denyCustomerIn = 'yes';
@@ -253,7 +254,6 @@ class TemplateConfigController extends Controller
 				$getPolicyTemplate = $this->database->getReference('lib/templates/bgp/deny-customer-in/activate/'.$templateVendor.'/'.$templateFamily.'/policy')->getSnapshot()->getValue();
 				$configFinal .= str_replace("%nomedogrupo%",$nomeDoGrupo,$getPolicyTemplate);
 			}
-
 			foreach ($buscaTemplate->getValue() as $index => $x) {
                 if(is_string($x)) {
                     $configFinal .= str_replace("%community0%",$community0,$x);

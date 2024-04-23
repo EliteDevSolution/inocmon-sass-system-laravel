@@ -14,15 +14,15 @@
         .custom-lable {
             width: 150px;
         }
-        /* .custom-input {
+        .custom-input {
             float: left;
             width: 400px;
-        } */
+        }
     </style>
 @endsection
 
 @section('content')
-    <div class="columns">
+    <div class="columns" id="root">
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
@@ -32,7 +32,7 @@
                             <li class="breadcrumb-item active">Template Edit</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Template Edit</h4>
+                    <h4 class="page-title">Cdn Template Edit</h4>
                 </div>
             </div>
         </div>
@@ -58,16 +58,12 @@
                 </button>
             </div>
             <div class="col-6">
-                <p class="header-title mb-2">Nova Config section</p>
+                <p class="header-title mb-2">Nova config section</p>
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted">Family</label>
-                    <input type="text" name="family" required id="family" class="custom-input form-control mb-1"/>
-                </div>
-                <div class="group-input m-2">
-                    <label class="mb-1 custom-lable font-weight-bold text-muted">Nova config section</label>
-                    <select class="custom-input form-control" id="configsection" required >
+                    <select class="custom-input form-control" id="configsection" required>
                         @foreach ($templates as $indexTemp => $valueTemp)
-                            @if(is_array($valueTemp))
+                            @if (is_array($valueTemp))
                                 @foreach ($templates[$indexTemp] as $index => $value)
                                     <option value="{{$indexTemp.'/'.$index}}">
                                         {{$indexTemp.'/'.$index}}
@@ -75,8 +71,11 @@
                                 @endforeach
                             @endif
                         @endforeach
-
                     </select>
+                </div>
+                <div class="group-input m-2">
+                    <label class="mb-1 custom-lable font-weight-bold text-muted">Nova Config section</label>
+                    <input type="text" name="family" required id="family" class="custom-input form-control mb-1"/>
                 </div>
                 <button class="ml-1 btn btn-primary mt-2" onclick="saveData('config-section')">
                     Cadastrar-Section
@@ -87,17 +86,17 @@
                     @foreach ($templates as $indexTemp => $valueTemp)
                         @if (is_array($valueTemp))
                             @foreach ($valueTemp as $indexFamily => $valueFamily)
-                                <p class="header-title">
+                                <p class="font-18 text-primary">
                                     {{$indexTemp}}
                                 </p>
-                                <p>
+                                <p class="font-15 text-primary">
                                     {{$indexFamily}}
                                 </p>
                                 @if (is_array($valueFamily))
                                     @foreach ($valueFamily as $index => $value)
                                             <div id="accordion">
                                                 <div class="card mb-1">
-                                                    <div class="card-header" id="headingOne{{$index}}">
+                                                    <div class="card-header" id="headingOne{{str_replace(' ','', $index)}}">
                                                         <h5 class="m-0">
                                                             <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$index}}" aria-expanded="true">
                                                                 <i class="mdi mdi-help-circle mr-1 text-primary"></i>
@@ -106,7 +105,7 @@
                                                         </h5>
                                                     </div>
 
-                                                    <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{$index}}" data-parent="#accordion">
+                                                    <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{str_replace(' ','', $index)}}" data-parent="#accordion">
                                                         <div class="card-body">
                                                             <textarea rows = 10 cols = 100 id="{{$index}}">{{$value}}</textarea>
                                                             <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
@@ -150,7 +149,28 @@
             var family = $("#family").val();
             var configSection = $("#configsection").val();
             var textVal = $(`#${todo}`).val();
-            console.log(textVal);
+
+            if( todo == "family-update" && novaFamily == "" ) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Nova family is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                $("#novafamily").focus();
+                return;
+            }
+            if(todo == "config-section" && family == "") {
+                $.NotificationApp.send("Alarm!"
+                    ,"Family is required field!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                $("#family").focus();
+                return;
+            }
+            elementBlock('square1', 'body');
             $.ajax({
                 type: "put",
                 url: "tempcdn-edit-bgp/1",
@@ -184,6 +204,15 @@
                         ,"error",
                     );
                 }
+                elementUnBlock('body');
+            }).fail(function(xhr, textStatus, errorThrown) {
+                $.NotificationApp.send("Alarm!"
+                    ,"Failed updated!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                elementUnBlock('body');
             });
         }
     </script>

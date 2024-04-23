@@ -279,9 +279,9 @@
                     <li >
                         <a href="{{ route('tempeer-edit-bgp.index') }}">BPG PEERING</a>
                     </li>
-                    {{-- <li >
+                    <li >
                         <a href="{{ route('tempcdn-edit-bgp.index') }}">BGP CDN</a>
-                    </li> --}}
+                    </li>
                     <li >
                         <a href="{{ route('deny-customer.index') }}">Deny Customer-In</a>
                     </li>

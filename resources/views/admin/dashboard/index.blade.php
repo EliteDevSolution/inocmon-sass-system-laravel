@@ -80,16 +80,20 @@
                         {{$dashboardData['equipmentCount']}} PEs cadastrados
                     </h4>
                     <p class="font-16 text-blue"> Arquivo lsdb </p>
-                    @if (!$dashboardData['ospData'])
-                        <p class="font-16 text-blue">
-                            Ainda não existe um arquivo!
-                        </p>
+                    @if ($dashboardData['ospData'] == '')
+                        <div id="no-data">
+                            <p class="font-16 text-blue">
+                                Ainda não existe um arquivo!
+                            </p>
+                        </div>
                     @else
-                        <a href="{{ route('downloadFile') }}?filename={{ urlencode($dashboardData['fileName']) }}"> DOWNLOAD {{$dashboardData['dspVendor']}}</a>
-                        <br>
-                        <a href="https://topolograph.com/upload-ospf-isis-lsdb" target="_blank">TOPOLOGRAPH</a>
-                        <hr>
-                        <p class="font-14 text-blue">Sobreescrever Existente</p>
+                        <div id="data-download">
+                            <a href="{{ route('downloadFile') }}?filename={{ urlencode($dashboardData['fileName']) }}"> DOWNLOAD {{$dashboardData['dspVendor']}}</a>
+                            <br>
+                            <a href="https://topolograph.com/upload-ospf-isis-lsdb" target="_blank">TOPOLOGRAPH</a>
+                            <hr>
+                            <p class="font-14 text-blue">Sobreescrever Existente</p>
+                        </div>
                     @endif
                     <div class="col-12 m-3">
                         <div style="display: flex; width : max-content ; margin : auto; gap : 10px">
@@ -145,7 +149,12 @@
                         ,"#2ebbdb"
                         ,"success",
                     );
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
                 } else {
+                    $("#no-data").show();
+                    $("#data-download").hide();
                     $.NotificationApp.send("Alarm!"
                         ,"Failed updated!"
                         ,"top-right"
@@ -162,6 +171,8 @@
                     ,"error",
                 );
                 elementUnBlock('.ribbon-box');
+                $("#no-data").show();
+                $("#data-download").hide();
             });
         }
     </script>

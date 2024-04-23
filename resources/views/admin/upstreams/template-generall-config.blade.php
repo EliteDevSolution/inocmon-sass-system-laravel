@@ -97,7 +97,7 @@
                                                 <div class="modal-body p-3">
                                                     <div class="col">
                                                         <p class="header-title mb-2">Config global</p>
-                                                        <p>{!! $toSendData['configSalva'] !!}</p>
+                                                        <p>{!! nl2br($toSendData['configSalva']) !!}</p>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

@@ -20,9 +20,9 @@ class TempEditCdnController extends Controller
      */
     public function index()
     {
-        $templates = $this->database->getReference('lib/templates/bgp/cdn')->getSnapshot()->getValue();
-
+        $templates = $this->database->getReference('lib/templates/bgp/cdn')->getSnapshot()->getValue() ?? [];
         return view('admin.templatecdn', compact('templates'));
+
     }
 
     /**
@@ -77,7 +77,59 @@ class TempEditCdnController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $status = "";
+        $todo = $request['todo'];
+        $vendor = $request['vendor'];
+        $newFamily = $request['novaFamily'];
+        $family = $request['family'];
+        $configSection = $request['configSection'];
+        $firstId = $request['firstId'];
+        $secondId = $request['secondId'];
+        $thirdId = $request['thirdId'];
+        $textVal = $request['textVal'];
+
+        if($todo == 'family-update') {
+            if(isset($newFamily)) {
+                try {
+                    $toSaveData = [
+                        $newFamily => $newFamily
+                    ];
+                    $this->database->getReference('lib/templates/bgp/cdn/'.$vendor)->update($toSaveData);
+                    $status = "ok";
+                } catch (\Throwable $th) {
+                    $status = "failed";
+                }
+                $notification = 'Family '.$newFamily.' cadastrada!';
+            }
+        } else if($todo == 'config-section') {
+            if(isset($family)) {
+                try {
+                    $toSaveData = [
+                        $family => ''
+                    ];
+                    $this->database->getReference('lib/templates/bgp/cdn/'.$configSection)->update($toSaveData);
+                    $status = "ok";
+                } catch (\Throwable $th) {
+                    $status = "failed";
+                }
+            }
+            $notification = 'Config Section'.$family.'  cadastrada!';
+        } else {
+            try {
+                $status = 'ok';
+                $toSaveData = [
+                    $firstId => $textVal
+                ];
+                $this->database->getReference('lib/templates/bgp/cdn/'.$thirdId.'/'.$secondId)->update($toSaveData);
+            } catch (\Throwable $th) {
+                $status = 'failed';
+            }
+            $notification = 'dados invalidos';
+        }
+        return response()->json([
+            'status' => $status,
+            'notification' => $notification
+        ]);
     }
 
     /**

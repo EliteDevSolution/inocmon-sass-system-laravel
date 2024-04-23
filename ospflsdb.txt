@@ -1,0 +1,41 @@
+
+############################
+2024-04-21 23:46:31.658535
+############################
+display ospf lsdb router | no-more
+Welcome to Ubuntu 22.04.4 LTS (GNU/Linux 5.15.0-102-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+  System information as of Sun Apr 21 11:46:17 PM -03 2024
+
+  System load:           0.1435546875
+  Usage of /:            32.0% of 24.04GB
+  Memory usage:          76%
+  Swap usage:            100%
+  Processes:             169
+  Users logged in:       0
+  IPv4 address for eth0: 172.233.163.156
+  IPv6 address for eth0: 2a01:7e04::f03c:94ff:fe5c:402c
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+127 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+3 additional security updates can be applied with ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+*** System restart required ***
+Last login: Sun Apr 21 23:46:17 2024 from 127.0.0.1
+[?2004hroot@localhost:~# display ospf lsdb router | no-more
+[?2004lCommand 'display' not found, but can be installed with:
+apt install graphicsmagick-imagemagick-compat  # version 1.4+really1.3.38-1ubuntu0.1, or
+apt install imagemagick-6.q16                  # version 8:6.9.11.60+dfsg-1.3ubuntu0.22.04.3
+apt install imagemagick-6.q16hdri              # version 8:6.9.11.60+dfsg-1.3ubuntu0.22.04.3
+no-more: command not found
+[?2004hroot@localhost:~# 

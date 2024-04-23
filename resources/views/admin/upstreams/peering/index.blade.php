@@ -74,7 +74,7 @@
                                     <td>{{$value['remoteas']}}</td>
                                     <td>{{$value['pop']}}</td>
                                     <td id="{{$value['peid']}}">
-                                        {{$toSendData['buscaEquip'][$value['peid']]['hostname']}}
+                                        {{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}
                                     </td>
                                     <td>
                                         <a href="{{ route('template-generate-config.index',

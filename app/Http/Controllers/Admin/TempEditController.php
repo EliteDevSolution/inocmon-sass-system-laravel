@@ -118,7 +118,7 @@ class TempEditController extends Controller
             try {
                 $status = 'ok';
                 $toSaveData = [
-                    $firstId => $textVal
+                    $firstId => $textVal ?? ''
                 ];
                 $this->database->getReference('lib/templates/bgp/transito/'.$thirdId.'/'.$secondId)->update($toSaveData);
             } catch (\Throwable $th) {
