@@ -23,7 +23,7 @@ class CheckApproved
             return redirect()->back()->with('error', "Você ainda não está aprovado!");
         }
         $clientId = auth()->user()->client_id ?? '';
-        if (!auth()->user()->hasRole("administrator")) {
+        if ( !(auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master")) ) {
             $database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
             $clients = $database->getReference('clientes')->getValue();
             if($clientId === '') {

@@ -1,12 +1,24 @@
+@php
+    $clientPass = '';
+    $clientId = request()->get('client_id') ?? '';
+    if($clientId != '' ) {
+        $clientPass = getInocoPass($clientId);
+    }
+@endphp
 
 <ul class="list-unstyled topnav-menu float-right mb-0">
+
+    <input id="user-password" class="d-none" value="{{$clientPass}}" readonly></input>
+
     <li class="dropdown notification-list">
+
         <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
             <img src="{{ asset('admin_assets/images/users/standard.png') }}" alt="user-image" class="rounded-circle">
             <span class="pro-user-name ml-1">
                 {{ Auth::user()->name }} <i class="mdi mdi-chevron-down"></i>
             </span>
         </a>
+
         <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
             <!-- item-->
             <div class="dropdown-header noti-title">
@@ -40,7 +52,7 @@
 
 <!-- LOGO -->
 <div class="logo-box">
-    @if(Auth::user()->hasRole("administrator"))
+    @if(Auth::user()->hasRole("administrator") || Auth::user()->hasRole("master"))
         <a href="/client" class="logo text-center">
     @else
         <a href="/dashboard" class="logo text-center">
@@ -76,9 +88,12 @@
                 {{ $client['nome'] }} | ASN: {{ $client['bgp']['asn'] }}
             </a>
         </li>
+        @if(Auth::user()->hasRole("administrator") || Auth::user()->hasRole("master"))
+            <li class="dropdown notification-list" >
+                <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <i class="fe-copy noti-icon" id= "copyBtn" onclick="copyPassword()"></i>
+                </a>
+            </li>
+        @endif
     @endif
 </ul>
-
-<script>
-
-</script>

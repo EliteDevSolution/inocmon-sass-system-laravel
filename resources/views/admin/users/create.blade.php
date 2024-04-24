@@ -14,6 +14,11 @@
         .select2-selection__rendered{
             /*line-height: 32px !important;*/
         }
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #cbcbcb;
+            opacity: 1;
+            cursor: no-drop;
+        }
     </style>
 @endsection
 @section('content')
@@ -40,7 +45,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route("users.store") }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                         <label for="name">{{ trans('cruds.user.fields.name') }}*</label>
@@ -69,21 +74,10 @@
                             </div>
                         @endif
                     </div>
-                    <div class="form-group {{ $errors->has('roles') ? 'has-error' : '' }}">
-                        {!! Form::label('roles', trans('cruds.user.fields.roles')) !!}
-                        <div>
-                            {!! Form::select('roles[]', $roles, old('roles'), ['class' => 'form-control', 'data-toggle'=>'select2']) !!}
-                        </div>
-                        @if($errors->has('roles'))
-                            <div class="mt-1" style="color: #e6334d; font-weight: 500;">
-                                {{ $errors->first('roles') }}
-                            </div>
-                        @endif
-                    </div>
                     <div class="form-group">
-                        {!! Form::label('selectClients', trans('clients')) !!}
+                        {!! Form::label('selectClients', trans('Client')) !!}
                         <div>
-                            {!! Form::select('client_id', $selectClients, old('client_id'), ['class' => 'form-control', 'data-toggle'=>'select2']) !!}
+                            {!! Form::select('client_id', $selectClients, old('client_id'), ['class' => 'form-control', 'disabled'=>'disabled', 'id'=>'select_client']) !!}
                         </div>
                         @if($errors->has('client_id'))
                             <div class="mt-1" style="color: #e6334d; font-weight: 500;">
@@ -91,6 +85,18 @@
                             </div>
                         @endif
                     </div>
+                    <div class="form-group {{ $errors->has('roles') ? 'has-error' : '' }}">
+                        {!! Form::label('roles', trans('cruds.user.fields.roles')) !!}
+                        <div>
+                            {!! Form::select('roles[]', $roles, old('roles'), ['class' => 'form-control', 'data-toggle'=>'select2', 'id'=>'select_roles']) !!}
+                        </div>
+                        @if($errors->has('roles'))
+                            <div class="mt-1" style="color: #e6334d; font-weight: 500;">
+                                {{ $errors->first('roles') }}
+                            </div>
+                        @endif
+                    </div>
+
                     <div class="form-group">
                         {!! Form::label('status', trans('cruds.user.fields.status')) !!}
                         <div>
@@ -118,7 +124,14 @@
 
     <script>
         $(document).ready(function(){
-            $('[data-toggle="select2"]').select2()
+            $('#select_roles').change(function() {
+                if($(this).val() === 'guest')
+                {
+                    $('#select_client').removeAttr('disabled', 'disabled');
+                } else {
+                    $('#select_client').attr('disabled', 'disabled');
+                }
+            });
         });
     </script>
 @endsection

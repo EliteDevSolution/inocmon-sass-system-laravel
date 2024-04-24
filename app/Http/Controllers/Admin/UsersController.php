@@ -24,7 +24,8 @@ class UsersController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('users_manage')) {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
             return abort(401);
         }
         $clients = $this->database->getReference('clientes')->getSnapshot()->getValue();
@@ -37,8 +38,13 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
+            return abort(401);
+        }
         $clients = $this->database->getReference('clientes')->getSnapshot()->getValue();
         $users = User::all();
         $selectClients = [];
@@ -46,24 +52,8 @@ class UsersController extends Controller
             $clientForArray = [];
             $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
             $selectClients = array_merge($selectClients, $clientForArray);
-            // $flag = true;
-            // foreach ($users as $userIndex => $user) {
-            //     if($user['client_id'] != $clientIndex) {
-            //         $flag = true;
-            //     } else {
-            //         $flag = false;
-            //         break;
-            //     }
-            // }
-            // $clientForArray = [];
-            // if($flag) {
-            //     $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
-            //     $selectClients = array_merge($selectClients, $clientForArray);
-            // }
         }
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
+
         $roles = Role::get()->pluck('name', 'name');
         $status = array("Pending"=>"Pending", "Approve"=>"Approve", "Reject"=>"Reject");
         $trial_types = array("0"=>"Basic", "1"=>"Pro");
@@ -79,9 +69,6 @@ class UsersController extends Controller
      */
     public function store(StoreUsersRequest $request)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
         $data = $request->all();
         $user = User::create($data);
         $data['trial_type'] = 1;
@@ -110,6 +97,10 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
+            return abort(401);
+        }
         $clients = $this->database->getReference('clientes')->getSnapshot()->getValue();
         $users = User::all();
         $selectClients = [];
@@ -117,28 +108,8 @@ class UsersController extends Controller
             $clientForArray = [];
             $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
             $selectClients = array_merge($selectClients, $clientForArray);
-            // $flag = true;
-            // foreach ($users as $userIndex => $userData) {
-            //     if($userData['client_id'] != $clientIndex) {
-            //         $flag = true;
-            //     } else if ($user['client_id'] == $clientIndex ) {
-            //         $flag = true;
-            //         break;
-            //     }
-            //     else {
-            //         $flag = false;
-            //         break;
-            //     }
-            // }
-            // $clientForArray = [];
-            // if($flag) {
-            //     $clientForArray = array( $clientIndex => $client['nome']. ' ('.$client['email']. ')' );
-            //     $selectClients = array_merge($selectClients, $clientForArray);
-            // }
         }
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
+
         $roles = Role::get()->pluck('name', 'name');
 
         $status = array("Pending"=>"Pending", "Approve"=>"Approve", "Reject"=>"Reject");
@@ -155,10 +126,12 @@ class UsersController extends Controller
      */
     public function update(UpdateUsersRequest $request, User $user)
     {
-        if (!Gate::allows('users_manage')) {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
             return abort(401);
         }
 
+        // $user->update(['field_name' => 'new value']);
         $user->update($request->all());
         if (isset($request->trial_start) && isset($request->trial_end))
         {
@@ -170,6 +143,11 @@ class UsersController extends Controller
             $user->trial_type = $request->trial_type;
             $user->save();
         }
+        if( $request['roles'][0] == 'administrator' || $request['roles'][0] == 'master' ) {
+            $user->client_id = '';
+            $user->update();
+            $user->save();
+        }
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->syncRoles($roles);
 
@@ -178,7 +156,8 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        if (! Gate::allows('users_manage')) {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
             return abort(401);
         }
 
@@ -195,7 +174,8 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        if (! Gate::allows('users_manage')) {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
             return abort(401);
         }
 
@@ -211,7 +191,8 @@ class UsersController extends Controller
      */
     public function massDestroy(Request $request)
     {
-        if (! Gate::allows('users_manage')) {
+        if (! Gate::allows('users_manage') && !Gate::allows('master_manage') )
+        {
             return abort(401);
         }
         User::whereIn('id', request('ids'))->delete();

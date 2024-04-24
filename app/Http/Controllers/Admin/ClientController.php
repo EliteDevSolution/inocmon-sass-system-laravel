@@ -22,7 +22,7 @@ class ClientController extends Controller
 
     public function index()
     {
-        if(auth()->user()->hasRole("administrator")) {
+        if( auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master") ) {
             $status = session('success');
             $clients = $this->database->getReference('clientes')->getValue();
             return view('admin.client_home', compact('clients', 'status'));

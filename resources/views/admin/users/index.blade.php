@@ -68,7 +68,9 @@
                                 </td>
                                 <td>
                                     @if($user->client_id != "")
-                                        {{ $clients[$user->client_id]['nome'] . ' (' . $clients[$user->client_id]['email'] . ')' }}
+                                        @if( array_key_exists($user->client_id, $clients) )
+                                            {{ $clients[$user->client_id]['nome'] . ' (' . $clients[$user->client_id]['email'] . ')' }}
+                                        @endif
                                     @endif
                                 </td>
                                 <td>
@@ -86,11 +88,10 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($user->id != 1)
                                     <a class="btn btn-xs btn-info" href="{{ route('users.edit', $user->id) }}">
                                         Edit
                                     </a>
-
+                                    @if($user->id != 1)
                                     <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">

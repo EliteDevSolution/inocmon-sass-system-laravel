@@ -1,5 +1,4 @@
 <?php
-
     function getClient($clientId = null) {
         $database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
 
@@ -11,6 +10,19 @@
         $clients = $database->getReference('clientes')->getValue();
         return $clients;
     }
+
+    function getInocoPass($clientId = null) {
+        $database = \App\Http\Controllers\Helpers\FirebaseHelper::connect();
+        if (isset($clientId)) {
+            $client = $database->getReference('clientes/' .$clientId)->getSnapshot()->getValue();
+            $inocoPassword = $client['seguranca']['senhainocmon'];
+            return $inocoPassword;
+        } else {
+            return '';
+        }
+
+    }
+
     function colorReport($inputVar) {
         $inputVar = str_replace("unknown command.","<font color=\"#ffff00\">unknown</font> command.",$inputVar);
         $inputVar = str_replace("##","<font color=\"#1E90FF\">##</font>",$inputVar);

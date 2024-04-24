@@ -29,8 +29,8 @@ class ClientsController extends Controller
         $community = $clientDetailData['bgp']['community0'];
         $equipments = $clientDetailData['equipamentos'] ?? [];
         if( array_key_exists('interconexoes', $clientDetailData['bgp']) ) {
-            $buscaCommunitiesTransito = $clientDetailData['bgp']['interconexoes']['transito'];
-            $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['transito'];
+            $buscaCommunitiesTransito = $clientDetailData['bgp']['interconexoes']['transito'] ?? [];
+            $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['transito'] ?? [];
         }
         else {
             $buscaCommunitiesTransito = [];

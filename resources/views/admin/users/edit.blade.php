@@ -15,6 +15,11 @@
         .select2-selection__rendered{
             /*line-height: 32px !important;*/
         }
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #cbcbcb;
+            opacity: 1;
+            cursor: no-drop;
+        }
     </style>
 @endsection
 @section('content')
@@ -60,9 +65,13 @@
                 @endif
             </div>
             <div class="form-group">
-                {!! Form::label('selectClients', trans('clients')) !!}
+                {!! Form::label('selectClients', trans('Client')) !!}
                 <div>
-                    {!! Form::select('client_id', $selectClients, old('client_id') ? old('client_id') : $user->client_id, ['class' => 'form-control', 'data-toggle'=>'select2']) !!}
+                    @if($roles =='guest')
+                        {!! Form::select('client_id', $selectClients, old('client_id') ? old('client_id') : $user->client_id, ['class' => 'form-control', 'data-toggle'=>'select2',  'id'=>'select_client']) !!}
+                    @else
+                        {!! Form::select('client_id', $selectClients, old('client_id') ? old('client_id') : $user->client_id, ['class' => 'form-control', 'data-toggle'=>'select2',  'id'=>'select_client', 'disabled' => 'disabled']) !!}
+                    @endif
                 </div>
                 @if($errors->has('client_id'))
                     <div class="mt-1" style="color: #e6334d; font-weight: 500;">
@@ -84,7 +93,7 @@
                 <div>
                     {!! Form::select('roles[]', $roles
                         , old('roles') ? old('roles') : $user->roles()->pluck('name', 'name')
-                        , ['class' => 'form-control', 'data-toggle'=>'select2']) !!}
+                        , ['class' => 'form-control', 'data-toggle'=>'select2', 'id'=>'select_roles']) !!}
                 </div>
                 @if($errors->has('roles'))
                     <div class="mt-1" style="color: #e6334d; font-weight: 500;">
@@ -120,9 +129,15 @@
 
     <script>
         $(document).ready(function(){
-            $('[data-toggle="select2"]').select2()
-            $("#trial_start").flatpickr();
-            $("#trial_end").flatpickr();
+            //$('[data-toggle="select2"]').select2()
+            $('#select_roles').change(function() {
+                if($(this).val() === 'guest')
+                {
+                    $('#select_client').removeAttr('disabled', 'disabled');
+                } else {
+                    $('#select_client').attr('disabled', 'disabled');
+                }
+            });
         });
     </script>
 @endsection

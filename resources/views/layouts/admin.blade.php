@@ -20,8 +20,6 @@
         <link href="{{ asset('common_assets/plugin/jquery-confirm/jquery-confirm.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('common_assets/plugin/blockui/blockUI.css') }}" rel="stylesheet" type="text/css" />
 
-
-
         @yield('styles')
         <style>
 
@@ -107,7 +105,37 @@
         @stack('js')
 
         <script>
-              let elementBlock = (type, elements) => {
+            $(document).ready(function() {
+                $('#copyBtn').click(function() {
+                    var text = $('#user-password').val();
+                    //Create a temporary input element
+                    var tempInput = $('<input>');
+                    // Set the value of the temporary input to the text to be copied
+                    tempInput.val(text);
+
+                    // Append the temporary input to the document
+                    $('body').append(tempInput);
+
+                    // Select the text in the temporary input
+                    tempInput.select();
+
+                    // Execute the copy command
+                    document.execCommand('copy');
+
+                    // Remove the temporary input from the document
+                    tempInput.remove();
+                    // Provide feedback to the user
+
+                    $.NotificationApp.send("Alert"
+                        ,"This client password has been copied to the clipboard!"
+                        ,"top-right"
+                        ,"#2ebbdb"
+                        ,"success",
+                    );
+                });
+            })
+
+            let elementBlock = (type, elements) => {
                 $(elements).block({
                     overlayCSS: {
                         opacity: 0.15

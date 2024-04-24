@@ -57,7 +57,7 @@
                     <p class="font-15 text-blue">
                         Chang Log
                     </p>
-                    @if(auth()->user()->hasRole("administrator"))
+                    @if( auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master") )
                         <a class="m-0 mb-2 btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'store'))}}">
                             Add
                         </a>
@@ -77,7 +77,7 @@
                                 <td>{{$valueChangeLog['versao']}}</td>
                                 <td>{{$valueChangeLog['date']}}</td>
                                 <td>
-                                    @if(auth()->user()->hasRole("administrator"))
+                                    @if( auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master") )
                                         <a class="btn btn-info btn-xs" href="{{ route('changelog.create', array('todo' => 'update', 'change_id' => $indexChangeLog))}}">Update</a>
                                     @endif
                                 </td>

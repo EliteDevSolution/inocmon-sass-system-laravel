@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="text-muted mb-0 text-center">
+                <p class="text-muted mb-0 text-center" style="margin:7px">
                     <a href="">ver detalhes</a>
                 </p>
             </div> <!-- end card-box-->
@@ -76,9 +76,9 @@
             <div class="card-box ribbon-box">
                 <div class="ribbon ribbon-success float-left"><i class="mdi mdi-access-point mr-1"></i> Rede MPLS</div>
                 <div class="ribbon-content" style="text-align: center">
-                    <h4 class="text-success  mt-0">
+                    <h2 class="text-success display-title-tour mt-0">
                         {{$dashboardData['equipmentCount']}} PEs cadastrados
-                    </h4>
+                    </h2>
                     <p class="font-16 text-blue"> Arquivo lsdb </p>
                     @if ($dashboardData['ospData'] == '')
                         <div id="no-data">
@@ -129,6 +129,15 @@
         function excuteCommand() {
             var proxy = $("#proxy").val();
             var rr = $("#rr").val();
+            if( proxy == null && rr == null ) {
+                $.NotificationApp.send("Alarm!"
+                    ,"The field is empty!"
+                    ,"top-right"
+                    ,"#2ebbdb"
+                    ,"error",
+                );
+                return;
+            }
             elementBlock('square1', '.ribbon-box');
             $.ajax({
                 type: "post",

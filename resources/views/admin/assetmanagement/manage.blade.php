@@ -26,10 +26,10 @@
                             <li class="breadcrumb-item"><a href="/">iNOCmon</a></li>
                             <li class="breadcrumb-item active">Asset management</li>
                             <li class="breadcrumb-item active">Router Reflectors</li>
-                            <li class="breadcrumb-item active">PR sumary</li>
+                            <li class="breadcrumb-item active">RR summary</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">PR sumary</h4>
+                    <h4 class="page-title">RR summary</h4>
                 </div>
             </div>
         </div>

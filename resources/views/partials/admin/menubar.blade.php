@@ -1,11 +1,13 @@
 <div id="sidebar-menu">
+
     @php
         if(!isset($clients)) {
             $clients = getClient();
         }
     @endphp
+
     <ul class="metismenu" id="side-menu">
-    @if(isset(request()->query()['client_id']) || !auth()->user()->hasRole("administrator"))
+    @if(isset(request()->query()['client_id']) || !(auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master")) )
         @php
             $clientId;
             if(isset(request()->query()['client_id'])) {
@@ -15,8 +17,6 @@
             }
             $clientIdQueryParam = array("client_id" => $clientId);
         @endphp
-
-
             <li class="menu-title">Navigation</li>
             <li>
                 <a href="javascript: void(0);">
@@ -191,7 +191,7 @@
                     </li>
                 </ul>
             </li>
-            @if(auth()->user()->hasRole("administrator"))
+            @if( auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master") )
                 <li class="menu-title mt-2">Clinetes</li>
                 <li>
                     <a href="javascript: void(0);">
@@ -258,39 +258,41 @@
                 @endforeach
             </li>
 
-            <li class="menu-title">Template Transitor</li>
+            @if( auth()->user()->hasRole("master"))
+                <li class="menu-title">Template Transitor</li>
 
-            <li>
-                <a href="javascript: void(0);">
-                    <i class="fe-settings"></i>
-                    <span> Template Edit </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <ul class="nav-second-level" aria-expanded="false">
-                    <li >
-                        <a href="{{ route('temp-edit.index') }}">Template Editor PE</a>
-                    </li>
-                    <li >
-                        <a href="{{ route('temp-edit-bgp.index') }}">BGP TRANSITO</a>
-                    </li>
-                    <li >
-                        <a href="{{ route('tempix-edit-bgp.index') }}">BPG IX</a>
-                    </li>
-                    <li >
-                        <a href="{{ route('tempeer-edit-bgp.index') }}">BPG PEERING</a>
-                    </li>
-                    <li >
-                        <a href="{{ route('tempcdn-edit-bgp.index') }}">BGP CDN</a>
-                    </li>
-                    <li >
-                        <a href="{{ route('deny-customer.index') }}">Deny Customer-In</a>
-                    </li>
-                    <li >
-                        <a href="{{ route('template-rr.index') }}">Template Reflectors</a>
-                    </li>
-                </ul>
-            </li>
-
+                <li>
+                    <a href="javascript: void(0);">
+                        <i class="fe-settings"></i>
+                        <span> Template Edit </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li >
+                            <a href="{{ route('temp-edit.index') }}">Template Editor PE</a>
+                        </li>
+                        <li >
+                            <a href="{{ route('temp-edit-bgp.index') }}">BGP TRANSITO</a>
+                        </li>
+                        <li >
+                            <a href="{{ route('tempix-edit-bgp.index') }}">BPG IX</a>
+                        </li>
+                        <li >
+                            <a href="{{ route('tempeer-edit-bgp.index') }}">BPG PEERING</a>
+                        </li>
+                        <li >
+                            <a href="{{ route('tempcdn-edit-bgp.index') }}">BGP CDN</a>
+                        </li>
+                        <li >
+                            <a href="{{ route('deny-customer.index') }}">Deny Customer-In</a>
+                        </li>
+                        <li >
+                            <a href="{{ route('template-rr.index') }}">Template Reflectors</a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+            
             <li class="menu-title">IXBR</li>
 
             <li>
@@ -320,7 +322,7 @@
                     </li>
                 </ul>
             </li>
-            @if(auth()->user()->hasRole("administrator"))
+            @if( auth()->user()->hasRole("administrator") || auth()->user()->hasRole("master") )
                 <li class="menu-title mt-2">admin</li>
 
                 <li>
