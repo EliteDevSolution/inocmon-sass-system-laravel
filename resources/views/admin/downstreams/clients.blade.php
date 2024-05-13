@@ -69,35 +69,37 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach ($toSendData['clientTransito'] as $index => $value )
-                        <tr id="{{$index}}" clientasn="{{ $value['recursive-asn'] ?? "" }}"
-                            block4 = "{{ $value['blocosipv4'] ?? "" }}" block6 = "{{ $value['blocosipv6'] ?? "" }}">
-                                <td> {{$index}} </td>
-                                <td> {{$value['nomedoclientebgp'] ?? ''}} </td>
-                                <td> {{$value['remoteas'] ?? ''}} </td>
-                                <td> {{$value['pop'] ?? ''}} </td>
-                                <td id="{{$value['peid'] ?? ''}}">
-                                    @if (array_key_exists('peid', $value))
-                                        {{$toSendData['equipment'][$value['peid']]['hostname'] ?? ''}}
-                                    @endif
-                                </td>
-                                <td> {{$value['ipv4-01'] ?? ''}} </td>
-                                <td> {{$value['ipv4-02'] ?? ''}} </td>
-                                <td> {{$value['ipv6-01'] ?? ''}} </td>
-                                <td> {{$value['ipv6-02'] ?? ''}} </td>
-                                <td>
-                                    <a href="{{route("downstreams-client_bgp_detail.index", array('client_id' => $clientId, 'clientbgp' => $index))}}">
-                                        <i class="fe-user"></i>
-                                    </a>
-                                </td>
-                                <td onclick="showEdit('{{$index}}')">
-                                    <i class="fe-edit"></i>
-                                </td>
-                                <td>
-                                    <i class="fe-trash" onclick="deleteClent(this, '{{$index}}')"></i>
-                                </td>
-                            </tr>
-                        @endforeach
+                        @if(is_array($toSendData['clientTransito']))
+                            @foreach ($toSendData['clientTransito'] as $index => $value )
+                                <tr id="{{$index}}" clientasn="{{ $value['recursive-asn'] ?? '' }}"
+                                    block4 = "{{ $value['blocosipv4'] ?? '' }}" block6 = "{{ $value['blocosipv6'] ?? '' }}" community="{{ $value['communityset'] ?? '' }}">
+                                    <td> {{$index}} </td>
+                                    <td> {{$value['nomedoclientebgp'] ?? ''}} </td>
+                                    <td> {{$value['remoteas'] ?? ''}} </td>
+                                    <td> {{$value['pop'] ?? ''}} </td>
+                                    <td id="{{$value['peid'] ?? ''}}">
+                                        @if (array_key_exists('peid', $value))
+                                            {{$toSendData['equipment'][$value['peid']]['hostname'] ?? ''}}
+                                        @endif
+                                    </td>
+                                    <td> {{$value['ipv4-01'] ?? ''}} </td>
+                                    <td> {{$value['ipv4-02'] ?? ''}} </td>
+                                    <td> {{$value['ipv6-01'] ?? ''}} </td>
+                                    <td> {{$value['ipv6-02'] ?? ''}} </td>
+                                    <td>
+                                        <a href="{{route("downstreams-client_bgp_detail.index", array('client_id' => $clientId, 'clientbgp' => $index))}}">
+                                            <i class="fe-user"></i>
+                                        </a>
+                                    </td>
+                                    <td onclick="showEdit('{{$index}}')">
+                                        <i class="fe-edit"></i>
+                                    </td>
+                                    <td>
+                                        <i class="fe-trash" onclick="deleteClent(this, '{{$index}}')"></i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -215,16 +217,18 @@
                         </div>
                         <div id="collapse3" class="collapse hide" aria-labelledby="heading3" data-parent="#accordion2">
                             <div class="card-body">
-                                @foreach ($buscaCommunitiesTransito as $transitoIndex => $transitoValue)
-                                    <p class="p-1 text-success font-15 mb-0">
-                                        {{$transitoValue['nomedogrupo']}}
-                                    </p>
-                                    @foreach ($transitoValue['communities'] as $communityIndex => $communitValue)
-                                        <div  class="p-1">
-                                            <input type="checkbox" class="checkbox" name="community" value="{{$communitValue}}"/> {{$communityIndex}}
-                                        </div>
+                                @if(is_array($buscaCommunitiesTransito))
+                                    @foreach ($buscaCommunitiesTransito as $transitoIndex => $transitoValue)
+                                        <p class="p-1 text-success font-15 mb-0">
+                                            {{$transitoValue['nomedogrupo']}}
+                                        </p>
+                                        @foreach ($transitoValue['communities'] as $communityIndex => $communitValue)
+                                            <div class="p-1" id="chkTran">
+                                                <input type="checkbox" class="checkbox" name="community" id = "chkTran{{$communitValue}}" value="{{$communitValue}}"/> {{$communityIndex}}
+                                            </div>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -241,16 +245,18 @@
                         </div>
                         <div id="collapse4" class="collapse hide" aria-labelledby="heading4" data-parent="#accordion3">
                             <div class="card-body">
-                                @foreach ($buscaCommunitiesIx as $ixIndex => $ixValue)
-                                    <p class="p-1 text-success font-15 mb-0">
-                                        {{$ixValue['nomedogrupo']}}
-                                    </p>
-                                    @foreach ($ixValue['communities'] as $communityIndex => $communitValue)
-                                        <div  class="p-1">
-                                            <input type="checkbox" name="community" class="checkbox" value="{{$communitValue}}"/> {{$communityIndex}}
-                                        </div>
+                                @if(is_array($buscaCommunitiesIx))
+                                    @foreach ($buscaCommunitiesIx as $ixIndex => $ixValue)
+                                        <p class="p-1 text-success font-15 mb-0">
+                                            {{$ixValue['nomedogrupo']}}
+                                        </p>
+                                        @foreach ($ixValue['communities'] as $communityIndex => $communitValue)
+                                            <div class="p-1" id="chkIx">
+                                                <input type="checkbox" name="community" id = "chkIx{{$communitValue}}" class="checkbox" value="{{$communitValue}}"/> {{$communityIndex}}
+                                            </div>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -260,7 +266,6 @@
     </div>
 </div>
 @endsection
-
 
 @section('scripts')
     @parent
@@ -308,8 +313,6 @@
 
             row = document.getElementById(buscarSondaId);
 
-            console.log(row);
-
             var clientName = row.querySelector('td:nth-child(2)').innerText;
             var asn = row.querySelector('td:nth-child(3)').innerText;
             var pop = row.querySelector('td:nth-child(4)').innerText;
@@ -319,6 +322,7 @@
             var ipv6Local = row.querySelector('td:nth-child(8)').innerText;
             var ipv6Remote = row.querySelector('td:nth-child(9)').innerText;
             var clientasn = $(row).attr('clientasn');
+            var community = $(row).attr('community');
             var block4 = $(row).attr('block4');
             var block6 = $(row).attr('block6');
 
@@ -334,6 +338,57 @@
             $('#block4').val(block4);
             $('#block6').val(block6);
 
+            var checkBoxArray = community.split(' ');
+
+            for( var i = 0; i < checkBoxArray.length; i++ ) {
+                var tCheckBox = $('input[type="checkbox"][id="transito"]');
+                var pCheckBox = $('input[type="checkbox"][id="peering"]');
+                var cCheckBox = $('input[type="checkbox"][id="cdn"]');
+                var iCheckBox = $('input[type="checkbox"][id="ix"]');
+                var nCheckBox = $('input[type="checkbox"][id="no-exporter"]');
+                if( tCheckBox.val() == checkBoxArray[i] ) {
+                    tCheckBox.prop('checked', true);
+                } else if( pCheckBox.val() == checkBoxArray[i] ) {
+                    pCheckBox.prop('checked', true);
+                } else if( cCheckBox.val() == checkBoxArray[i] ) {
+                    cCheckBox.prop('checked', true);
+                } else if( iCheckBox.val() == checkBoxArray[i] ) {
+                    iCheckBox.prop('checked', true);
+                } else if( nCheckBox.val() == checkBoxArray[i] ) {
+                    nCheckBox.prop('checked', true);
+                }
+
+                var trCheckBoxes = $('#chkTran input[type="checkbox"][name="community"][class="checkbox"]');
+                var ixCheckBoxes = $('#chkIx input[type="checkbox"][name="community"][class="checkbox"]');
+
+                trCheckBoxes.each(function() {
+                    if(checkBoxArray[i].includes(',')) {
+                        var compareVal = checkBoxArray[i].replace(',', '');
+                        if( compareVal == $(this).val() ) {
+                            $(this).prop('checked', true);
+                        }
+                    } else {
+                        if( checkBoxArray[i] == $(this).val() ) {
+                            $(this).prop('checked', true);
+                        }
+                    }
+                });
+
+                ixCheckBoxes.each(function() {
+                    if(checkBoxArray[i].includes(',')) {
+                        var compareVal = checkBoxArray[i].replace(',', '');
+                        if( compareVal == $(this).val() ) {
+                            $(this).prop('checked', true);
+                        }
+                    } else {
+                        if( checkBoxArray[i] == $(this).val() ) {
+                            $(this).prop('checked', true);
+                        }
+                    }
+                });
+
+
+            }
         }
 
         function saveData() {
@@ -343,6 +398,7 @@
                 if($(this).is(':checked'))
                     communityArray.push($(this).val());
             });
+
             var clientName =$('#clientnome').val();
             var asn = $('#asn').val();
             var pop = $('#pop').val();
@@ -354,7 +410,6 @@
             var clientasn = $('#clientasn').val();
             var block4 = $('#block4').val();
             var block6 = $('#block6').val();
-
             var id  = $(row).prop('id');
 
             if(clientName == "" || asn == "" || pop == "" || pe == "" || ipv4Local == "" || ipv4Remote == "" ||
@@ -374,11 +429,11 @@
                 url: "downstreams-clients/1",
                 data: {
                     global : $('#global').val(),
-                    transito : $('#transito').val(),
-                    ix : $('#ix').val(),
-                    peering : $('#peering').val(),
-                    cdn : $('#cdn').val(),
-                    noexporter : $('#no-exporter').val(),
+                    transito : $('#transito:checked').val(),
+                    ix : $('#ix:checked').val(),
+                    peering : $('#peering:checked').val(),
+                    cdn : $('#cdn:checked').val(),
+                    noexporter : $('#no-exporter:checked').val(),
                     clientasn : clientasn,
                     block4 : block4,
                     block6 : block6,

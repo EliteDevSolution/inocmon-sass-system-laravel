@@ -60,12 +60,10 @@ class ClientController extends Controller
                 'bgp' => [
                     'asn' => $request->all()['asn'],
                     'community0' => $request->all()['community0'],
-                    'interconexoes' => [],
                     'ipv4bgpmultihop' => $request->all()['ipv4bgpmultihop'],
                     'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
                 ],
                 'email' => $request->all()['email'],
-                'equipamentos' => [],
                 'nome' => $request->all()['nome'],
                 'seguranca' => [
                     'nomedogrupo' => $request->all()['nomedogrupo'],
@@ -74,7 +72,6 @@ class ClientController extends Controller
                     'snmpcommunity' => $request->all()['snmpcommunity'],
                     'userinocmon' => $request->all()['userinocmon']
                 ],
-                'sondas' => [],
                 'status' => $request->all()['status']
             ];
 
@@ -127,29 +124,48 @@ class ClientController extends Controller
         try {
             $message = 'a proxima chave será: '.$key;
 
-            $data = [
-                'bgp' => [
-                    'asn' => $request->all()['asn'],
-                    'community0' => $request->all()['community0'],
-                    'interconexoes' => [],
-                    'ipv4bgpmultihop' => $request->all()['ipv4bgpmultihop'],
-                    'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
-                ],
-                'email' => $request->all()['email'],
-                'equipamentos' => '',
+            // $data = [
+            //     'bgp' => [
+            //         'asn' => $request->all()['asn'],
+            //         'community0' => $request->all()['community0'],
+            //         'ipv4bgpmultihop' => $request->all()['ipv4bgpmultihop'],
+            //         'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
+            //     ],
+            //     'email' => $request->all()['email'],
+            //     'nome' => $request->all()['nome'],
+            //     'seguranca' => [
+            //         'nomedogrupo' => $request->all()['nomedogrupo'],
+            //         'senhainocmon' => $request->all()['senhainocmon'],
+            //         'senhainocmoncifrada' => $request->all()['senhainocmoncifrada'],
+            //         'snmpcommunity' => $request->all()['snmpcommunity'],
+            //         'userinocmon' => $request->all()['userinocmon']
+            //     ],
+            //     'status' => $request->all()['status']
+            // ];
+            $root = [
                 'nome' => $request->all()['nome'],
-                'seguranca' => [
-                    'nomedogrupo' => $request->all()['nomedogrupo'],
-                    'senhainocmon' => $request->all()['senhainocmon'],
-                    'senhainocmoncifrada' => $request->all()['senhainocmoncifrada'],
-                    'snmpcommunity' => $request->all()['snmpcommunity'],
-                    'userinocmon' => $request->all()['userinocmon']
-                ],
-                'sondas' => [],
-                'status' => $request->all()['status']
+                'status' => $request->all()['status'],
+                'email' => $request->all()['email']
+            ];
+            $bgp = [
+                'asn' => $request->all()['asn'],
+                'community0' => $request->all()['community0'],
+                'ipv4bgpmultihop' => $request->all()['ipv4bgpmultihop'],
+                'ipv6bgpmultihop' => $request->all()['ipv6bgpmultihop']
+            ];
+            $seguranca = [
+                'nomedogrupo' => $request->all()['nomedogrupo'],
+                'senhainocmon' => $request->all()['senhainocmon'],
+                'senhainocmoncifrada' => $request->all()['senhainocmoncifrada'],
+                'snmpcommunity' => $request->all()['snmpcommunity'],
+                'userinocmon' => $request->all()['userinocmon']
             ];
 
-            $this->database->getReference('clientes/' . $key)->update($data);
+            $this->database->getReference('clientes/' . $key)->update($root);
+            $this->database->getReference('clientes/' . $key.'/bgp')->update($bgp);
+            $this->database->getReference('clientes/' . $key.'/seguranca')->update($seguranca);
+
+            // $this->database->getReference('clientes/' . $key)->update($data);
 
             $status = "success";
 

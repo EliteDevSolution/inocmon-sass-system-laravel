@@ -48,23 +48,27 @@
                             <input type="text" name="routerid" id="routerid" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Template Vendor</label>
                             <select id="vendor" class="form-control" >
-                                @foreach ($buscaTemplates as $indexVendor => $valueVendor )
-                                    <option value="{{$indexVendor}}">
-                                        {{$indexVendor}}
-                                    </option>
-                                @endforeach
+                                @if(is_array($buscaTemplates))
+                                    @foreach ($buscaTemplates as $indexVendor => $valueVendor )
+                                        <option value="{{$indexVendor}}">
+                                            {{$indexVendor}}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Template Family</label>
                             <select id="family" class="form-control mb-1">
-                                @foreach ($buscaTemplates as $indexVendor => $valueVendor )
-                                    @foreach ($valueVendor as $indexFamily => $valueFamily)
-                                        <option value="{{$indexFamily}}">
-                                            {{$indexFamily}}
-                                        </option>
+                                @if(is_array($buscaTemplates))
+                                    @foreach ($buscaTemplates as $indexVendor => $valueVendor )
+                                        @foreach ($valueVendor as $indexFamily => $valueFamily)
+                                            <option value="{{$indexFamily}}">
+                                                {{$indexFamily}}
+                                            </option>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
+                                @endif
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">Protocolo</label>
                             <input type="text" name="protocol" id="protocol" class="form-control mb-1"/>

@@ -44,39 +44,31 @@
                     <h2 class="header-title text-blue text-center">Novo Cdn</h2>
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">Nome do Cliente</label>
+                            <label class="mb-1 font-weight-bold text-muted">Nome do cliente</label>
                             <input type="text" name="nome" required id="nome" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">ASN do cliente</label>
-                            <input type="text" name="asn" required id="asn" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">POP DO ACESSO</label>
+                            <label class="mb-1 font-weight-bold text-muted">Pop de acesso</label>
                             <input type="text" name="pop" required id="pop" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">blocos-ipv4</label>
-                            <input type="text" name="cos4" required id="cos4" class="form-control mb-1"/>
+                            <label class="mb-1 font-weight-bold text-muted">Asn do cdn</label>
+                            <input type="text" name="asn" required id="asn" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">blocos-ipv6</label>
-                            <input type="text" name="cos6" required id="cos6" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">IPV4 lado provedor</label>
+                            <label class="mb-1 font-weight-bold text-muted">Ipv4 remoto bgp 01</label>
                             <input type="text" name="ipv4pro" required id="ipv4pro" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">IPV4 lado cliente</label>
+                            <label class="mb-1 font-weight-bold text-muted">Ipv4 remoto bgp 02</label>
                             <input type="text" name="ipv4client" required id="ipv4client" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">IPV6 lado provedor</label>
+                            <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 01</label>
                             <input type="text" name="ipv6pro" required id="ipv6pro" class="form-control mb-1"/>
                         </div>
                         <div class="col-md-4">
-                            <label class="mb-1 font-weight-bold text-muted">IPV6 lado cliente</label>
+                            <label class="mb-1 font-weight-bold text-muted">Ipv6 remoto bgp 02</label>
                             <input type="text" name="ipv6client" required id="ipv6client" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">ASN de clientes recursivos</label>
-                            <input type="text" name="recursivos" required id="recursivos" class="form-control mb-1"/>
-                            <label class="mb-1 font-weight-bold text-muted">(insira todos separados por vírgula)</label></label>
-                            <input type="text" name="vírgula" required id="vírgula" class="form-control mb-1"/>
                             <label class="mb-1 font-weight-bold text-muted">Equipmentos</label></label>
                             <select class="form-control" id="equip" required data-toggle="select2">
-                            @if(is_array($buscaEquipamentos))
-                                @foreach ($buscaEquipamentos as $index => $value)
-                                    <option value="{{$index}}" id="equip">{{$value['hostname']}}</option>
-                                @endforeach
-                            @endif
+                                @if(is_array($buscaEquipamentos))
+                                    @foreach ($buscaEquipamentos as $index => $value)
+                                        <option value="{{$index}}" id="equip">{{$value['hostname']}}</option>
+                                    @endforeach
+                                @endif
                             </select>
                         </div>
                         <div class="row ml-2 mt-2">
@@ -93,21 +85,23 @@
                 <div class="card-body">
                     <h3 class="header-title text-success">Cdn em banco</h3>
                     <ul id="cdn">
-                        @foreach ($cdns as $index => $value)
-                            @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
-                                <li>
-                                    <div class="p-md-2">
-                                        <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
-                                        {{$value['nomedogrupo'].'-'.$index}}
-                                    </div>
-                                @else
-                                    <div class="p-md-2">
-                                        <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
-                                        {{$value['nomedogrupo'].'-'.$index}}
-                                    </div>
-                                @endif
-                            </li>
-                        @endforeach
+                        @if(is_array($cdns))
+                            @foreach ($cdns as $index => $value)
+                                @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
+                                    <li>
+                                        <div class="p-md-2">
+                                            <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
+                                            {{$value['nomedogrupo'].'-'.$index}}
+                                        </div>
+                                    @else
+                                        <div class="p-md-2">
+                                            <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
+                                            {{$value['nomedogrupo'].'-'.$index}}
+                                        </div>
+                                    @endif
+                                </li>
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -132,8 +126,8 @@
                     checkedEquipArray.push($(this).val());
             });
             if( $('#nome').val() == "" || $('#pop').val() == "" || $('#asn').val() == "" ||
-                $('#cos4').val() == "" || $('#cos6').val() == "" || $('#ipv4pro').val() == "" ||
-                $('#ipv4client').val() == "" || $('#recursivos').val() == "" || $('#vírgula').val() == ""
+                $('#ipv4pro').val() == "" || $('#ipv4client').val() == ""
+                || $('#ipv4pro').val() == "" || $('#ipv6client').val() == ""
             ) {
                 $.NotificationApp.send("Alarm!"
                     ,"This is required field!"
@@ -151,14 +145,10 @@
                     nome : $('#nome').val(),
                     pop : $('#pop').val(),
                     asn : $('#asn').val(),
-                    cos4 : $('#cos4').val(),
-                    cos6 : $('#cos6').val(),
                     ipv401 : $('#ipv4pro').val(),
                     ipv402 : $('#ipv4client').val(),
                     ipv601 : $('#ipv6pro').val(),
                     ipv602 : $('#ipv6client').val(),
-                    recursivos  : $("#recursivos").val(),
-                    vírgula : $("#vírgula").val(),
                     equip : $('#equip').val(),
                     check : $("#check").is(':checked'),
                     clientId : '{{$clientId}}',
@@ -170,13 +160,10 @@
                     $('#nome').val('');
                     $('#pop').val('');
                     $('#asn').val('');
-                    $('#cos6').val('');
                     $('#ipv4pro').val('');
                     $('#ipv4client').val('');
                     $('#ipv6pro').val('');
                     $('#ipv6client').val('');
-                    $("#recursivos").val('');
-                    $("#vírgula").val('');
                     $.NotificationApp.send("Alarm!"
                         ,"Successfully added!"
                         ,"top-right"

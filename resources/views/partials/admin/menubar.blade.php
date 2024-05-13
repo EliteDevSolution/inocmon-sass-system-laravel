@@ -46,17 +46,19 @@
                             <span class="menu-arrow"></span>
                         </a>
                         <ul class="nav-third-level nav" aria-expanded="false">
-                            @foreach ($clients as $index => $buscaRrs)
-                                @if ($index == $clientIdQueryParam)
-                                    @foreach ($buscaRrs['rr'] ?? [] as $buscaIndex => $buscaRr )
-                                        @if($buscaIndex != null)
-                                            <li>
-                                                <a href="{{ route('proxy-template.index', array('client_id' => request()->query()['client_id'], 'rr_id' =>$buscaIndex))}}"> {{$buscaRr['hostname']}} </a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            @endforeach
+                            @if(is_array($clients))
+                                @foreach ($clients as $index => $buscaRrs)
+                                    @if ($index == $clientIdQueryParam)
+                                        @foreach ($buscaRrs['rr'] ?? [] as $buscaIndex => $buscaRr )
+                                            @if($buscaIndex != null)
+                                                <li>
+                                                    <a href="{{ route('proxy-template.index', array('client_id' => request()->query()['client_id'], 'rr_id' =>$buscaIndex))}}"> {{$buscaRr['hostname']}} </a>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endif
                             <li>
                                 <a href="{{ route('asset_manage.pr_summary', $clientIdQueryParam) }}">RR Sumary</a>
                             </li>
@@ -67,19 +69,21 @@
                             <span class="menu-arrow"></span>
                         </a>
                         <ul class="nav-third-level nav" aria-expanded="false">
-                            @foreach ($clients as $index => $proxys)
-                                @if ($index == $clientIdQueryParam)
-                                    @if(array_key_exists('sondas', $proxys))
-                                        @if(is_array($proxys['sondas']))
-                                            @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
-                                                <li>
-                                                    <a href="{{ route('proxy-localhost.index', array('client_id' => request()->query()['client_id'], 'proxy_id' => $proxyIndex))}}"> {{$proxy['hostname']}} </a>
-                                                </li>
-                                            @endforeach
+                            @if(is_array($clients))
+                                @foreach ($clients as $index => $proxys)
+                                    @if ($index == $clientIdQueryParam)
+                                        @if(array_key_exists('sondas', $proxys))
+                                            @if(is_array($proxys['sondas']))
+                                                @foreach ($proxys['sondas'] as $proxyIndex => $proxy )
+                                                    <li>
+                                                        <a href="{{ route('proxy-localhost.index', array('client_id' => request()->query()['client_id'], 'proxy_id' => $proxyIndex))}}"> {{$proxy['hostname']}} </a>
+                                                    </li>
+                                                @endforeach
+                                            @endif
                                         @endif
                                     @endif
-                                @endif
-                            @endforeach
+                                @endforeach
+                            @endif
                             <li>
                                 <a href="{{ route('proxy-summary.index', $clientIdQueryParam) }}">Proxy Summary</a>
                             </li>
@@ -292,7 +296,7 @@
                     </ul>
                 </li>
             @endif
-            
+
             <li class="menu-title">IXBR</li>
 
             <li>

@@ -31,65 +31,73 @@
                 <p class="font-22 font-italic text-center form-control-range text-blue">
                     Ativação
                 </p>
-                @foreach ($buscaTemplateActivate as $indexVendor => $family)
-                    @foreach ($family as $indexFamily => $x)
-                        <div class="card-box col-12">
-                            <h4 class="text-center font-family-secondary">
-                                {{$indexVendor}} / {{$indexFamily}}
-                            </h4>
-                            <div class="">
-                                <p class="text-primary font-17 font-family-secondary text-center">
-                                    Aspath
-                                </p>
-                                <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>{{$x['header']}}</textarea>
-                                <button class="btn btn-success mt-2" onclick="saveData('header','activity', 'header{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
-                                    gravar
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-box col-12">
-                            <p class="text-primary font-17 font-family-secondary text-center">
-                                Aspath
-                            </p>
-                            <textarea class="form-control" id="aspath{{$indexFamily}}" rows= 5 cols=120>{{$x['aspath']}}</textarea>
-                            <button class="btn btn-success mt-2" onclick="saveData('aspath', 'activity', 'aspath{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
-                                gravar
-                            </button>
-                        </div>
-                        <div class="card-box col-12">
-                            <p class="text-primary font-17 font-family-secondary text-center">
-                                Policy
-                            </p>
-                            <textarea class="form-control" id="policy{{$indexFamily}}" rows= 5 cols=120>{{$x['policy']}}</textarea>
-                            <button class="btn btn-success mt-2" onclick="saveData('policy', 'activity', 'policy{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
-                                gravar
-                            </button>
-                        </div>
+                @if(is_array($buscaTemplateActivate))
+                    @foreach ($buscaTemplateActivate as $indexVendor => $family)
+                        @if(is_array($family))
+                            @foreach ($family as $indexFamily => $x)
+                                <div class="card-box col-12">
+                                    <h4 class="text-center font-family-secondary">
+                                        {{$indexVendor}} / {{$indexFamily}}
+                                    </h4>
+                                    <div class="">
+                                        <p class="text-primary font-17 font-family-secondary text-center">
+                                            Aspath
+                                        </p>
+                                        <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>{{$x['header']}}</textarea>
+                                        <button class="btn btn-success mt-2" onclick="saveData('header','activity', 'header{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
+                                            gravar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-box col-12">
+                                    <p class="text-primary font-17 font-family-secondary text-center">
+                                        Aspath
+                                    </p>
+                                    <textarea class="form-control" id="aspath{{$indexFamily}}" rows= 5 cols=120>{{$x['aspath']}}</textarea>
+                                    <button class="btn btn-success mt-2" onclick="saveData('aspath', 'activity', 'aspath{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
+                                        gravar
+                                    </button>
+                                </div>
+                                <div class="card-box col-12">
+                                    <p class="text-primary font-17 font-family-secondary text-center">
+                                        Policy
+                                    </p>
+                                    <textarea class="form-control" id="policy{{$indexFamily}}" rows= 5 cols=120>{{$x['policy']}}</textarea>
+                                    <button class="btn btn-success mt-2" onclick="saveData('policy', 'activity', 'policy{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
+                                        gravar
+                                    </button>
+                                </div>
+                            @endforeach
+                        @endif
                     @endforeach
-                @endforeach
+                @endif
             </div>
             <div class="col-12">
                 <p class="font-22 font-italic text-center form-control-range text-blue">
                     Desativação
                 </p>
-                @foreach ($buscaTemplateDeactivate as $indexVendor => $family)
-                    @foreach ($family as $indexFamily => $x)
-                        <div class="card-box col-12">
-                            <h4 class="text-center font-family-secondary">
-                                {{$indexVendor}} / {{$indexFamily}}
-                            </h4>
-                            <div class="card-box col-12">
-                                <p class="text-primary font-17 font-family-secondary text-center">
-                                    Aspath
-                                </p>
-                                <textarea class="form-control" id="dis{{$indexFamily}}" rows= 5 cols=120>{{$x['aspath']}}</textarea>
-                                <button class="btn btn-success mt-2" onclick="saveData('aspath', 'deactivity', 'dis{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
-                                    gravar
-                                </button>
-                            </div>
-                        </div>
+                @if(is_array($buscaTemplateDeactivate))
+                    @foreach ($buscaTemplateDeactivate as $indexVendor => $family)
+                        @if(is_array($family))
+                            @foreach ($family as $indexFamily => $x)
+                                <div class="card-box col-12">
+                                    <h4 class="text-center font-family-secondary">
+                                        {{$indexVendor}} / {{$indexFamily}}
+                                    </h4>
+                                    <div class="card-box col-12">
+                                        <p class="text-primary font-17 font-family-secondary text-center">
+                                            Aspath
+                                        </p>
+                                        <textarea class="form-control" id="dis{{$indexFamily}}" rows= 5 cols=120>{{$x['aspath']}}</textarea>
+                                        <button class="btn btn-success mt-2" onclick="saveData('aspath', 'deactivity', 'dis{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
+                                            gravar
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
                     @endforeach
-                @endforeach
+                @endif
             </div>
         </div>
     </div>

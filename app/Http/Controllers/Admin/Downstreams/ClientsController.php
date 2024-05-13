@@ -30,7 +30,7 @@ class ClientsController extends Controller
         $equipments = $clientDetailData['equipamentos'] ?? [];
         if( array_key_exists('interconexoes', $clientDetailData['bgp']) ) {
             $buscaCommunitiesTransito = $clientDetailData['bgp']['interconexoes']['transito'] ?? [];
-            $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['transito'] ?? [];
+            $buscaCommunitiesIx = $clientDetailData['bgp']['interconexoes']['ix'] ?? [];
         }
         else {
             $buscaCommunitiesTransito = [];
@@ -122,11 +122,12 @@ class ClientsController extends Controller
             'blocosipv6'   => $request['block6'],
             'peid'   => $request['pe'],
             'recursive-asn' => $request['clientasn'],
-            'communityset'   =>  $request['global']
-                                .$request['transito']
-                                .$request['ix']
-                                .$request['peering']
-                                .$request['noexporter'].$communitySet,
+            'communityset'   =>  $request['global'] .' '
+                                .$request['transito'] . ' '
+                                .$request['ix'] . ' '
+                                .$request['peering'] . ' '
+                                .$request['noexporter'] . ' '
+                                .$communitySet,
         ];
         $clientDetailData = $this->database->getReference('clientes/' . $clientId)->getSnapshot()->getValue();
         try {

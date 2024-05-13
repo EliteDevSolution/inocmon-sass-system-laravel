@@ -98,11 +98,13 @@
             <input type="hidden" id="clientid" name="clientid" value={{$toSendData['clientId']}}>
             <input type="hidden" id="bgpclienteid" name="bgpclienteid" value={{$toSendData['bgpClientId']}}>
             <select class="form-control" name="sondaId">
-                @foreach ($toSendData['buscaSondas'] as $sondaIndex => $sondaValue )
-                    <option value="{{$sondaIndex}}">
-                        {{$sondaValue['hostname']}}
-                    </option>
-                @endforeach
+                @if(is_array($toSendData['buscaSondas']))
+                    @foreach ($toSendData['buscaSondas'] as $sondaIndex => $sondaValue )
+                        <option value="{{$sondaIndex}}">
+                            {{$sondaValue['hostname']}}
+                        </option>
+                    @endforeach
+                @endif
             </select>
             <div class="mt-2">
                 <input type="checkbox" id="targetpeid" name="targetpeid" value="{{$toSendData['idDoPe']}}">
@@ -110,14 +112,16 @@
             </div>
             <div class="mt-2">
                 <label class="font-weight-bold text-muted">Router Reflectors</label>
-                @foreach ( $toSendData['buscaRr'] as $rrIndex => $rrValue )
-                    @if(isset($rrIndex) && $rrIndex != 0)
-                        <div>
-                            <input type="checkbox" id="rr{{$rrIndex}}" name = "rr{{$rrIndex}}" value="true">
-                            <lable For="rr{{$rrIndex}}">Aplicar em RR {{$rrIndex ?? ''}} : {{$rrValue['hostname'] ?? ''}}</lable>
-                        </div>
+                    @if(is_array($toSendData['buscaRr']))
+                        @foreach ( $toSendData['buscaRr'] as $rrIndex => $rrValue )
+                            @if(isset($rrIndex) && $rrIndex != 0)
+                                <div>
+                                    <input type="checkbox" id="rr{{$rrIndex}}" name = "rr{{$rrIndex}}" value="true">
+                                    <lable For="rr{{$rrIndex}}">Aplicar em RR {{$rrIndex ?? ''}} : {{$rrValue['hostname'] ?? ''}}</lable>
+                                </div>
+                            @endif
+                        @endforeach
                     @endif
-                @endforeach
             </div>
             <input class="btn btn-blue mt-2" type="submit" value="aplicar config"></input>
         </form>

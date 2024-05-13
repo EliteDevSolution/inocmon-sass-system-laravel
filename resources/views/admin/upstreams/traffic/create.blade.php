@@ -88,21 +88,23 @@
             <div class="card">
                 <div class="card-body">
                     <ul id="cdn">
-                        @foreach ($cdns as $index => $value)
-                            @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
-                                <li>
-                                    <div class="p-md-1">
-                                        <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
-                                        {{$value['nomedogrupo'].'-'.$index}}
-                                    </div>
-                                @else
-                                    <div class="p-md-1">
-                                        <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
-                                        {{$value['nomedogrupo'].'-'.$index}}
-                                    </div>
-                                @endif
-                            </li>
-                        @endforeach
+                        @if(is_array($cdns))
+                            @foreach ($cdns as $index => $value)
+                                @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
+                                    <li>
+                                        <div class="p-md-1">
+                                            <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
+                                            {{$value['nomedogrupo'].'-'.$index}}
+                                        </div>
+                                    @else
+                                        <div class="p-md-1">
+                                            <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
+                                            {{$value['nomedogrupo'].'-'.$index}}
+                                        </div>
+                                    @endif
+                                </li>
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
             </div>

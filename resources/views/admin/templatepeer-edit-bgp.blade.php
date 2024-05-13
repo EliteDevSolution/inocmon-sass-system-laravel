@@ -75,15 +75,17 @@
                 <div class="group-input">
                     <label class="mb-1 font-weight-bold text-muted">Family</label>
                     <select class="form-control" id="configsection" required>
-                        @foreach ($templates as $indexTemp => $valueTemp)
-                            @if(is_array($valueTemp))
-                                @foreach ($templates[$indexTemp] as $index => $value)
-                                    <option value="{{$indexTemp.'/'.$index}}">
-                                        {{$indexTemp.'/'.$index}}
-                                    </option>
-                                @endforeach
-                            @endif
-                        @endforeach
+                        @if(is_array($templates))
+                            @foreach ($templates as $indexTemp => $valueTemp)
+                                @if(is_array($valueTemp))
+                                    @foreach ($templates[$indexTemp] as $index => $value)
+                                        <option value="{{$indexTemp.'/'.$index}}">
+                                            {{$indexTemp.'/'.$index}}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="mt-1 group-input">

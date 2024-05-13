@@ -145,16 +145,20 @@
                                             </div>
                                             <div id="collapse3" class="collapse hide" aria-labelledby="heading3" data-parent="#accordion2">
                                                 <div class="card-body">
-                                                    @foreach ($buscaCommunitiesTransito as $transitoIndex => $transitoValue)
-                                                        <p class="p-1 text-success font-15 mb-0">
-                                                            {{$transitoValue['nomedogrupo']}}
-                                                        </p>
-                                                        @foreach ($transitoValue['communities'] as $communityIndex => $communitValue)
-                                                            <div  class="p-1">
-                                                                <input type="checkbox" class="checkbox" name="community" value="{{$communitValue}}"/> {{$communityIndex}}
-                                                            </div>
+                                                    @if(is_array($buscaCommunitiesTransito))
+                                                        @foreach ($buscaCommunitiesTransito as $transitoIndex => $transitoValue)
+                                                            <p class="p-1 text-success font-15 mb-0">
+                                                                {{$transitoValue['nomedogrupo']}}
+                                                            </p>
+                                                            @if(is_array($transitoValue['communities']))
+                                                                @foreach ($transitoValue['communities'] as $communityIndex => $communitValue)
+                                                                    <div  class="p-1">
+                                                                        <input type="checkbox" class="checkbox" name="community" value="{{$communitValue}}"/> {{$communityIndex}}
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
                                                         @endforeach
-                                                    @endforeach
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -171,16 +175,20 @@
                                             </div>
                                             <div id="collapse4" class="collapse hide" aria-labelledby="heading4" data-parent="#accordion3">
                                                 <div class="card-body">
-                                                    @foreach ($buscaCommunitiesIx as $ixIndex => $ixValue)
-                                                        <p class="p-1 text-success font-15 mb-0">
-                                                            {{$ixValue['nomedogrupo']}}
-                                                        </p>
-                                                        @foreach ($ixValue['communities'] as $communityIndex => $communitValue)
-                                                            <div  class="p-1">
-                                                                <input type="checkbox" name="community" class="checkbox" value="{{$communitValue}}"/> {{$communityIndex}}
-                                                            </div>
+                                                    @if(is_array($buscaCommunitiesIx))
+                                                        @foreach ($buscaCommunitiesIx as $ixIndex => $ixValue)
+                                                            <p class="p-1 text-success font-15 mb-0">
+                                                                {{$ixValue['nomedogrupo']}}
+                                                            </p>
+                                                            @if(is_array($ixValue['communities']))
+                                                                @foreach ($ixValue['communities'] as $communityIndex => $communitValue)
+                                                                    <div  class="p-1">
+                                                                        <input type="checkbox" name="community" class="checkbox" value="{{$communitValue}}"/> {{$communityIndex}}
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
                                                         @endforeach
-                                                    @endforeach
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

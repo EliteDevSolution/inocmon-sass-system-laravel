@@ -150,8 +150,8 @@ class MplsDetailController extends Controller
 
                 $this->database->getReference($debugDir)->set('Iniciando config em : RR'.$buscaRrIds[$j].'-'.$rrHostName.'-'.$rrRouterId.'...');
 
-                if (!$rrUser || $rrUser == '') { $user = $userInocmon; }
-                if (!$rrPwd || $rrPwd == '' ) { $pwd = $senhaInocmon;}
+                if (!$rrUser || $rrUser == '') { $rrUser = $userInocmon; }
+                if (!$rrPwd || $rrPwd == '' ) { $rrPwd = $senhaInocmon;}
 
                 $configFileNameRr = 'CONFIG-RR'.$buscaRrIds[$j].'-'.$clientId.'-'.$equipId;
                 $uploadFileRr = 'public/configuracoes/'.$configFileNameRr;

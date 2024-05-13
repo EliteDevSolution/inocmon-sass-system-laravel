@@ -42,11 +42,13 @@
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted"> Vendor </label>
                     <select class="form-control custom-input" id="vendor" required >
-                        @foreach ($templates as $indexTemp => $valueTemp)
-                            <option value="{{$indexTemp}}">
-                                {{$indexTemp}}
-                            </option>
-                        @endforeach
+                        @if(is_array($templates))
+                            @foreach ($templates as $indexTemp => $valueTemp)
+                                <option value="{{$indexTemp}}">
+                                    {{$indexTemp}}
+                                </option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="group-input m-2">
@@ -62,15 +64,17 @@
                 <div class="group-input m-2">
                     <label class="mb-1 custom-lable font-weight-bold text-muted">Family</label>
                     <select class="custom-input form-control" id="configsection" required>
-                        @foreach ($templates as $indexTemp => $valueTemp)
-                            @if (is_array($valueTemp))
-                                @foreach ($templates[$indexTemp] as $index => $value)
-                                    <option value="{{$indexTemp.'/'.$index}}">
-                                        {{$indexTemp.'/'.$index}}
-                                    </option>
-                                @endforeach
-                            @endif
-                        @endforeach
+                        @if(is_array($templates))
+                            @foreach ($templates as $indexTemp => $valueTemp)
+                                @if (is_array($valueTemp))
+                                    @foreach ($templates[$indexTemp] as $index => $value)
+                                        <option value="{{$indexTemp.'/'.$index}}">
+                                            {{$indexTemp.'/'.$index}}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        @endif
                     </select>
                 </div>
                 <div class="group-input m-2">
@@ -83,43 +87,45 @@
             </div>
             <div class="col-12">
                 <div class="card-box mt-3">
-                    @foreach ($templates as $indexTemp => $valueTemp)
-                        @if (is_array($valueTemp))
-                            @foreach ($valueTemp as $indexFamily => $valueFamily)
-                                <p class="font-18 text-primary">
-                                    {{$indexTemp}}
-                                </p>
-                                <p class="font-15 text-primary">
-                                    {{$indexFamily}}
-                                </p>
-                                @if (is_array($valueFamily))
-                                    @foreach ($valueFamily as $index => $value)
-                                            <div id="accordion">
-                                                <div class="card mb-1">
-                                                    <div class="card-header" id="headingOne{{str_replace(' ','', $index)}}">
-                                                        <h5 class="m-0">
-                                                            <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$index}}" aria-expanded="true">
-                                                                <i class="mdi mdi-help-circle mr-1 text-primary"></i>
-                                                                Mostrar/ocultar config {{$index}}
-                                                            </a>
-                                                        </h5>
-                                                    </div>
+                    @if(is_array($templates))
+                        @foreach ($templates as $indexTemp => $valueTemp)
+                            @if (is_array($valueTemp))
+                                @foreach ($valueTemp as $indexFamily => $valueFamily)
+                                    <p class="font-18 text-primary">
+                                        {{$indexTemp}}
+                                    </p>
+                                    <p class="font-15 text-primary">
+                                        {{$indexFamily}}
+                                    </p>
+                                    @if (is_array($valueFamily))
+                                        @foreach ($valueFamily as $index => $value)
+                                                <div id="accordion">
+                                                    <div class="card mb-1">
+                                                        <div class="card-header" id="headingOne{{str_replace(' ','', $index)}}">
+                                                            <h5 class="m-0">
+                                                                <a class="text-dark" data-toggle="collapse" href="#collapseOne{{$index}}" aria-expanded="true">
+                                                                    <i class="mdi mdi-help-circle mr-1 text-primary"></i>
+                                                                    Mostrar/ocultar config {{$index}}
+                                                                </a>
+                                                            </h5>
+                                                        </div>
 
-                                                    <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{str_replace(' ','', $index)}}" data-parent="#accordion">
-                                                        <div class="card-body">
-                                                            <textarea rows = 10 cols = 100 id="{{$index}}">{{$value}}</textarea>
-                                                            <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
-                                                                Garava
-                                                            </button>
+                                                        <div id="collapseOne{{$index}}" class="collapse hide" aria-labelledby="headingOne{{str_replace(' ','', $index)}}" data-parent="#accordion">
+                                                            <div class="card-body">
+                                                                <textarea rows = 10 cols = 100 id="{{$index}}">{{$value}}</textarea>
+                                                                <button class="btn btn-primary mb-3" onclick="saveData('{{$index}}', '{{$index}}','{{$indexFamily}}','{{$indexTemp}}')">
+                                                                    Garava
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                    @endforeach
-                                @endif
-                            @endforeach
-                        @endif
-                    @endforeach
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endif
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>

@@ -89,7 +89,6 @@ class PeerController extends Controller
         $peid = $equipId;
         $denycustomerin = $request['check'] ?? true;
 
-
         $novoBgp = [
             'provedor'  => strtoupper($nome),
             'pop'    => strtoupper($pop),
@@ -102,13 +101,13 @@ class PeerController extends Controller
             'denycustomerin'    => $denycustomerin,
             'nomedogrupo'   => $nomeDoGrupo,
             'communities' => [
-                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$nextId.'0',
-                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$nextId.'1',
-                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$nextId.'2',
-                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$nextId.'3',
-                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$nextId.'4',
-                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$nextId.'5',
-                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$nextId.'6'
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'6'
             ],
         ];
 
@@ -178,13 +177,13 @@ class PeerController extends Controller
             'peid'   => $request['peVal'],
             'nomedogrupo' => $nomeDoGrupo,
             'communities' => [
-                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$peerId.'0',
-                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$peerId.'1',
-                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$peerId.'2',
-                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$peerId.'3',
-                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$peerId.'4',
-                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$peerId.'5',
-                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$peerId.'6'
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.$communityGroup.$peerId.'6'
             ],
         ];
         // $toSaveAnotherData = [

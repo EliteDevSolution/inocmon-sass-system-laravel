@@ -301,33 +301,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ( $toSendData['transito'] as $index => $value)
-                                <tr>
-                                    <td>{{$value['provedor']}}</td>
-                                    <td>{{$value['remoteas']}}</td>
-                                    <td>{{$value['pop']}}</td>
-                                    <td>
-                                        <a href="{{ route('mpls-detail.index', array('client_id' => $toSendData['client_id'], 'equip_id' => $value['peid'] ) ) }}">
-                                            {{$toSendData['equipment'][$value['peid']]['hostname']}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{$index}}
-                                    </td>
-                                    <td>
-                                        <details>
-                                            <summary>
-                                                Comminities
-                                            </summary>
-                                            @foreach ($value['communities'] as $y => $z )
-                                                <i class="fas fa-caret-down m-r-10 f-18 text-c-red"></i>
-                                                {{substr($y, 0 , 10).':'.$z}}
-                                                <p></p>
-                                            @endforeach
-                                        </details>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if(is_array($toSendData['transito']))
+                                @foreach ( $toSendData['transito'] as $index => $value)
+                                    <tr>
+                                        <td>{{$value['provedor']}}</td>
+                                        <td>{{$value['remoteas']}}</td>
+                                        <td>{{$value['pop']}}</td>
+                                        <td>
+                                            <a href="{{ route('mpls-detail.index', array('client_id' => $toSendData['client_id'], 'equip_id' => $value['peid'] ) ) }}">
+                                                {{$toSendData['equipment'][$value['peid']]['hostname']}}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {{$index}}
+                                        </td>
+                                        <td>
+                                            <details>
+                                                <summary>
+                                                    Comminities
+                                                </summary>
+                                                @if(is_array($value['communities']))
+                                                    @foreach ($value['communities'] as $y => $z )
+                                                        <i class="fas fa-caret-down m-r-10 f-18 text-c-red"></i>
+                                                        {{substr($y, 0 , 10).':'.$z}}
+                                                        <p></p>
+                                                    @endforeach
+                                                @endif
+                                            </details>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -367,6 +371,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if(is_array($toSendData['ix']))
                                 @foreach ($toSendData['ix'] as $index => $value )
                                 <tr>
                                     <td>
@@ -391,15 +396,18 @@
                                             <summary>
                                                 Comminities
                                             </summary>
-                                            @foreach ($value['communities'] as $y => $z )
-                                                <i class="fas fa-caret-down m-r-10 f-18 text-c-red"></i>
-                                                {{substr($y, 0 , 10).':'.$z}}
-                                                <p></p>
-                                            @endforeach
+                                            @if(is_array($value['communities']))
+                                                @foreach ($value['communities'] as $y => $z )
+                                                    <i class="fas fa-caret-down m-r-10 f-18 text-c-red"></i>
+                                                    {{substr($y, 0 , 10).':'.$z}}
+                                                    <p></p>
+                                                @endforeach
+                                            @endif
                                         </details>
                                     </td>
                                 </tr>
                                 @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

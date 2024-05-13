@@ -100,7 +100,7 @@
                     <div class="form-group">
                         {!! Form::label('status', trans('cruds.user.fields.status')) !!}
                         <div>
-                            {!! Form::select('status', $status, old('status'), ['class' => 'form-control', 'data-toggle'=>'select2']) !!}
+                            {!! Form::select('status', $status, old('status'), ['class' => 'form-control', 'data-toggle'=>'select2', 'id'=>'select_status']) !!}
                         </div>
                         @if($errors->has('status'))
                             <div class="mt-1" style="color: #e6334d; font-weight: 500;">
@@ -108,6 +108,7 @@
                             </div>
                         @endif
                     </div>
+
                     <div>
                         <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
                     </div>

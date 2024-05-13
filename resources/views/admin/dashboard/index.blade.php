@@ -105,11 +105,13 @@
                                 @endif
                             </select>
                             <select name="targetrr" class="form-control" id="rr">
-                                @foreach ($dashboardData['rr'] as $buscaIndex => $buscarVal)
-                                    @if ($buscarVal != null)
-                                        <option value="{{$buscaIndex}}">{{$buscarVal['hostname']}}</option>
-                                    @endif
-                                @endforeach
+                                @if(is_array($dashboardData['rr']))
+                                    @foreach ($dashboardData['rr'] as $buscaIndex => $buscarVal)
+                                        @if ($buscarVal != null)
+                                            <option value="{{$buscaIndex}}">{{$buscarVal['hostname']}}</option>
+                                        @endif
+                                    @endforeach
+                                @endif
                             </select>
                             <button onclick="excuteCommand()" class="btn btn-info dropdown-toggle">
                                 Gerar Lsdb

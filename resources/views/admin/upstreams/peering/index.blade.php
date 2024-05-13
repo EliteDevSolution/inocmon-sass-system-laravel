@@ -54,44 +54,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($toSendData['buscaBgp'] as $index => $value )
-                                <tr id="peer{{$index}}" provedor="{{ $value['provedor'] ?? "" }}" ipv401="{{ $value['ipv4-01'] ?? "" }}"
-                                ipv402="{{ $value['ipv4-02'] ?? "" }}" ipv601="{{ $value['ipv6-01'] ?? "" }}" ipv602="{{ $value['ipv6-02'] ?? "" }}"
-                                localpref="{{ $value['localpref'] ?? "" }}" medin="{{ $value['medin'] ?? "" }}">
-                                    <td style="text-align: left">
-                                        @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
-                                            <div>
-                                                <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
-                                                {{$value['nomedogrupo']}}-{{$index}}
-                                            </div>
-                                        @else
-                                            <div>
-                                                <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
-                                                {{$value['nomedogrupo']}}-{{$index}}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td>{{$value['remoteas']}}</td>
-                                    <td>{{$value['pop']}}</td>
-                                    <td id="{{$value['peid']}}">
-                                        {{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('template-generate-config.index',
-                                        array('client_id'=>$clientId, 'indexId' => $index, 'key' => "peering", 'groupKey' => '3')) }}">
-                                            <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a onclick="showEdit('peer{{$index}}')" class="getRow">
-                                            <i class="fe-edit"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <i class="fe-trash" onclick="deletePeer(this, '{{$index}}')"></i>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if(is_array($toSendData['buscaBgp']))
+                                @foreach ($toSendData['buscaBgp'] as $index => $value )
+                                    <tr id="peer{{$index}}" provedor="{{ $value['provedor'] ?? "" }}" ipv401="{{ $value['ipv4-01'] ?? "" }}"
+                                    ipv402="{{ $value['ipv4-02'] ?? "" }}" ipv601="{{ $value['ipv6-01'] ?? "" }}" ipv602="{{ $value['ipv6-02'] ?? "" }}"
+                                    localpref="{{ $value['localpref'] ?? "" }}" medin="{{ $value['medin'] ?? "" }}">
+                                        <td style="text-align: left">
+                                            @if (!file_exists(public_path("img/".$value['remoteas'].".jpg")))
+                                                <div>
+                                                    <img style="width : 30px; height : 30px" src="{{ asset('img/undefined.jpg') }}"/>
+                                                    {{$value['nomedogrupo']}}-{{$index}}
+                                                </div>
+                                            @else
+                                                <div>
+                                                    <img style="width : 30px; height : 30px" src="{{ asset("img/".$value['remoteas'].".jpg") }}" />
+                                                    {{$value['nomedogrupo']}}-{{$index}}
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td>{{$value['remoteas']}}</td>
+                                        <td>{{$value['pop']}}</td>
+                                        <td id="{{$value['peid']}}">
+                                            {{$toSendData['buscaEquip'][$value['peid']]['hostname'] ?? ''}}
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('template-generate-config.index',
+                                            array('client_id'=>$clientId, 'indexId' => $index, 'key' => "peering", 'groupKey' => '3')) }}">
+                                                <i class="fe-user" data-tippy data-original-title="I'm a Tippy tooltip!"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a onclick="showEdit('peer{{$index}}')" class="getRow">
+                                                <i class="fe-edit"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <i class="fe-trash" onclick="deletePeer(this, '{{$index}}')"></i>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

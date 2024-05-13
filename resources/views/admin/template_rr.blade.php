@@ -28,38 +28,40 @@
         </div>
         <div class="row">
             <div class="col-12">
-                @foreach ($buscaTemplateRr as $indexVendor => $family)
-                    @if (is_array($family))
-                        @foreach ($family as $indexFamily => $x)
-                            <div class="card-box col-12">
-                                <h4 class="font-22 font-italic text-center form-control-range text-blue">
-                                    {{$indexVendor}} / {{$indexFamily}}
-                                </h4>
-                                <div class="">
+                @if(is_array($buscaTemplateRr))
+                    @foreach ($buscaTemplateRr as $indexVendor => $family)
+                        @if (is_array($family))
+                            @foreach ($family as $indexFamily => $x)
+                                <div class="card-box col-12">
+                                    <h4 class="font-22 font-italic text-center form-control-range text-blue">
+                                        {{$indexVendor}} / {{$indexFamily}}
+                                    </h4>
+                                    <div class="">
+                                        <p class="text-primary font-17 font-family-secondary text-center">
+                                            RR base config
+                                        </p>
+                                        <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>{{$x['rr-base-config']}}</textarea>
+                                        <button class="btn btn-success mt-2" onclick="saveData('rr-base-config', 'header{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
+                                            gravar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-box col-12">
+                                    <h4 class="font-22 font-italic text-center form-control-range text-blue">
+                                        {{$indexVendor}} / {{$indexFamily}}
+                                    </h4>
                                     <p class="text-primary font-17 font-family-secondary text-center">
-                                        RR base config
+                                        RR, novo PE config
                                     </p>
-                                    <textarea class="form-control" id="header{{$indexFamily}}" rows= 5 cols=120>{{$x['rr-base-config']}}</textarea>
-                                    <button class="btn btn-success mt-2" onclick="saveData('rr-base-config', 'header{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
+                                    <textarea class="form-control" id="aspath{{$indexFamily}}" rows= 5 cols=120>{{$x['rr-novope-config']}}</textarea>
+                                    <button class="btn btn-success mt-2" onclick="saveData('rr-novope-config', 'aspath{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
                                         gravar
                                     </button>
                                 </div>
-                            </div>
-                            <div class="card-box col-12">
-                                <h4 class="font-22 font-italic text-center form-control-range text-blue">
-                                    {{$indexVendor}} / {{$indexFamily}}
-                                </h4>
-                                <p class="text-primary font-17 font-family-secondary text-center">
-                                    RR, novo PE config
-                                </p>
-                                <textarea class="form-control" id="aspath{{$indexFamily}}" rows= 5 cols=120>{{$x['rr-novope-config']}}</textarea>
-                                <button class="btn btn-success mt-2" onclick="saveData('rr-novope-config', 'aspath{{$indexFamily}}', '{{$indexVendor}}', '{{$indexFamily}}')">
-                                    gravar
-                                </button>
-                            </div>
-                        @endforeach
-                    @endif
-                @endforeach
+                            @endforeach
+                        @endif
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

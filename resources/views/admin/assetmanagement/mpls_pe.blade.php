@@ -112,19 +112,25 @@
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Vendor</label>
                             <select class="form-control mb-1" id="vendorVal">
-                                @foreach ( $buscaTemplateVendor as $index => $value )
-                                    <option value="{{$index}}">
-                                        {{$index}}
-                                    </option>
-                                @endforeach
+                                @if(is_array($buscaTemplateVendor))
+                                    @foreach ( $buscaTemplateVendor as $index => $value )
+                                        <option value="{{$index}}">
+                                            {{$index}}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">Family</label>
                             <select class="form-control mb-1" id="familyVal">
-                                @foreach ( $buscaTemplateVendor as $indexFamily => $valueFamily )
-                                    @foreach ( $valueFamily as $index => $value )
-                                        <option value="{{$index}}">{{$index}}</option>
+                                @if(is_array($buscaTemplateVendor))
+                                    @foreach ( $buscaTemplateVendor as $indexFamily => $valueFamily )
+                                        @if(is_array($valueFamily))
+                                            @foreach ( $valueFamily as $index => $value )
+                                                <option value="{{$index}}">{{$index}}</option>
+                                            @endforeach
+                                        @endif
                                     @endforeach
-                                @endforeach
+                                @endif
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">Group IBGP</label>
                             <select id="group" class="form-control" >

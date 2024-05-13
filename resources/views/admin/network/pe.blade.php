@@ -55,21 +55,27 @@
                         <div class="col-md-4">
                             <label class="mb-1 font-weight-bold text-muted">Template Vendor</label>
                             <select id="vendor" class="form-control mb-1" >
-                                @foreach ($buscaTemplates as $indexTemp => $indexVal)
-                                    <option value="{{$indexTemp}}">
-                                        {{$indexTemp}}
-                                    </option>
-                                @endforeach
+                                @if(is_array($buscaTemplates))
+                                    @foreach ($buscaTemplates as $indexTemp => $indexVal)
+                                        <option value="{{$indexTemp}}">
+                                            {{$indexTemp}}
+                                        </option>
+                                    @endforeach
+                                @endif
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">Template Family</label>
                             <select id="family" class="form-control mb-1" >
-                                @foreach ($buscaTemplates as $indexTemp => $indexVal)
-                                    @foreach ( $indexVal as $vendorIndex => $vendorVal)
-                                        <option value="{{$vendorIndex}}">
-                                            {{$vendorIndex}}
-                                        </option>
+                                @if(is_array($buscaTemplates))
+                                    @foreach ($buscaTemplates as $indexTemp => $indexVal)
+                                        @if(is_array($indexVal))
+                                            @foreach ( $indexVal as $vendorIndex => $vendorVal)
+                                                <option value="{{$vendorIndex}}">
+                                                    {{$vendorIndex}}
+                                                </option>
+                                            @endforeach
+                                        @endif
                                     @endforeach
-                                @endforeach
+                                @endif
                             </select>
                             <label class="mb-1 font-weight-bold text-muted">Protocolo</label>
                             <input type="text" name="protocol" id="protocol" class="form-control mb-1" placeholder="Protocol" style=" z-index: 2; background: transparent;"/>

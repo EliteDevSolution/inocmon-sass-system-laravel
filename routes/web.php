@@ -36,9 +36,8 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
 
     Route::get('dashboard', 'Admin\DashboardController@index')->name('dashboard');
     Route::post('execute-ssh-command', 'Admin\DashboardController@executeSshCommand')->name('dashboard.executeSshCommand');
+
     Route::get('download-file', 'Admin\DashboardController@downloadFile')->name('downloadFile');
-
-
 
 //    Route::get('manage', 'Admin\DashboardController@viewManage')->name('manage');
 
@@ -104,7 +103,6 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
     Route::post('aplicar-config-bgp-client', 'Admin\Downstreams\ClientBgpDetailController@aplicarConfig')->name('aplicar-config-bgp-client.aplicarConfig');
     Route::post('send-guider', 'Admin\Downstreams\ClientBgpDetailController@sendData')->name('send-guider.sendData');
 
-
     // Route::resource('bgpconnection-transit', 'Admin\BgpConnection\NovoTransitController');
     // Route::resource('bgpconnection-ix', 'Admin\BgpConnection\NovoIxController');
     // Route::resource('bgpconnection-peer', 'Admin\BgpConnection\NovoPeerController');
@@ -115,7 +113,6 @@ Route::group(['middleware' => ['auth', 'approved']], function () {
 
     Route::resource('network-pe', 'Admin\Network\PeController');
     Route::post('network-pe/store', 'Admin\Network\PeController@store')->name('network-pe.store');
-
 
     Route::resource('network-router-reflector', 'Admin\Network\RouteReflectorController');
     Route::post('network-router-reflector/store', 'Admin\Network\RouteReflectorController@store')->name('network-router-reflector.store');

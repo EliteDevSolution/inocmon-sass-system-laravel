@@ -100,13 +100,13 @@ class CdnController extends Controller
             'denycustomerin'    => $denycustomerin,
             'nomedogrupo'   => $nomeDoGrupo,
             'communities' => [
-                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$nextId.'0',
-                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$nextId.'1',
-                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$nextId.'2',
-                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$nextId.'3',
-                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$nextId.'4',
-                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$nextId.'5',
-                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$nextId.'6'
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.$communityGroup.$nextId.'6'
             ],
         ];
 
@@ -180,13 +180,13 @@ class CdnController extends Controller
             'peid'   => $request['peVal'],
             'nomedogrupo' => $nomeDoGrupo,
             'communities' => [
-                'NO-EXPORT-'.$nomeDoGrupo => $community0.':2'.$cdnId.'0',
-                'PREPEND-1X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'1',
-                'PREPEND-2X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'2',
-                'PREPEND-3X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'3',
-                'PREPEND-4X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'4',
-                'PREPEND-5X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'5',
-                'PREPEND-6X-'.$nomeDoGrupo => $community0.':2'.$cdnId.'6'
+                'NO-EXPORT-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'0',
+                'PREPEND-1X-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'1',
+                'PREPEND-2X-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'2',
+                'PREPEND-3X-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'3',
+                'PREPEND-4X-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'4',
+                'PREPEND-5X-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'5',
+                'PREPEND-6X-'.$nomeDoGrupo => $community0.$communityGroup.$cdnId.'6'
             ],
 	    ];
 
